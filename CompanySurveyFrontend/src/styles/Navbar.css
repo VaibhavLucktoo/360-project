@@ -1,0 +1,66 @@
+/*NavBar*/
+
+.navbar{
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    background-color: white;
+
+    padding: 18px 30px;
+
+    border-radius:  12px;
+
+    box-shadow: 0 5px 15px rgba(0,0,0,.08);
+
+    margin: 30px;
+}
+
+/* Right Section */
+
+.navbar-right{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:20px;
+
+}
+
+/* Notification */
+
+.nav-icon{
+
+    font-size:20px;
+
+    cursor:pointer;
+
+    color:#374151;
+
+}
+
+/* Profile */
+
+.profile{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    cursor:pointer;
+
+}
+
+.profile-icon{
+
+    font-size:34px;
+
+    color:#2563eb;
+
+}
