@@ -1,0 +1,477 @@
+/* ===========================================
+   Analytics Page
+=========================================== */
+
+.analytics-page {
+    width: 100%;
+    max-width: 1100px;
+
+    margin: 0 auto;
+    padding: 40px 24px 60px;
+
+    text-align: left;
+}
+
+
+/* ===========================================
+   Back Link
+=========================================== */
+
+.analytics-page > a {
+    display: inline-flex;
+    align-items: center;
+
+    margin-bottom: 24px;
+
+    color: #2563eb;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition: color 0.2s ease;
+}
+
+
+.analytics-page > a:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+}
+
+
+/* ===========================================
+   Analytics Page Title
+=========================================== */
+
+.analytics-page h1 {
+    margin: 0 0 28px;
+
+    color: #111827;
+
+    font-size: 34px;
+    font-weight: 700;
+
+    line-height: 1.25;
+
+    letter-spacing: -0.5px;
+}
+
+
+/* ===========================================
+   Analytics Summary Grid
+=========================================== */
+
+.analytics-summary {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 18px;
+
+    margin-bottom: 24px;
+}
+
+
+/* ===========================================
+   Summary Card
+=========================================== */
+
+.summary-card {
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+
+    min-height: 120px;
+
+    padding: 22px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+
+    box-shadow:
+        0 2px 8px rgba(15, 23, 42, 0.05);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.summary-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+
+.summary-label {
+    color: #6b7280;
+
+    font-size: 14px;
+    font-weight: 500;
+}
+
+
+.summary-value {
+    color: #111827;
+
+    font-size: 28px;
+    font-weight: 700;
+
+    line-height: 1.2;
+}
+
+
+/* ===========================================
+   Privacy Note
+=========================================== */
+
+.privacy-note {
+    margin: 0 0 32px;
+
+    padding: 14px 18px;
+
+    color: #667085;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+    border-left: 4px solid #2563eb;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+
+/* ===========================================
+   Divider
+=========================================== */
+
+.analytics-page hr {
+    margin: 0 0 30px;
+
+    border: 0;
+    border-top: 1px solid #e5e7eb;
+}
+
+
+/* ===========================================
+   Section Heading
+=========================================== */
+
+.analytics-page h2 {
+    margin: 0 0 20px;
+
+    color: #111827;
+
+    font-size: 26px;
+    font-weight: 700;
+}
+
+
+/* ===========================================
+   Question Analytics Card
+=========================================== */
+
+.question-card {
+    margin-bottom: 18px;
+
+    padding: 22px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+
+    box-shadow:
+        0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+
+.question-card h3 {
+    margin: 0 0 14px;
+
+    color: #111827;
+
+    font-size: 19px;
+    font-weight: 650;
+
+    line-height: 1.4;
+}
+
+
+.question-card p {
+    margin: 6px 0;
+
+    color: #667085;
+
+    font-size: 14px;
+}
+
+
+.question-card p strong {
+    color: #344054;
+}
+
+
+/* ===========================================
+   Rating Analytics
+=========================================== */
+
+.rating-result {
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+
+    margin-top: 18px;
+
+    padding: 16px;
+
+    background: #f8faff;
+
+    border: 1px solid #dbe7ff;
+
+    border-radius: 10px;
+}
+
+
+.rating-label {
+    color: #667085;
+
+    font-size: 14px;
+    font-weight: 500;
+}
+
+
+.rating-value {
+    color: #2563eb;
+
+    font-size: 34px;
+    font-weight: 750;
+
+    line-height: 1.2;
+}
+
+
+.rating-max {
+    color: #98a2b3;
+
+    font-size: 18px;
+    font-weight: 500;
+}
+
+
+/* ===========================================
+   No Responses
+=========================================== */
+
+.no-responses {
+    display: inline-block;
+
+    margin-top: 4px;
+
+    color: #98a2b3;
+
+    font-size: 14px;
+    font-style: italic;
+}
+
+
+/* ===========================================
+   Feedback Section
+=========================================== */
+
+.feedback-section {
+    margin-top: 18px;
+}
+
+
+.feedback-section > strong {
+    display: block;
+
+    margin-bottom: 10px;
+
+    color: #344054;
+
+    font-size: 14px;
+}
+
+
+/* ===========================================
+   Feedback List
+=========================================== */
+
+.feedback-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+
+/* ===========================================
+   Individual Feedback Card
+=========================================== */
+
+.feedback-card {
+    padding: 14px 16px;
+
+    color: #374151;
+
+    background: #f9fafb;
+
+    border: 1px solid #e5e7eb;
+    border-left: 4px solid #2563eb;
+
+    border-radius: 8px;
+
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+
+/* ===========================================
+   Analytics Actions
+=========================================== */
+
+.analytics-actions {
+    display: flex;
+
+    justify-content: flex-end;
+
+    margin-top: 30px;
+}
+
+
+/* ===========================================
+   Download Button
+=========================================== */
+
+.download-analytics-btn {
+    padding: 12px 20px;
+
+    color: #ffffff;
+
+    background: #2563eb;
+
+    border: none;
+    border-radius: 8px;
+
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.download-analytics-btn:hover {
+    background: #1d4ed8;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 6px 16px rgba(37, 99, 235, 0.22);
+}
+
+
+.download-analytics-btn:active {
+    transform: translateY(0);
+}
+
+
+/* ===========================================
+   Error Message
+=========================================== */
+
+.analytics-page .error {
+    padding: 14px 16px;
+
+    color: #b42318;
+
+    background: #fef3f2;
+
+    border: 1px solid #fecdca;
+    border-radius: 8px;
+}
+
+
+/* ===========================================
+   Tablet
+=========================================== */
+
+@media (max-width: 850px) {
+
+    .analytics-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .analytics-page {
+        padding: 30px 18px 50px;
+    }
+
+    .analytics-page h1 {
+        font-size: 28px;
+    }
+
+}
+
+
+/* ===========================================
+   Mobile
+=========================================== */
+
+@media (max-width: 520px) {
+
+    .analytics-page {
+        padding: 24px 14px 40px;
+    }
+
+    .analytics-page h1 {
+        font-size: 24px;
+    }
+
+    .analytics-page h2 {
+        font-size: 21px;
+    }
+
+    .summary-card {
+        min-height: auto;
+        padding: 18px;
+    }
+
+    .summary-value {
+        font-size: 24px;
+    }
+
+    .question-card {
+        padding: 18px;
+    }
+
+    .rating-value {
+        font-size: 29px;
+    }
+
+    .analytics-actions {
+        justify-content: stretch;
+    }
+
+    .download-analytics-btn {
+        width: 100%;
+    }
+
+}

@@ -1,6 +1,18 @@
-from sqlalchemy import Column, Integer, DateTime, ForeignKey, Text, Index, UniqueConstraint
+from sqlalchemy import (
+    Column,
+    Integer,
+    DateTime,
+    ForeignKey,
+    Text,
+    Index,
+    UniqueConstraint,
+    String,
+)
+
 from sqlalchemy.orm import relationship
+
 from datetime import datetime
+
 from app.database.database import Base
 
 
@@ -8,17 +20,75 @@ class Response(Base):
 
     __tablename__ = "responses"
 
-    id = Column(Integer, primary_key=True, index=True)
+    # ===========================================
+    # Primary Key
+    # ===========================================
 
-    survey_id = Column(Integer, ForeignKey("surveys.id"), nullable=False, index=True)
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True
+    )
 
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    # ===========================================
+    # Survey
+    # ===========================================
 
-    question_id = Column(Integer, ForeignKey("questions.id"), nullable=False, index=True)
+    survey_id = Column(
+        Integer,
+        ForeignKey("surveys.id"),
+        nullable=False,
+        index=True
+    )
 
-    answer = Column(Text, nullable=False)
+    # ===========================================
+    # Optional Logged-in User
+    # ===========================================
 
-    created_at = Column(DateTime, default=datetime.utcnow)
+    user_id = Column(
+        Integer,
+        ForeignKey("users.id"),
+        nullable=True
+    )
+
+    # ===========================================
+    # Anonymous Submission Identifier
+    # ===========================================
+
+    submission_id = Column(
+        String(36),
+        nullable=False,
+        index=True
+    )
+
+    # ===========================================
+    # Question
+    # ===========================================
+
+    question_id = Column(
+        Integer,
+        ForeignKey("questions.id"),
+        nullable=False,
+        index=True
+    )
+
+    # ===========================================
+    # Answer
+    # ===========================================
+
+    answer = Column(
+        Text,
+        nullable=False
+    )
+
+    # ===========================================
+    # Timestamps
+    # ===========================================
+
+    created_at = Column(
+        DateTime,
+        default=datetime.utcnow
+    )
 
     updated_at = Column(
         DateTime,
@@ -26,14 +96,42 @@ class Response(Base):
         onupdate=datetime.utcnow
     )
 
-    user = relationship("User", back_populates="responses")
+    # ===========================================
+    # Relationships
+    # ===========================================
 
-    question = relationship("Question", back_populates="responses")
+    user = relationship(
+        "User",
+        back_populates="responses"
+    )
 
-    survey = relationship("Survey", back_populates="responses")
+    question = relationship(
+        "Question",
+        back_populates="responses"
+    )
 
-    # Enforces duplicate prevention even if two submission requests arrive together.
+    survey = relationship(
+        "Survey",
+        back_populates="responses"
+    )
+
+    # ===========================================
+    # Constraints / Indexes
+    # ===========================================
+
     __table_args__ = (
-        UniqueConstraint("survey_id", "user_id", "question_id", name="uq_responses_survey_user_question"),
-        Index("ix_responses_survey_user", "survey_id", "user_id"),
+
+        UniqueConstraint(
+            "survey_id",
+            "submission_id",
+            "question_id",
+            name="uq_responses_survey_submission_question"
+        ),
+
+        Index(
+            "ix_responses_survey_submission",
+            "survey_id",
+            "submission_id"
+        ),
+
     )

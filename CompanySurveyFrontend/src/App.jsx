@@ -18,9 +18,10 @@ import SurveyDetails from "./pages/SurveyDetails";
 import SurveyQuestions from "./pages/SurveyQuestions";
 import SurveyPreview from "./pages/SurveyPreview";
 import TakeSurvey from "./pages/TakeSurvey";
+import Analytics from "./pages/Analytics";
 import SurveyList from "./pages/SurveyList";
 import Responses from "./pages/Responses";
-import Analytics from "./pages/Analytics";
+import QuestionAnalytics from "./pages/QuestionAnalytics";
 
 // ===========================================
 // Main Application
@@ -67,9 +68,6 @@ function App() {
                     </ProtectedRoute>
                 }
             />
-            <Route path="/surveys" element={<ProtectedRoute><SurveyList /></ProtectedRoute>} />
-            <Route path="/responses" element={<ProtectedRoute><Responses /></ProtectedRoute>} />
-            <Route path="/surveys/:id/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
 
             {/* ===========================================
                 Create Survey
@@ -93,6 +91,20 @@ function App() {
                 element={
                     <ProtectedRoute>
                         <SurveyDetails />
+                        <SurveyQuestions />
+                    </ProtectedRoute>
+                }
+            />
+
+            {/* ===========================================
+                Survey List
+            =========================================== */}
+
+            <Route
+                path="/surveys"
+                element={
+                    <ProtectedRoute>
+                        <SurveyList />
                     </ProtectedRoute>
                 }
             />
@@ -107,6 +119,16 @@ function App() {
                     <ProtectedRoute>
                         <SurveyDetails />
                         <SurveyQuestions />
+                    </ProtectedRoute>
+                }
+            />
+
+            {/*Question Analytics*/}
+            <Route
+                path="/surveys/:surveyId/questions/:questionId/analytics"
+                element={
+                    <ProtectedRoute>
+                        <QuestionAnalytics />
                     </ProtectedRoute>
                 }
             />
@@ -136,6 +158,36 @@ function App() {
                     </ProtectedRoute>
                 }
             />
+
+            {/* ===========================================
+                Survey Responses
+            =========================================== */}
+
+            <Route
+                path="/surveys/:id/responses"
+                element={
+                    <ProtectedRoute>
+                        <Responses />
+                    </ProtectedRoute>
+                }
+            />
+
+            {/* ===========================================
+                Survey Analytics
+            =========================================== */}
+
+            <Route
+                path="/surveys/:id/analytics"
+                element={
+                    <ProtectedRoute>
+                        <Analytics />
+                    </ProtectedRoute>
+                }
+            />
+
+
+
+
 
             {/* ===========================================
                 Unknown Route

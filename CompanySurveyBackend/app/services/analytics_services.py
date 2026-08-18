@@ -81,12 +81,22 @@ def get_survey_analytics(
                 else None
             )
 
+            # Count how many responses selected each rating
+            rating_distribution = {
+                        1: ratings.count(1),
+                        2: ratings.count(2),
+                        3: ratings.count(3),
+                        4: ratings.count(4),
+                        5: ratings.count(5),
+                            }
+
             analytics.append({
                 "question": question.question_text,
                 "question_type": question.question_type,
                 "total_responses": len(ratings),
                 "average_rating": question_average,
                 "text_responses": None,
+                "rating_distribution": rating_distribution,
             })
 
         # ---------------------------------------

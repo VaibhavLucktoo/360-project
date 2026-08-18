@@ -27,6 +27,27 @@ export const getSurvey = (id) => request(`/surveys/${id}`);
 export const getResponses = () => request("/responses/");
 export const getSurveyQuestions = (id) => request(`/surveys/${id}/questions`);
 export const getSurveyAnalytics = (id) => request(`/surveys/${id}/analytics`);
+export async function exportSurveyAnalytics(id) {
+
+    const response = await fetch(
+        `${BASE_URL}/surveys/${id}/export`,
+        {
+            method: "GET",
+            headers: headers(),
+        }
+    );
+
+    if (!response.ok) {
+
+        const data = await response.json().catch(() => null);
+
+        throw new Error(
+            data?.detail || "Failed to export survey analytics"
+        );
+    }
+
+    return response.blob();
+}
 export const getQuestionAnalytics = (id) => request(`/questions/${id}/analytics`);
 export const getSurveyResponses = (id) => request(`/surveys/${id}/responses`);
 export const createSurvey = (data) => request("/surveys/", { method: "POST", body: JSON.stringify(data) });

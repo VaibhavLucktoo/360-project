@@ -97,16 +97,40 @@ def publish_survey_api(survey_id: int, db: Session = Depends(get_db), current_us
 
 
 @router.get("/{survey_id}/questions", response_model=SurveyWithQuestions)
-def get_survey_with_questions_api(survey_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def get_survey_with_questions_api(survey_id: int,db: Session = Depends(get_db)):
     survey = get_survey_with_questions(db, survey_id)
-    if survey is None or (current_user.role.strip().lower() != "admin" and not survey.is_published):
-        raise HTTPException(status_code=404, detail="Survey not found")
+    # Survey must exist
+    if survey is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Survey not found"
+        )
+
+    # Public users can only access published surveys
+    if not survey.is_published:
+        raise HTTPException(
+            status_code=404,
+            detail="Survey not found"
+        )
+
     return survey
 
+# ===========================================
+# Public Survey Submission
+# ===========================================
 
 @router.post("/{survey_id}/submit")
-def submit_employee_survey(survey_id: int, submission: SurveySubmission, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return submit_survey(db, survey_id, current_user.id, submission)
+def submit_employee_survey(
+    survey_id: int,
+    submission: SurveySubmission,
+    db: Session = Depends(get_db)
+):
+
+    return submit_survey(
+        db,
+        survey_id,
+        submission
+    )
 
 
 @router.get("/{survey_id}/responses", response_model=list[ResponseView])

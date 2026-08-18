@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
+from typing import List, Optional, Dict
 
 
 class ResponseCreate(BaseModel):
@@ -64,6 +65,8 @@ class QuestionAnalytics(BaseModel):
 
     # Text Questions
     text_responses: list[str] | None = None
+    #rating distribution:
+    rating_distribution: Optional[Dict[int, int]] = None
 
 
 class SurveyAnalytics(BaseModel):

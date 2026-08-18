@@ -32,5 +32,10 @@ app.add_middleware(
 
 
 @app.get("/")
-def home():
+def home() -> dict:
+    """
+    Homepage of the Company Survey Backend API.
+    
+    Returns a JSON response with a welcome message.
+    """
     return {"message": "Welcome to Company Survey Backend"}
