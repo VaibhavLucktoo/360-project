@@ -153,9 +153,8 @@ function App() {
             <Route
                 path="/surveys/:id/take"
                 element={
-                    <ProtectedRoute>
+                    
                         <TakeSurvey />
-                    </ProtectedRoute>
                 }
             />
 

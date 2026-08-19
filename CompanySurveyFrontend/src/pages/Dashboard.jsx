@@ -121,7 +121,7 @@ function Dashboard() {
             }
 
         }
-
+console.error(error);
         fetchDashboardData();
 
         return () => {
