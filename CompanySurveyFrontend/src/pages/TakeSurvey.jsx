@@ -4,7 +4,9 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import Swal from "sweetalert2"; // Provides custom popup messages
 import * as API from "../services/api";
+
 
 /* ===========================================
    Helper Function
@@ -42,8 +44,17 @@ function TakeSurvey() {
 
     const [loading, setLoading] = useState(true);
 
-    const [error, setError] = useState("");
 
+
+    // Stores errors that occur while loading the survey
+    const [loadError, setLoadError] = useState("");
+
+   // Stores validation errors for unanswered required questions
+    const [formError, setFormError] = useState("");
+    // Tracks whether the survey request is currently being processed
+    const [isSubmitting, setIsSubmitting]=useState(false);
+    // Tracks whether this page session has completed the survey
+    const[submitted,setSubmitted]= useState(false);
     /* ===========================================
        Text / Textarea / Dropdown
     =========================================== */
@@ -114,31 +125,35 @@ function TakeSurvey() {
 function validateSurvey() {
 
     for (const question of questions) {
-
+        // Optional questions do not require validation
         if (!question.is_required) {
             continue;
         }
-
-        // Skip question types that currently have no backend options
-        if (
-            ["radio", "checkbox", "dropdown"].includes(
-                question.question_type
-            )
-        ) {
-            continue;
-        }
-
         const answer = answers[question.id];
 
-        if (
+        // Handles unanswered text, textarea, radio, dropdown and rating
+        const hasEmptyValue=
             answer === undefined ||
             answer === null ||
-            answer === ""
-        ) {
+            (typeof answer === "string" && answer.trim() === "");
 
-            setError(
+         // Handles a required checkbox with no selected options
+         const hasEmptySelection=
+            Array.isArray(answer) && answer.length === 0;
+
+        if (hasEmptyValue || hasEmptySelection) {
+
+            setFormError(
                 `Please answer: ${question.question_text}`
             );
+
+            //Show a clear general warning
+            Swal.fire({
+                icon: "warning",
+                title:"Required Question Missing",
+                text:"Please answer all required questions before submitting the survey.",
+                confirmButtonText: "Review questions",
+            })
 
             return false;
 
@@ -146,7 +161,7 @@ function validateSurvey() {
 
     }
 
-    setError("");
+    setFormError("");
 
     return true;
 
@@ -159,11 +174,32 @@ async function handleSubmit(event) {
 
     event.preventDefault();
 
+    //Stop duplicate submissions while processing or after success
+    if(isSubmitting||submitted){
+        return;
+    }
+
     if (!validateSurvey()) {
 
         return;
 
     }
+
+    // Ask the employee to confirm before sending answers
+    const confirmation = await Swal.fire({
+        title: "Submit survey?",
+        text: "You won’t be able to change your answers after submission.",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Submit",
+        cancelButtonText: "Review answers",
+    });
+
+        // Stop here if the employee wants to review their answers
+        if (!confirmation.isConfirmed) {
+            return;
+        }
+
 
     const payload = Object.entries(answers).map(
 
@@ -177,13 +213,30 @@ async function handleSubmit(event) {
 
     );
 
+
     console.log("Submitting:", payload);
 
     try {
+        //Mark the request as currently processing
+        setIsSubmitting(true);
 
         await API.submitSurvey(id, payload);
 
-        alert("Survey submitted successfully!");
+        //Clear answers only after successful submission
+        setAnswers({});
+
+        //The backend sucessfully accepted the submission
+        setSubmitted(true);
+        //Open the custom sucess popup
+        // Show a success notification only after the API returns successfully
+        await Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Survey submitted successfully!",
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true,
+        });
 
     }
 
@@ -193,6 +246,9 @@ async function handleSubmit(event) {
 
         alert(error.message);
 
+    }finally{
+        //Runs after sucess or failure
+        setIsSubmitting(false);
     }
 
 }
@@ -209,7 +265,10 @@ async function handleSubmit(event) {
 
                 setLoading(true);
 
-                setError("");
+                // Clear only previous survey-loading errors
+                setLoadError("");
+
+                setFormError("");
 
                 const data = await API.getSurveyQuestions(id);
 
@@ -226,8 +285,8 @@ async function handleSubmit(event) {
             catch (err) {
 
                 console.error(err);
-
-                setError("Failed to load survey.");
+                // This is a loading failure, not a form-validation error
+                setLoadError("Failed to load survey.");
 
             }
 
@@ -257,9 +316,9 @@ async function handleSubmit(event) {
        Error Screen
     ------------------------------ */
 
-    if (error) {
+    if (loadError) {
 
-        return <h2>{error}</h2>;
+        return <h2>{loadError}</h2>;
 
     }
 
@@ -283,10 +342,10 @@ return (
         <p>{survey?.description}</p>
 
         <hr />
-
-        {error && (
+        {/* Show which required question needs an answer */}
+        {formError && (
             <p style={{ color: "red" }}>
-                {error}
+                {formError}
             </p>
         )}
 
