@@ -40,6 +40,7 @@ from app.services.survey_services import (
     get_survey_by_id,
     get_survey_with_questions,
     publish_survey,
+    unpublish_survey,
     update_survey,
 )
 router = APIRouter(prefix="/surveys", tags=["Surveys"])
@@ -95,6 +96,28 @@ def publish_survey_api(survey_id: int, db: Session = Depends(get_db), current_us
     managed_survey(db, survey_id, current_user)
     return publish_survey(db, survey_id)
 
+# Unpublish survey and disable public access
+@router.put("/{survey_id}/unpublish", response_model=SurveyResponse)
+def unpublish_survey_api(
+    survey_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_management_user)
+):
+    managed_survey(db, survey_id, current_user)
+
+    survey = unpublish_survey(
+        db,
+        survey_id
+    )
+
+    if survey is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Survey not found"
+        )
+
+    return survey
+
 
 @router.get("/{survey_id}/questions", response_model=SurveyWithQuestions)
 def get_survey_with_questions_api(survey_id: int,db: Session = Depends(get_db)):
@@ -108,6 +131,30 @@ def get_survey_with_questions_api(survey_id: int,db: Session = Depends(get_db)):
 
     # Public users can only access published surveys
     if not survey.is_published:
+        raise HTTPException(
+            status_code=404,
+            detail="Survey not found"
+        )
+
+    return survey
+
+# Admin can view questions for draft or published surveys
+@router.get("/{survey_id}/questions/admin",response_model=SurveyWithQuestions)
+def get_admin_survey_questions(survey_id: int,db: Session = Depends(get_db),current_user: User = Depends(require_management_user)):
+
+    # Confirm admin can manage this survey
+    managed_survey(
+        db,
+        survey_id,
+        current_user
+    )
+
+    survey = get_survey_with_questions(
+        db,
+        survey_id
+    )
+
+    if survey is None:
         raise HTTPException(
             status_code=404,
             detail="Survey not found"

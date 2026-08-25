@@ -38,7 +38,7 @@ def get_survey_analytics(
     # ===========================================
 
     total_responses = (
-        db.query(Response.user_id)
+        db.query(Response.submission_id) #user_id changed to submission_id for the survey analytics to count unique responses based on submission_id instead of user_id
         .filter(Response.survey_id == survey_id)
         .distinct()
         .count()

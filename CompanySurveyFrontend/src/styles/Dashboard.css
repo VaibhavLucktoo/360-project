@@ -1,78 +1,666 @@
-/*Main Dashboard Container*/
-/* ===========================================
-   MAIN DASHBOARD
-=========================================== */
+/* =========================================
+   DASHBOARD
+========================================= */
 
 .dashboard {
-
-    margin-left: 250px;
-    padding: 40px;
-    background: #f8fafc;
+    width: auto;
     min-height: 100vh;
+
+    margin-left: var(--sidebar-width, 220px);
+
+    padding: 36px 40px 60px;
+
     box-sizing: border-box;
 
+    background: #f8fafc;
+
+    transition: margin-left 0.2s ease;
 }
+
+
+/* =========================================
+   GENERAL TYPOGRAPHY
+========================================= */
+
+.dashboard h1,
+.dashboard h2,
+.dashboard p {
+    box-sizing: border-box;
+}
+
 .dashboard h1 {
+    margin: 0;
+
+    color: #0f172a;
 
     font-size: 32px;
-
-    color: #1f2937;
-
-    /*Space below heading*/
-    margin-bottom: 10px;
-
+    font-weight: 700;
+    line-height: 1.2;
 }
+
+.dashboard h2 {
+    margin: 0 0 16px;
+
+    color: #0f172a;
+
+    font-size: 20px;
+    font-weight: 700;
+}
+
 .dashboard p {
-
-    color: #6b7280 ;
-
-    font-size: 16px;
-
-    margin-bottom: 30px;
-
+    color: #64748b;
 }
 
-/*Dashboard Card*/
 
-.cards{
+/* =========================================
+   STAT CARDS
+========================================= */
+
+.cards {
+    width: 100%;
 
     display: grid;
 
-    grid-template-columns: repeat(4,1fr);
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
 
-    gap: 25px;
+    gap: 18px;
 
-    margin-top: 30px ;
+    margin: 0 0 36px;
 }
+
+
+/* =========================================
+   DASHBOARD HEADER
+========================================= */
 
 .dashboard-header {
-    display: flex;
-    justify-content: space-between;
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(300px, 1fr)
+        max-content;
+
     align-items: center;
-    margin-bottom: 20px;
+
+    column-gap: 32px;
+
+    margin-bottom: 30px;
 }
 
-.create-survey-btn {
-    background-color: #2563eb;
-    color: white;
+
+/* Welcome text */
+
+.dashboard-header > div {
+    min-width: 0;
+}
+
+.dashboard-header h1 {
+    margin: 0 0 7px;
+
+    font-size: 30px;
+
+    text-align: left;
+}
+
+.dashboard-header p {
+    max-width: 520px;
+
+    margin: 0;
+
+    font-size: 15px;
+    line-height: 1.55;
+
+    text-align: left;
+}
+
+
+/* =========================================
+   CREATE SURVEY BUTTON
+========================================= */
+
+.dashboard .create-survey-btn {
+    width: max-content !important;
+    min-width: 150px;
+    max-width: none;
+
+    justify-self: end;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 11px 18px;
+
+    background: #2563eb;
+    color: #ffffff;
+
     border: none;
-    padding: 10px 18px;
-    border-radius: 8px;
-    cursor: pointer;
+    border-radius: 9px;
+
+    font-family: inherit;
     font-size: 14px;
     font-weight: 600;
+
+    white-space: nowrap;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 3px 8px rgba(37, 99, 235, 0.15);
+
+    transition:
+        background 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.15s ease;
 }
 
-.create-survey-btn:hover {
-    background-color: #1d4ed8;
+.dashboard .create-survey-btn:hover {
+    background: #1d4ed8;
+
+    box-shadow:
+        0 6px 14px rgba(37, 99, 235, 0.2);
+
+    transform: translateY(-1px);
 }
 
-.survey-table .actions button:hover { background: rgba(15,99,235,0.06); color: #0f1724; }
+.dashboard .create-survey-btn:active {
+    transform: translateY(0);
+}
 
-.no-data { padding: 18px 0; color: #6b7280; }
 
-.dashboard .footer-actions { margin-top: 26px; display: flex; gap: 12px; }
+/* =========================================
+   SURVEY TABLE
+========================================= */
 
-/* Action button appearance */
-.action-btn { display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px; }
-.action-btn svg { width:18px; height:18px; } 
+.survey-table {
+    width: 100%;
+
+    border-collapse: separate;
+    border-spacing: 0;
+
+    background: #ffffff;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+
+/* Table Header */
+
+.survey-table thead {
+    background: #f8fafc;
+}
+
+.survey-table th {
+    padding: 14px 16px;
+
+    color: #475569;
+
+    border-bottom:
+        1px solid #e2e8f0;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    letter-spacing: 0.02em;
+
+    text-align: left;
+
+    white-space: nowrap;
+}
+
+
+/* Table Body */
+
+.survey-table td {
+    padding: 16px;
+
+    color: #334155;
+
+    border-bottom:
+        1px solid #f1f5f9;
+
+    font-size: 14px;
+
+    vertical-align: middle;
+}
+
+.survey-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.survey-table tbody tr {
+    transition:
+        background 0.15s ease;
+}
+
+.survey-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+
+/* Description */
+
+.survey-table td:nth-child(2) {
+    max-width: 340px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================
+   STATUS BADGES
+========================================= */
+
+.status-badge {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 5px 10px;
+
+    border-radius: 999px;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 0.03em;
+
+    text-transform: uppercase;
+
+    white-space: nowrap;
+}
+
+
+/* Published */
+
+.status-badge.published {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+
+/* Draft */
+
+.status-badge.draft {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+
+/* =========================================
+   SURVEY ACTIONS
+========================================= */
+
+.survey-actions {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    white-space: nowrap;
+}
+
+.survey-actions button {
+    width: 36px;
+    height: 36px;
+
+    flex: 0 0 36px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    background: #ffffff;
+    color: #475569;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.18s ease,
+        color 0.18s ease,
+        border-color 0.18s ease,
+        transform 0.15s ease;
+}
+
+.survey-actions button svg {
+    width: 16px;
+    height: 16px;
+}
+
+.survey-actions button:hover {
+    background: #eff6ff;
+    color: #2563eb;
+
+    border-color: #bfdbfe;
+
+    transform: translateY(-1px);
+}
+
+.survey-actions button:active {
+    transform: translateY(0);
+}
+
+
+/* =========================================
+   EMPTY STATE
+========================================= */
+
+.no-data {
+    width: 100%;
+
+    margin-top: 14px;
+
+    padding: 38px 20px;
+
+    box-sizing: border-box;
+
+    background: #ffffff;
+
+    color: #64748b;
+
+    border: 1px dashed #cbd5e1;
+    border-radius: 12px;
+
+    text-align: center;
+}
+
+
+/* =========================================
+   FOOTER ACTIONS
+========================================= */
+
+.dashboard .footer-actions {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-top: 26px;
+}
+
+
+/* =========================================
+   LARGE TABLET
+   769px - 1024px
+========================================= */
+
+@media (max-width: 1024px) {
+
+    .dashboard {
+        margin-left:
+            var(--sidebar-width, 76px);
+
+        padding:
+            30px
+            24px
+            50px;
+    }
+
+
+    /* Stats become 2 x 2 */
+
+    .cards {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 16px;
+
+        margin-bottom: 30px;
+    }
+
+
+    /* Keep header balanced */
+
+    .dashboard-header {
+        grid-template-columns:
+            minmax(240px, 1fr)
+            max-content;
+
+        column-gap: 20px;
+    }
+
+    .dashboard-header h1 {
+        font-size: 28px;
+    }
+
+    .dashboard .create-survey-btn {
+        width: max-content !important;
+        min-width: 145px;
+
+        justify-self: end;
+    }
+
+
+    /* Table */
+
+    .survey-table th,
+    .survey-table td {
+        padding: 13px 12px;
+    }
+
+}
+
+
+/* =========================================
+   SMALL TABLET
+   641px - 768px
+========================================= */
+
+@media (max-width: 768px) {
+
+    .dashboard {
+        padding:
+            26px
+            20px
+            45px;
+    }
+
+
+    /* Stack heading and button */
+
+    .dashboard-header {
+        grid-template-columns: 1fr;
+
+        row-gap: 18px;
+    }
+
+    .dashboard-header p {
+        max-width: 100%;
+    }
+
+    .dashboard .create-survey-btn {
+        width: max-content !important;
+
+        justify-self: start;
+    }
+
+
+    /* Table scroll */
+
+    .survey-table {
+        display: block;
+
+        width: 100%;
+
+        overflow-x: auto;
+        overflow-y: hidden;
+
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .survey-table thead,
+    .survey-table tbody {
+        min-width: 760px;
+    }
+
+}
+
+
+/* =========================================
+   MOBILE
+   <= 640px
+========================================= */
+
+@media (max-width: 640px) {
+
+    .dashboard {
+        width: 100%;
+
+        margin-left: 0;
+
+        padding:
+            22px
+            14px
+            92px;
+    }
+
+
+    /* Statistics */
+
+    .cards {
+        grid-template-columns: 1fr;
+
+        gap: 12px;
+
+        margin-bottom: 28px;
+    }
+
+
+    /* Header */
+
+    .dashboard-header {
+        width: 100%;
+
+        grid-template-columns: 1fr;
+
+        row-gap: 16px;
+
+        margin-bottom: 26px;
+    }
+
+    .dashboard-header h1 {
+        font-size: 26px;
+    }
+
+    .dashboard-header p {
+        width: 100%;
+        max-width: none;
+
+        font-size: 14px;
+    }
+
+
+    /* Full-width mobile action */
+
+    .dashboard .create-survey-btn {
+        width: 100% !important;
+        min-width: 0;
+
+        justify-self: stretch;
+    }
+
+
+    /* Section title */
+
+    .dashboard h2 {
+        font-size: 18px;
+    }
+
+
+    /* Horizontal table scrolling */
+
+    .survey-table {
+        display: block;
+
+        width: 100%;
+
+        overflow-x: auto;
+        overflow-y: hidden;
+
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .survey-table thead,
+    .survey-table tbody {
+        min-width: 720px;
+    }
+
+    .survey-table th,
+    .survey-table td {
+        padding: 12px 13px;
+    }
+
+    .survey-table td:nth-child(2) {
+        min-width: 190px;
+        max-width: 230px;
+    }
+
+
+    /* Actions */
+
+    .survey-actions {
+        gap: 6px;
+    }
+
+    .survey-actions button {
+        width: 34px;
+        height: 34px;
+
+        flex-basis: 34px;
+    }
+
+}
+
+
+/* =========================================
+   SMALL PHONES
+   <= 380px
+========================================= */
+
+@media (max-width: 380px) {
+
+    .dashboard {
+        padding:
+            18px
+            10px
+            88px;
+    }
+
+    .dashboard-header h1 {
+        font-size: 24px;
+    }
+
+    .dashboard-header p {
+        font-size: 13px;
+    }
+
+    .dashboard .create-survey-btn {
+        padding:
+            10px
+            14px;
+
+        font-size: 13px;
+    }
+
+}

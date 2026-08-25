@@ -3,14 +3,14 @@ import { FaBell,FaUserCircle } from "react-icons/fa";
 
 
 /*Navbar Function*/
-
-function Navbar(){
+// Navbar receives the current user's name
+function Navbar({ title = "Dashboard",  userName = "User" }) {
     return(
 
         //Navbar Container
         <div className="navbar">
             <div>
-                <h2>Dashboard</h2>
+                <h2>{title}</h2>
 
             </div>
 
@@ -19,7 +19,7 @@ function Navbar(){
                 <FaBell className="nav-icon"/>
                 <div className="profile">
                     <FaUserCircle className="profile-icon"/>
-                    <span>Vaibhav</span>
+                    <span>{userName}</span>
 
                 </div>
             </div>

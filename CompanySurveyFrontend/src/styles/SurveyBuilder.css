@@ -1,0 +1,258 @@
+/* =========================================
+   Survey Builder Page
+========================================= */
+
+.survey-builder-page {
+    width: 100%;
+    min-height: 100vh;
+    box-sizing: border-box;
+
+    padding: 32px clamp(16px, 3vw, 48px) 60px;
+
+    background: #eef5ff;
+}
+
+
+/* =========================================
+   Builder Header
+========================================= */
+
+.survey-builder-header {
+    width: min(100%, 1100px);
+    margin: 0 auto 28px;
+
+    text-align: center;
+}
+
+.survey-builder-header h1 {
+    margin: 0 0 8px;
+
+    font-size: clamp(26px, 3vw, 36px);
+    line-height: 1.2;
+    font-weight: 700;
+
+    color: #111827;
+}
+
+.survey-builder-header p {
+    margin: 0;
+
+    font-size: clamp(14px, 1.5vw, 16px);
+    line-height: 1.6;
+
+    color: #64748b;
+}
+
+
+/* =========================================
+   Question Builder Container
+========================================= */
+
+.survey-builder-page .question-builder {
+    width: min(100%, 1200px);
+    margin: 0 auto;
+}
+
+
+/* =========================================
+   Question Count Summary
+========================================= */
+
+.survey-builder-page > p {
+    width: min(100%, 1200px);
+
+    margin: 18px auto 0;
+
+    font-size: 14px;
+    color: #64748b;
+}
+
+
+/* =========================================
+   Bottom Actions
+========================================= */
+
+.survey-builder-actions {
+    width: min(100%, 1200px);
+
+    margin: 30px auto 0;
+    padding-top: 24px;
+
+    border-top: 1px solid #dbe3ef;
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 12px;
+}
+
+
+/* Base button */
+
+.survey-builder-actions button {
+    min-width: 125px;
+
+    padding: 11px 20px;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+
+    background: #ffffff;
+    color: #334155;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+/* Hover */
+
+.survey-builder-actions button:hover:not(:disabled) {
+    background: #f8fafc;
+    border-color: #94a3b8;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 4px 10px
+        rgba(15, 23, 42, 0.08);
+}
+
+
+/* Publish button */
+
+.survey-builder-actions button:last-child {
+    background: #2563eb;
+    border-color: #2563eb;
+
+    color: #ffffff;
+}
+
+.survey-builder-actions button:last-child:hover:not(:disabled) {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+}
+
+
+/* Disabled buttons */
+
+.survey-builder-actions button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+
+    transform: none;
+    box-shadow: none;
+}
+
+
+/* =========================================
+   Large Screens
+========================================= */
+
+@media (min-width: 1400px) {
+
+    .survey-builder-page {
+        padding-left: 64px;
+        padding-right: 64px;
+    }
+
+    .survey-builder-page .question-builder,
+    .survey-builder-actions,
+    .survey-builder-page > p {
+        max-width: 1250px;
+    }
+
+}
+
+
+/* =========================================
+   Tablets
+========================================= */
+
+@media (max-width: 900px) {
+
+    .survey-builder-page {
+        padding-top: 26px;
+        padding-bottom: 50px;
+    }
+
+    .survey-builder-header {
+        margin-bottom: 24px;
+    }
+
+    .survey-builder-actions {
+        justify-content: center;
+    }
+
+}
+
+
+/* =========================================
+   Mobile
+========================================= */
+
+@media (max-width: 600px) {
+
+    .survey-builder-page {
+        padding:
+            22px
+            14px
+            40px;
+    }
+
+    .survey-builder-header {
+        margin-bottom: 20px;
+    }
+
+    .survey-builder-header h1 {
+        font-size: 26px;
+    }
+
+    .survey-builder-header p {
+        font-size: 14px;
+    }
+
+    .survey-builder-actions {
+        margin-top: 24px;
+        padding-top: 20px;
+
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .survey-builder-actions button {
+        width: 100%;
+        min-width: 0;
+
+        padding: 12px 16px;
+    }
+
+}
+
+
+/* =========================================
+   Very Small Mobile
+========================================= */
+
+@media (max-width: 380px) {
+
+    .survey-builder-page {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .survey-builder-header h1 {
+        font-size: 23px;
+    }
+
+}

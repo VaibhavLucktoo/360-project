@@ -60,6 +60,24 @@ def publish_survey(db:Session, survey_id:int):
 
     return survey
 
+# Unpublish survey and disable public access
+def unpublish_survey(db: Session, survey_id: int):
+    survey = (
+        db.query(Survey)
+        .filter(Survey.id == survey_id)
+        .first()
+    )
+
+    if survey is None:
+        return None
+
+    survey.is_published = False
+
+    db.commit()
+    db.refresh(survey)
+
+    return survey
+
 def get_survey_with_questions(db: Session, survey_id: int):
     survey = db.query(Survey).filter(Survey.id == survey_id).first()
 

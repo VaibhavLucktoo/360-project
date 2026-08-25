@@ -1,19 +1,15 @@
 import csv
 
 from collections import Counter
-
 from io import StringIO
-
 from uuid import uuid4
 
 from fastapi import HTTPException
-
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.models.question import Question
-
 from app.models.response import Response
-
 from app.models.survey import Survey
 
 from app.schemas.response import (
@@ -41,22 +37,15 @@ def create_response(
     if question is None:
         return None
 
-    # Generate a submission ID because the Response
-    # model now requires one.
+    # Generate an ID for this individual response
     submission_id = str(uuid4())
 
     item = Response(
-
         survey_id=question.survey_id,
-
         user_id=current_user_id,
-
         submission_id=submission_id,
-
         question_id=question.id,
-
         answer=response.answer.strip(),
-
     )
 
     db.add(item)
@@ -83,7 +72,9 @@ def get_all_responses(
 
         return (
             query
-            .filter(Response.survey_id == survey_id)
+            .filter(
+                Response.survey_id == survey_id
+            )
             .all()
         )
 
@@ -200,11 +191,8 @@ def submit_survey(
     # ===========================================
 
     questions = {
-
         question.id: question
-
         for question in survey.questions
-
     }
 
 
@@ -213,11 +201,8 @@ def submit_survey(
     # ===========================================
 
     submitted = {
-
         answer.question_id: answer.answer.strip()
-
         for answer in submission.answers
-
     }
 
 
@@ -244,16 +229,12 @@ def submit_survey(
     # ===========================================
 
     missing = [
-
         question.question_text
-
         for question in questions.values()
-
         if (
             question.is_required
             and not submitted.get(question.id)
         )
-
     ]
 
     if missing:
@@ -268,10 +249,30 @@ def submit_survey(
 
 
     # ===========================================
-    # Generate Anonymous Submission ID
+    # Validate Anonymous Submission
     # ===========================================
 
-    submission_id = str(uuid4())
+    # Use the persistent ID sent by the browser
+    submission_id = str(
+        submission.submission_id
+    )
+
+    # Block repeat submission for this survey
+    existing_submission = (
+        db.query(Response)
+        .filter(
+            Response.survey_id == survey_id,
+            Response.submission_id == submission_id,
+        )
+        .first()
+    )
+
+    if existing_submission:
+
+        raise HTTPException(
+            status_code=409,
+            detail="This survey has already been submitted."
+        )
 
 
     # ===========================================
@@ -283,18 +284,13 @@ def submit_survey(
         if not answer:
             continue
 
+        # Group answers under one submission ID
         response = Response(
-
             survey_id=survey_id,
-
             user_id=None,
-
             submission_id=submission_id,
-
             question_id=question_id,
-
             answer=answer,
-
         )
 
         db.add(response)
@@ -308,6 +304,29 @@ def submit_survey(
 
         db.commit()
 
+    except IntegrityError:
+
+        db.rollback()
+
+        # Handle simultaneous duplicate requests safely
+        duplicate_submission = (
+            db.query(Response)
+            .filter(
+                Response.survey_id == survey_id,
+                Response.submission_id == submission_id,
+            )
+            .first()
+        )
+
+        if duplicate_submission:
+
+            raise HTTPException(
+                status_code=409,
+                detail="This survey has already been submitted."
+            )
+
+        raise
+
     except Exception:
 
         db.rollback()
@@ -320,11 +339,8 @@ def submit_survey(
     # ===========================================
 
     return {
-
         "message": "Survey submitted successfully",
-
         "submission_id": submission_id,
-
     }
 
 
@@ -338,15 +354,11 @@ def get_responses_by_question(
 ):
 
     return (
-
         db.query(Response)
-
         .filter(
             Response.question_id == question_id
         )
-
         .all()
-
     )
 
 
@@ -360,15 +372,11 @@ def get_responses_by_survey(
 ):
 
     return (
-
         db.query(Response)
-
         .filter(
             Response.survey_id == survey_id
         )
-
         .all()
-
     )
 
 
@@ -382,9 +390,7 @@ def get_question_analytics(
 ):
 
     answers = [
-
         row.answer
-
         for row in (
             db.query(Response.answer)
             .filter(
@@ -392,31 +398,22 @@ def get_question_analytics(
             )
             .all()
         )
-
     ]
 
-    question_type = question.question_type.lower()
+    question_type = (
+        question.question_type.lower()
+    )
 
     result = {
-
         "question_id": question.id,
-
         "question": question.question_text,
-
         "question_type": question_type,
-
         "total_responses": len(answers),
-
         "average_rating": None,
-
         "yes_count": None,
-
         "no_count": None,
-
         "answer_breakdown": None,
-
         "text_responses": None,
-
     }
 
 
@@ -427,29 +424,21 @@ def get_question_analytics(
     if question_type == "rating":
 
         ratings = [
-
             int(answer)
-
             for answer in answers
-
             if (
                 answer.isdigit()
                 and 1 <= int(answer) <= 5
             )
-
         ]
 
         result["average_rating"] = (
-
             round(
                 sum(ratings) / len(ratings),
                 2
             )
-
             if ratings
-
             else None
-
         )
 
 
@@ -466,39 +455,28 @@ def get_question_analytics(
     }:
 
         values = [
-
             value.strip()
-
             for answer in answers
-
             for value in answer.split(",")
-
             if value.strip()
-
         ]
 
         counts = Counter(values)
 
-        result["answer_breakdown"] = dict(counts)
+        result["answer_breakdown"] = (
+            dict(counts)
+        )
 
         result["yes_count"] = sum(
-
             count
-
             for value, count in counts.items()
-
             if value.lower() == "yes"
-
         )
 
         result["no_count"] = sum(
-
             count
-
             for value, count in counts.items()
-
             if value.lower() == "no"
-
         )
 
 
@@ -541,8 +519,7 @@ def export_survey_csv(
     writer = csv.writer(output)
 
 
-    # CSV Header
-
+    # CSV header
     writer.writerow([
         "Question",
         "Question Type",
@@ -550,20 +527,15 @@ def export_survey_csv(
     ])
 
 
-    # CSV Rows
-
+    # CSV rows
     for question in survey.questions:
 
         for response in question.responses:
 
             writer.writerow([
-
                 question.question_text,
-
                 question.question_type,
-
                 response.answer,
-
             ])
 
 

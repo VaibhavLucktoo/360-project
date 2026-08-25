@@ -1,4 +1,45 @@
-import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+
+import QuestionBuilder from "../components/QuestionBuilder";
+
+
+function SurveyQuestions() {
+
+    const { id } = useParams();
+
+    const surveyId = Number(id);
+
+
+    // Validate survey ID from the route
+    if (!surveyId) {
+
+        return (
+            <div>
+                <p>Invalid survey ID.</p>
+            </div>
+        );
+
+    }
+
+
+    return (
+
+        <div className="survey-questions-page">
+
+            {/* Reuse the shared question builder */}
+            <QuestionBuilder surveyId={surveyId} />
+
+        </div>
+
+    );
+
+}
+
+
+export default SurveyQuestions;
+
+
+{/*import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
     createQuestion,
@@ -397,4 +438,4 @@ function SurveyQuestions() {
 
 }
 
-export default SurveyQuestions;
+export default SurveyQuestions;*/}

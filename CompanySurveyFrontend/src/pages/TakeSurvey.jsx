@@ -1,81 +1,91 @@
 /* ===========================================
-   Take Survey Page
+   Public Survey Page
 =========================================== */
 
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Swal from "sweetalert2"; // Provides custom popup messages
+import Swal from "sweetalert2";
+
 import * as API from "../services/api";
 
+import "../styles/TakeSurvey.css";
 
-/* ===========================================
-   Helper Function
-=========================================== */
 
+/* Keep questions in display order */
 function sortQuestions(questions) {
 
     return [...questions].sort(
-        (a, b) => (a.display_order || 0) - (b.display_order || 0)
+        (a, b) =>
+            (a.display_order || 0) -
+            (b.display_order || 0)
     );
 
 }
 
-/* ===========================================
-   Take Survey Component
-=========================================== */
+// Reuse one anonymous ID for this survey in this browser
+function getSubmissionId(surveyId) {
+    const storageKey = `survey_submission_id_${surveyId}`;
+
+    let submissionId = localStorage.getItem(storageKey);
+
+    if (!submissionId) {
+        submissionId = crypto.randomUUID();
+        localStorage.setItem(storageKey, submissionId);
+    }
+
+    return submissionId;
+}
+
 
 function TakeSurvey() {
 
-    /* ===========================================
-       Get Survey ID
-    =========================================== */
-
     const { id } = useParams();
 
-    /* ===========================================
-       State Variables
-    =========================================== */
+    // Stores whether this survey was completed in this browser
+    const submittedStorageKey = `survey_submitted_${id}`;
 
+    // Keep the same anonymous ID even after refresh
+    const [submissionId] = useState(() =>
+        getSubmissionId(id)
+    );
+
+
+    // Survey data
     const [survey, setSurvey] = useState(null);
-
     const [questions, setQuestions] = useState([]);
 
+    // Employee answers
     const [answers, setAnswers] = useState({});
 
+    // Page state
     const [loading, setLoading] = useState(true);
-
-
-
-    // Stores errors that occur while loading the survey
     const [loadError, setLoadError] = useState("");
-
-   // Stores validation errors for unanswered required questions
     const [formError, setFormError] = useState("");
-    // Tracks whether the survey request is currently being processed
-    const [isSubmitting, setIsSubmitting]=useState(false);
-    // Tracks whether this page session has completed the survey
-    const[submitted,setSubmitted]= useState(false);
-    /* ===========================================
-       Text / Textarea / Dropdown
-    =========================================== */
 
+    // Submission state
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    // Restore submitted state after a page refresh
+    const [submitted, setSubmitted] = useState(
+    () => localStorage.getItem(submittedStorageKey) === "true");
+
+
+    /* Update normal answer */
     function handleAnswerChange(questionId, value) {
 
         setAnswers((previousAnswers) => ({
-
             ...previousAnswers,
-
             [questionId]: value,
-
         }));
 
     }
 
-    /* ===========================================
-       Checkbox
-    =========================================== */
 
-    function handleCheckboxChange(questionId, optionValue, checked) {
+    /* Update checkbox answer */
+    function handleCheckboxChange(
+        questionId,
+        optionValue,
+        checked
+    ) {
 
         setAnswers((previousAnswers) => {
 
@@ -85,16 +95,16 @@ function TakeSurvey() {
                 ? previousAnswers[questionId]
                 : [];
 
-            return {
 
+            return {
                 ...previousAnswers,
 
                 [questionId]: checked
                     ? [...selectedOptions, optionValue]
                     : selectedOptions.filter(
-                        (value) => value !== optionValue
+                        (value) =>
+                            value !== optionValue
                     ),
-
             };
 
         });
@@ -102,555 +112,799 @@ function TakeSurvey() {
     }
 
 
-    /* ===========================================
-       Rating
-    =========================================== */
-
+    /* Update rating */
     function handleRatingChange(questionId, rating) {
 
-        setAnswers((previousAnswers) => ({
-
-            ...previousAnswers,
-
-            [questionId]: String(rating),
-
-        }));
+        handleAnswerChange(
+            questionId,
+            String(rating)
+        );
 
     }
 
-    /* ===========================================
-   Validate Required Questions
-=========================================== */
 
-function validateSurvey() {
+    /* Validate required questions */
+    function validateSurvey() {
 
-    for (const question of questions) {
-        // Optional questions do not require validation
-        if (!question.is_required) {
-            continue;
+        for (const question of questions) {
+
+            if (!question.is_required) {
+                continue;
+            }
+
+            const answer =
+                answers[question.id];
+
+
+            const hasEmptyValue =
+                answer === undefined ||
+                answer === null ||
+                (
+                    typeof answer === "string" &&
+                    answer.trim() === ""
+                );
+
+
+            const hasEmptySelection =
+                Array.isArray(answer) &&
+                answer.length === 0;
+
+
+            if (
+                hasEmptyValue ||
+                hasEmptySelection
+            ) {
+
+                setFormError(
+                    `Please answer: ${question.question_text}`
+                );
+
+
+                Swal.fire({
+                    icon: "warning",
+                    title: "Required Question Missing",
+                    text: "Please answer all required questions before submitting the survey.",
+                    confirmButtonText: "Review Questions",
+                });
+
+
+                return false;
+            }
+
         }
-        const answer = answers[question.id];
 
-        // Handles unanswered text, textarea, radio, dropdown and rating
-        const hasEmptyValue=
-            answer === undefined ||
-            answer === null ||
-            (typeof answer === "string" && answer.trim() === "");
 
-         // Handles a required checkbox with no selected options
-         const hasEmptySelection=
-            Array.isArray(answer) && answer.length === 0;
+        setFormError("");
 
-        if (hasEmptyValue || hasEmptySelection) {
+        return true;
+    }
 
-            setFormError(
-                `Please answer: ${question.question_text}`
-            );
 
-            //Show a clear general warning
-            Swal.fire({
-                icon: "warning",
-                title:"Required Question Missing",
-                text:"Please answer all required questions before submitting the survey.",
-                confirmButtonText: "Review questions",
-            })
+    /* Submit survey */
+    async function handleSubmit(event) {
 
-            return false;
+        event.preventDefault();
 
+
+        // Prevent duplicate submission
+        if (isSubmitting || submitted) {
+            return;
         }
 
-    }
 
-    setFormError("");
+        if (!validateSurvey()) {
+            return;
+        }
 
-    return true;
 
-}
-/* ===========================================
-   Submit Survey
-=========================================== */
+        const confirmation = await Swal.fire({
+            icon: "question",
+            title: "Submit Survey?",
+            text: "You won’t be able to change your answers after submission.",
+            showCancelButton: true,
+            confirmButtonText: "Submit Survey",
+            cancelButtonText: "Review Answers",
+        });
 
-async function handleSubmit(event) {
 
-    event.preventDefault();
-
-    //Stop duplicate submissions while processing or after success
-    if(isSubmitting||submitted){
-        return;
-    }
-
-    if (!validateSurvey()) {
-
-        return;
-
-    }
-
-    // Ask the employee to confirm before sending answers
-    const confirmation = await Swal.fire({
-        title: "Submit survey?",
-        text: "You won’t be able to change your answers after submission.",
-        icon: "question",
-        showCancelButton: true,
-        confirmButtonText: "Submit",
-        cancelButtonText: "Review answers",
-    });
-
-        // Stop here if the employee wants to review their answers
         if (!confirmation.isConfirmed) {
             return;
         }
 
 
-    const payload = Object.entries(answers).map(
-
-        ([questionId, answer]) => ({
-
-            question_id: Number(questionId),
-
-            answer: answer,
-
-        })
-
-    );
+        const payload =
+            Object.entries(answers).map(
+                ([questionId, answer]) => ({
+                    question_id: Number(questionId),
+                    answer,
+                })
+            );
 
 
-    console.log("Submitting:", payload);
+        try {
 
-    try {
-        //Mark the request as currently processing
-        setIsSubmitting(true);
+            setIsSubmitting(true);
 
-        await API.submitSurvey(id, payload);
 
-        //Clear answers only after successful submission
-        setAnswers({});
+            await API.submitSurvey(
+                id,
+                submissionId,
+                payload
+            );
 
-        //The backend sucessfully accepted the submission
+            // Remember successful submission across refreshes
+            localStorage.setItem(
+                submittedStorageKey,
+                "true"
+            );
+
+            setSubmitted(true);
+
+
+            setAnswers({});
+
+            
+
+
+            await Swal.fire({
+                icon: "success",
+                title: "Survey Submitted",
+                text: "Thank you for completing the survey.",
+                timer: 1600,
+                showConfirmButton: false,
+                timerProgressBar: true,
+            });
+
+
+        } catch (error) {
+
+    console.error(error);
+
+    // Backend confirmed this browser already submitted
+    if (error.status === 409) {
+
+        localStorage.setItem(
+            submittedStorageKey,
+            "true"
+        );
+
         setSubmitted(true);
-        //Open the custom sucess popup
-        // Show a success notification only after the API returns successfully
+
         await Swal.fire({
-            position: "top-end",
-            icon: "success",
-            title: "Survey submitted successfully!",
-            showConfirmButton: false,
-            timer: 1500,
-            timerProgressBar: true,
+            icon: "info",
+            title: "Already Submitted",
+            text: "This survey has already been submitted from this browser.",
+            confirmButtonText: "OK",
         });
 
+        return;
     }
 
-    catch (error) {
+    await Swal.fire({
+        icon: "error",
+        title: "Submission Failed",
+        text: error.message || "Something went wrong.",
+    });
 
-        console.error(error);
+} finally {
 
-        alert(error.message);
-
-    }finally{
-        //Runs after sucess or failure
-        setIsSubmitting(false);
-    }
-
+    // Runs after success or failure
+    setIsSubmitting(false);
 }
-    // useEffect comes next...
-    /* -----------------------------
-       Load Survey
-    ------------------------------ */
 
+    }
+
+
+    /* Load published survey */
     useEffect(() => {
+
+        let isMounted = true;
+
 
         async function fetchSurvey() {
 
             try {
 
                 setLoading(true);
-
-                // Clear only previous survey-loading errors
                 setLoadError("");
-
                 setFormError("");
 
-                const data = await API.getSurveyQuestions(id);
 
-                console.log("Survey Data:", data);
+                const data =
+                    await API.getSurveyQuestions(id);
+
+
+                if (!isMounted) {
+                    return;
+                }
+
 
                 setSurvey(data);
 
                 setQuestions(
-                    sortQuestions(data.questions || [])
+                    sortQuestions(
+                        data.questions || []
+                    )
                 );
 
-            }
 
-            catch (err) {
+            } catch (error) {
 
-                console.error(err);
-                // This is a loading failure, not a form-validation error
-                setLoadError("Failed to load survey.");
+                console.error(
+                    "Survey loading error:",
+                    error
+                );
 
-            }
 
-            finally {
+                if (isMounted) {
 
-                setLoading(false);
+                    setLoadError(
+                        "This survey is unavailable or no longer accepting responses."
+                    );
+
+                }
+
+
+            } finally {
+
+                if (isMounted) {
+                    setLoading(false);
+                }
 
             }
 
         }
 
+
         fetchSurvey();
+
+
+        return () => {
+            isMounted = false;
+        };
 
     }, [id]);
 
-    /* -----------------------------
-       Loading Screen
-    ------------------------------ */
 
+    /* Loading state */
     if (loading) {
 
-        return <h2>Loading Survey...</h2>;
+        return (
+            <div className="take-survey-state">
+
+                <div className="survey-state-card">
+
+                    <div className="survey-loader" />
+
+                    <h2>
+                        Loading Survey
+                    </h2>
+
+                    <p>
+                        Please wait a moment.
+                    </p>
+
+                </div>
+
+            </div>
+        );
 
     }
 
-    /* -----------------------------
-       Error Screen
-    ------------------------------ */
 
+    /* Error state */
     if (loadError) {
 
-        return <h2>{loadError}</h2>;
+        return (
+            <div className="take-survey-state">
+
+                <div className="survey-state-card">
+
+                    <div className="survey-state-icon">
+                        !
+                    </div>
+
+                    <h2>
+                        Survey Unavailable
+                    </h2>
+
+                    <p>
+                        {loadError}
+                    </p>
+
+                </div>
+
+            </div>
+        );
 
     }
 
-    /* -----------------------------
-       UI
-    ------------------------------ */
 
-return (
+    /* Submitted state */
+    if (submitted) {
 
-    <div
-        style={{
-            maxWidth: "900px",
-            margin: "40px auto",
-            padding: "30px",
-            fontFamily: "Arial, sans-serif",
-        }}
-    >
+        return (
+            <div className="take-survey-state">
 
-        <h1>{survey?.title}</h1>
+                <div className="survey-state-card success">
 
-        <p>{survey?.description}</p>
+                    <div className="survey-success-icon">
+                        ✓
+                    </div>
 
-        <hr />
-        {/* Show which required question needs an answer */}
-        {formError && (
-            <p style={{ color: "red" }}>
-                {formError}
-            </p>
-        )}
+                    <h1>
+                        Thank You
+                    </h1>
 
-        {questions.length === 0 ? (
+                    <p>
+                        Your response has been submitted successfully.
+                    </p>
 
-            <p>No questions found.</p>
+                    <span className="survey-complete-note">
+                        You can now close this page.
+                    </span>
 
-        ) : (
+                </div>
 
-            <form onSubmit={handleSubmit}>
+            </div>
+        );
 
-                {questions.map((question) => {
+    }
 
-                    console.log(
-                        question.question_text,
-                        question.question_type,
-                        question.options
-                    );
 
-                    const options = question.options || [];
+    return (
 
-                    return (
+        <main className="take-survey-page">
 
-                        <div
-                            key={question.id}
-                            style={{
-                                border: "1px solid #ddd",
-                                borderRadius: "8px",
-                                padding: "20px",
-                                marginBottom: "25px",
-                                background: "#fafafa",
-                            }}
-                        >
+            <div className="take-survey-container">
 
-                            <h3>
 
-                                {question.question_text}
+                {/* Survey heading */}
 
-                                {question.is_required && (
-                                    <span style={{ color: "red" }}> *</span>
-                                )}
+                <header className="take-survey-header">
 
-                            </h3>
+                    <div className="survey-header-badge">
+                        Employee Survey
+                    </div>
 
-                            {/* TEXT */}
+                    <h1>
+                        {survey?.title}
+                    </h1>
 
-                            {question.question_type === "text" && (
+                    {survey?.description && (
 
-                                <input
-                                    type="text"
-                                    placeholder="Enter your answer..."
-                                    value={answers[question.id] || ""}
-                                    onChange={(e) =>
-                                        handleAnswerChange(
-                                            question.id,
-                                            e.target.value
-                                        )
-                                    }
-                                    style={{
-                                        width: "100%",
-                                        padding: "10px",
-                                    }}
-                                />
+                        <p>
+                            {survey.description}
+                        </p>
 
-                            )}
+                    )}
 
-                            {/* TEXTAREA */}
+                    <div className="survey-header-meta">
 
-                            {question.question_type === "textarea" && (
+                        <span>
+                            {questions.length}{" "}
+                            {questions.length === 1
+                                ? "Question"
+                                : "Questions"}
+                        </span>
 
-                                <textarea
-                                    rows={4}
-                                    placeholder="Enter your answer..."
-                                    value={answers[question.id] || ""}
-                                    onChange={(e) =>
-                                        handleAnswerChange(
-                                            question.id,
-                                            e.target.value
-                                        )
-                                    }
-                                    style={{
-                                        width: "100%",
-                                        padding: "10px",
-                                    }}
-                                />
+                        <span>
+                            Your responses are anonymous
+                        </span>
 
-                            )}
+                    </div>
 
-                            {/* RADIO */}
+                </header>
 
-                            {question.question_type === "radio" && (
 
-                                options.length > 0 ? (
+                {/* Validation message */}
 
-                                    options.map((option) => (
+                {formError && (
 
-                                        <label
-                                            key={option}
-                                            style={{
-                                                display: "block",
-                                                marginBottom: "10px",
-                                            }}
-                                        >
+                    <div
+                        className="survey-form-error"
+                        role="alert"
+                    >
+                        <strong>
+                            Required:
+                        </strong>
 
-                                            <input
-                                                type="radio"
-                                                name={`question-${question.id}`}
-                                                value={option}
-                                                checked={
-                                                    answers[question.id] === option
-                                                }
-                                                onChange={(e) =>
-                                                    handleAnswerChange(
-                                                        question.id,
-                                                        e.target.value
-                                                    )
-                                                }
-                                            />
+                        <span>
+                            {formError}
+                        </span>
+                    </div>
 
-                                            {" "}
-                                            {option}
+                )}
 
-                                        </label>
 
-                                    ))
+                {/* Questions */}
 
-                                ) : (
+                {questions.length === 0 ? (
 
-                                    <p>No options available.</p>
+                    <div className="survey-empty-state">
 
-                                )
+                        <h2>
+                            No Questions Available
+                        </h2>
 
-                            )}
+                        <p>
+                            This survey currently has no questions.
+                        </p>
 
-                            {/* CHECKBOX */}
+                    </div>
 
-                            {question.question_type === "checkbox" && (
+                ) : (
 
-                                options.length > 0 ? (
+                    <form
+                        className="take-survey-form"
+                        onSubmit={handleSubmit}
+                    >
 
-                                    options.map((option) => (
+                        {questions.map(
+                            (question, index) => {
 
-                                        <label
-                                            key={option}
-                                            style={{
-                                                display: "block",
-                                                marginBottom: "10px",
-                                            }}
-                                        >
+                                const options =
+                                    question.options || [];
 
-                                            <input
-                                                type="checkbox"
-                                                checked={
-                                                    (
-                                                        answers[question.id] || []
-                                                    ).includes(option)
-                                                }
-                                                onChange={(e) =>
-                                                    handleCheckboxChange(
-                                                        question.id,
-                                                        option,
-                                                        e.target.checked
-                                                    )
-                                                }
-                                            />
 
-                                            {" "}
-                                            {option}
+                                return (
 
-                                        </label>
-
-                                    ))
-
-                                ) : (
-
-                                    <p>No options available.</p>
-
-                                )
-
-                            )}
-
-                            {/* DROPDOWN */}
-
-                            {question.question_type === "dropdown" && (
-
-                                options.length > 0 ? (
-
-                                    <select
-                                        value={answers[question.id] || ""}
-                                        onChange={(e) =>
-                                            handleAnswerChange(
-                                                question.id,
-                                                e.target.value
-                                            )
-                                        }
-                                        style={{
-                                            width: "100%",
-                                            padding: "10px",
-                                        }}
+                                    <section
+                                        key={question.id}
+                                        className="take-question-card"
                                     >
 
-                                        <option value="">
-                                            Select an option
-                                        </option>
+                                        <div className="question-heading">
 
-                                        {options.map((option) => (
+                                            <span className="question-index">
+                                                {index + 1}
+                                            </span>
 
-                                            <option
-                                                key={option}
-                                                value={option}
-                                            >
-                                                {option}
-                                            </option>
+                                            <div>
 
-                                        ))}
+                                                <h2>
 
-                                    </select>
+                                                    {question.question_text}
 
-                                ) : (
+                                                    {question.is_required && (
 
-                                    <p>No options available.</p>
+                                                        <span
+                                                            className="required-star"
+                                                            aria-label="required"
+                                                        >
+                                                            *
+                                                        </span>
 
-                                )
+                                                    )}
 
-                            )}
+                                                </h2>
 
-                            {/* RATING */}
+                                                <span className="question-type-label">
+                                                    {question.question_type}
+                                                </span>
 
-                            {question.question_type === "rating" && (
+                                            </div>
 
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        gap: "10px",
-                                        marginTop: "10px",
-                                    }}
-                                >
+                                        </div>
 
-                                    {[1, 2, 3, 4, 5].map((rating) => (
 
-                                        <button
-                                            key={rating}
-                                            type="button"
-                                            onClick={() =>
-                                                handleRatingChange(
-                                                    question.id,
-                                                    rating
+                                        <div className={
+                                            question.question_type === "rating" ?"question-answer rating-answer":  "question-answer"}>
+
+
+                                            {/* Text */}
+
+                                            {question.question_type ===
+                                                "text" && (
+
+                                                <input
+                                                    className="survey-text-input"
+                                                    type="text"
+                                                    placeholder="Type your answer..."
+                                                    value={
+                                                        answers[
+                                                            question.id
+                                                        ] || ""
+                                                    }
+                                                    onChange={(event) =>
+                                                        handleAnswerChange(
+                                                            question.id,
+                                                            event.target.value
+                                                        )
+                                                    }
+                                                />
+
+                                            )}
+
+
+                                            {/* Textarea */}
+
+                                            {question.question_type ===
+                                                "textarea" && (
+
+                                                <textarea
+                                                    className="survey-textarea"
+                                                    rows="5"
+                                                    placeholder="Type your answer..."
+                                                    value={
+                                                        answers[
+                                                            question.id
+                                                        ] || ""
+                                                    }
+                                                    onChange={(event) =>
+                                                        handleAnswerChange(
+                                                            question.id,
+                                                            event.target.value
+                                                        )
+                                                    }
+                                                />
+
+                                            )}
+
+
+                                            {/* Rating */}
+
+                                            {question.question_type ===
+                                                "rating" && (
+
+                                                <div className="survey-rating">
+
+                                                    {[1, 2, 3, 4, 5].map(
+                                                        (rating) => {
+
+                                                            const selected =
+                                                                answers[
+                                                                    question.id
+                                                                ] ===
+                                                                String(
+                                                                    rating
+                                                                );
+
+
+                                                            return (
+
+                                                                <button
+                                                                    key={rating}
+                                                                    type="button"
+                                                                    className={
+                                                                        selected
+                                                                            ? "rating-button selected"
+                                                                            : "rating-button"
+                                                                    }
+                                                                    onClick={() =>
+                                                                        handleRatingChange(
+                                                                            question.id,
+                                                                            rating
+                                                                        )
+                                                                    }
+                                                                    aria-pressed={
+                                                                        selected
+                                                                    }
+                                                                >
+                                                                    {rating}
+                                                                </button>
+
+                                                            );
+
+                                                        }
+                                                    )}
+
+                                                </div>
+
+                                            )}
+
+
+                                            {/* Radio */}
+
+                                            {question.question_type ===
+                                                "radio" && (
+
+                                                options.length > 0 ? (
+
+                                                    <div className="survey-options">
+
+                                                        {options.map(
+                                                            (option) => (
+
+                                                                <label
+                                                                    key={option}
+                                                                    className="survey-option"
+                                                                >
+
+                                                                    <input
+                                                                        type="radio"
+                                                                        name={`question-${question.id}`}
+                                                                        value={option}
+                                                                        checked={
+                                                                            answers[
+                                                                                question.id
+                                                                            ] ===
+                                                                            option
+                                                                        }
+                                                                        onChange={(event) =>
+                                                                            handleAnswerChange(
+                                                                                question.id,
+                                                                                event.target.value
+                                                                            )
+                                                                        }
+                                                                    />
+
+                                                                    <span>
+                                                                        {option}
+                                                                    </span>
+
+                                                                </label>
+
+                                                            )
+                                                        )}
+
+                                                    </div>
+
+                                                ) : (
+
+                                                    <p className="options-unavailable">
+                                                        No options available.
+                                                    </p>
+
                                                 )
-                                            }
-                                            style={{
-                                                padding: "10px 16px",
-                                                borderRadius: "6px",
-                                                border:
-                                                    answers[question.id] === String(rating)
-                                                        ? "2px solid blue"
-                                                        : "1px solid #ccc",
-                                                background:
-                                                    answers[question.id] === String(rating)
-                                                        ? "#1976d2"
-                                                        : "#fff",
-                                                color:
-                                                    answers[question.id] === String(rating)
-                                                        ? "#fff"
-                                                        : "#000",
-                                                cursor: "pointer",
-                                            }}
-                                        >
 
-                                            {rating}
+                                            )}
 
-                                        </button>
 
-                                    ))}
+                                            {/* Checkbox */}
 
-                                </div>
+                                            {question.question_type ===
+                                                "checkbox" && (
 
-                            )}
+                                                options.length > 0 ? (
+
+                                                    <div className="survey-options">
+
+                                                        {options.map(
+                                                            (option) => (
+
+                                                                <label
+                                                                    key={option}
+                                                                    className="survey-option"
+                                                                >
+
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={
+                                                                            (
+                                                                                answers[
+                                                                                    question.id
+                                                                                ] ||
+                                                                                []
+                                                                            ).includes(
+                                                                                option
+                                                                            )
+                                                                        }
+                                                                        onChange={(event) =>
+                                                                            handleCheckboxChange(
+                                                                                question.id,
+                                                                                option,
+                                                                                event.target.checked
+                                                                            )
+                                                                        }
+                                                                    />
+
+                                                                    <span>
+                                                                        {option}
+                                                                    </span>
+
+                                                                </label>
+
+                                                            )
+                                                        )}
+
+                                                    </div>
+
+                                                ) : (
+
+                                                    <p className="options-unavailable">
+                                                        No options available.
+                                                    </p>
+
+                                                )
+
+                                            )}
+
+
+                                            {/* Dropdown */}
+
+                                            {question.question_type ===
+                                                "dropdown" && (
+
+                                                options.length > 0 ? (
+
+                                                    <select
+                                                        className="survey-select"
+                                                        value={
+                                                            answers[
+                                                                question.id
+                                                            ] || ""
+                                                        }
+                                                        onChange={(event) =>
+                                                            handleAnswerChange(
+                                                                question.id,
+                                                                event.target.value
+                                                            )
+                                                        }
+                                                    >
+
+                                                        <option value="">
+                                                            Select an option
+                                                        </option>
+
+                                                        {options.map(
+                                                            (option) => (
+
+                                                                <option
+                                                                    key={option}
+                                                                    value={option}
+                                                                >
+                                                                    {option}
+                                                                </option>
+
+                                                            )
+                                                        )}
+
+                                                    </select>
+
+                                                ) : (
+
+                                                    <p className="options-unavailable">
+                                                        No options available.
+                                                    </p>
+
+                                                )
+
+                                            )}
+
+                                        </div>
+
+                                    </section>
+
+                                );
+
+                            }
+                        )}
+
+
+                        {/* Submit */}
+
+                        <div className="survey-submit-area">
+
+                            <p>
+                                Please review your answers before submitting.
+                            </p>
+
+                            <button
+                                type="submit"
+                                className="survey-submit-button"
+                                disabled={isSubmitting}
+                            >
+
+                                {isSubmitting
+                                    ? "Submitting..."
+                                    : "Submit Survey"}
+
+                            </button>
 
                         </div>
 
-                    );
+                    </form>
 
-                })}
+                )}
 
-                <button
-                    type="submit"
-                    style={{
-                        padding: "12px 30px",
-                        fontSize: "16px",
-                        cursor: "pointer",
-                    }}
-                >
+            </div>
 
-                    Submit Survey
+        </main>
 
-                </button>
-
-            </form>
-
-        )}
-
-    </div>
-
-);
+    );
 
 }
+
 
 export default TakeSurvey;

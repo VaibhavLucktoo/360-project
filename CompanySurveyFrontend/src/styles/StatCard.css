@@ -1,122 +1,134 @@
-/*Stat Card CSS*/
+/* ===========================================
+   Stat Card
+=========================================== */
 
 .stat-card {
+    background: #ffffff;
 
-    background-color: #ffffff;
-    border-radius: 16px;
-    padding: 25px;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.08);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
 
+    padding: 22px;
+
+    box-shadow:
+        0 2px 8px rgba(15, 23, 42, 0.05);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
-/*Hover effect for the stat card*/
-.stat-card h3 {
 
-    color: #6b7280;
-    font-size: 16px;
-    margin-bottom: 12px;
+/* Slight hover lift */
+.stat-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(15, 23, 42, 0.08);
 }
 
 
-/*Card Value*/
+/* ===========================================
+   Card Header
+=========================================== */
 
-.stat-card h1{
-    color:#1e3a8a;
-    font-size: 34px;
+.card-header {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-bottom: 18px;
+}
+
+
+/* ===========================================
+   Card Icon
+=========================================== */
+
+.card-icon {
+    width: 44px;
+
+    height: 44px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 10px;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+
+    font-size: 20px;
+}
+
+
+/* ===========================================
+   Card Title
+=========================================== */
+
+.card-header h3 {
     margin: 0;
 
+    color: #667085;
+
+    font-size: 14px;
+
+    font-weight: 600;
 }
 
-
-.stat-card:hover{
-
-    transform:translateY(-6px);
-
-    box-shadow:0px 12px 25px rgba(0,0,0,.15);
-
-}
 
 /* ===========================================
-   CARD HEADER
+   Card Value
 =========================================== */
 
-.card-header{
+.stat-card h1 {
+    margin: 0;
 
-    display:flex;
+    color: #111827;
 
-    align-items:center;
+    font-size: 32px;
 
-    gap:12px;
+    font-weight: 700;
 
-    margin-bottom:20px;
-
+    line-height: 1.2;
 }
 
+
 /* ===========================================
-   ICON
+   Card Subtitle
 =========================================== */
 
-.card-icon{
+.stat-card p {
+    margin: 8px 0 0;
 
-    width:48px;
+    color: #98a2b3;
 
-    height:48px;
+    font-size: 13px;
 
-    border-radius:12px;
-
-    background:#dbeafe;
-
-    color:#2563eb;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    font-size:22px;
-
+    line-height: 1.4;
 }
 
-/* ===========================================
-   TITLE
-=========================================== */
-
-.card-header h3{
-
-    margin:0;
-
-    color:#6b7280;
-
-    font-size:16px;
-
-}
 
 /* ===========================================
-   VALUE
+   Responsive
 =========================================== */
 
-.stat-card h1{
+@media (max-width: 768px) {
 
-    margin:0;
+    .stat-card {
+        padding: 18px;
+    }
 
-    font-size:36px;
-
-    color:#1f2937;
-
-}
-
-/* ===========================================
-   SUBTITLE
-=========================================== */
-
-.stat-card p{
-
-    margin-top:8px;
-
-    color:#9ca3af;
-
-    font-size:14px;
+    .stat-card h1 {
+        font-size: 28px;
+    }
 
 }

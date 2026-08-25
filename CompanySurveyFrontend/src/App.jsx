@@ -1,7 +1,7 @@
 // ===========================================
 // React Router
 // ===========================================
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useParams } from "react-router-dom";
 
 // ===========================================
 // Components
@@ -15,17 +15,29 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import CreateSurvey from "./pages/CreateSurvey";
 import SurveyDetails from "./pages/SurveyDetails";
-import SurveyQuestions from "./pages/SurveyQuestions";
 import SurveyPreview from "./pages/SurveyPreview";
 import TakeSurvey from "./pages/TakeSurvey";
 import Analytics from "./pages/Analytics";
 import SurveyList from "./pages/SurveyList";
 import Responses from "./pages/Responses";
 import QuestionAnalytics from "./pages/QuestionAnalytics";
-
+import SurveyBuilder from "./pages/SurveyBuilder";
 // ===========================================
 // Main Application
 // ===========================================
+
+// Redirect old question-management links to the builder
+function LegacySurveyQuestionsRedirect() {
+    const { id } = useParams();
+
+    return (
+        <Navigate
+            to={`/surveys/${id}/builder`}
+            replace
+        />
+    );
+}
+
 function App() {
 
     const token = localStorage.getItem("token");
@@ -82,20 +94,39 @@ function App() {
                 }
             />
 
-            {/* ===========================================
-                Survey Details
-            =========================================== */}
 
+            {/* View survey details */}
             <Route
                 path="/surveys/:id"
                 element={
                     <ProtectedRoute>
                         <SurveyDetails />
-                        <SurveyQuestions />
                     </ProtectedRoute>
                 }
             />
 
+            {/* ===========================================
+                    Survey Builder
+                =========================================== */}
+
+                    <Route
+                        path="/surveys/:id/builder"
+                        element={
+                            <ProtectedRoute>
+                                <SurveyBuilder />
+                            </ProtectedRoute>
+                        }
+                    />  
+
+
+            <Route
+                path="/surveys/:id/questions"
+                element={
+                    <ProtectedRoute>
+                        <LegacySurveyQuestionsRedirect />
+                    </ProtectedRoute>
+                }
+            />            
             {/* ===========================================
                 Survey List
             =========================================== */}
@@ -105,20 +136,6 @@ function App() {
                 element={
                     <ProtectedRoute>
                         <SurveyList />
-                    </ProtectedRoute>
-                }
-            />
-
-            {/* ===========================================
-                Survey Questions
-            =========================================== */}
-
-            <Route
-                path="/surveys/:id/questions"
-                element={
-                    <ProtectedRoute>
-                        <SurveyDetails />
-                        <SurveyQuestions />
                     </ProtectedRoute>
                 }
             />

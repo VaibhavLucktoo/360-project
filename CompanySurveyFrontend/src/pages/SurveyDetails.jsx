@@ -40,7 +40,7 @@ function SurveyDetails() {
             <p><strong>Title:</strong> {survey.title}</p>
             <p><strong>Description:</strong> {survey.description}</p>
             <p><strong>Status:</strong> {survey.is_published ? "Published" : "Draft"}</p>
-            {isAdmin ? <p><Link to={`/surveys/${id}/questions`}>Manage questions</Link> · <Link to={`/surveys/${id}/preview`}>Preview</Link> · <Link to={`/surveys/${id}/analytics`}>View analytics</Link></p> : <p><Link to={`/surveys/${id}/take`}>Take survey</Link></p>}
+            {isAdmin ? <p><Link to={`/surveys/${id}/builder`}>Manage Survey</Link> · <Link to={`/surveys/${id}/preview`}>Preview</Link> · <Link to={`/surveys/${id}/analytics`}>View analytics</Link></p> : <p><Link to={`/surveys/${id}/take`}>Take survey</Link></p>}
         </div>
     );
 }

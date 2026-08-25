@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
+from uuid import UUID
 from typing import List, Optional, Dict
 
 
@@ -15,7 +16,11 @@ class ResponseUpdate(BaseModel):
 class ResponseResponse(BaseModel):
     id: int
     survey_id: int
-    user_id: int
+    # Anonymous responses may not have a user account
+    user_id: int | None = None
+    # Groups all answers from one survey submission
+    submission_id: str
+    
     question_id: int
     answer: str
     created_at: datetime
@@ -35,6 +40,9 @@ class SurveyAnswer(BaseModel):
 
 
 class SurveySubmission(BaseModel):
+    # Identifies one anonymous browser submission
+    submission_id: UUID
+
     answers: list[SurveyAnswer]
 
 

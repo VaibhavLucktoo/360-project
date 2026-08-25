@@ -1,70 +1,212 @@
-import "../styles/Sidebar.css"
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { getCurrentUser } from "../services/api";
-/*React Icon */ 
+import "../styles/Sidebar.css";
+
+import {
+    useLocation,
+    useNavigate,
+} from "react-router-dom";
+
+import {
+    useEffect,
+    useState,
+} from "react";
+
+import {
+    getCurrentUser,
+} from "../services/api";
+
 import {
     FaHome,
     FaClipboardList,
-    FaUsers,
-    FaChartBar,
-    FaCog,
-    FaSignOutAlt
+    FaSignOutAlt,
 } from "react-icons/fa";
 
-/*Sidebar Components*/ 
 
 function Sidebar() {
-    const navigate = useNavigate()
-    const [isAdmin, setIsAdmin] = useState(false);
 
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const [isAdmin, setIsAdmin] =
+        useState(false);
+
+
+    // Load role for admin-only navigation
     useEffect(() => {
-        // Navigation is derived from the backend role, not from a client-side assumption.
-        getCurrentUser().then((user) => setIsAdmin(user.role?.toLowerCase() === "admin")).catch(() => setIsAdmin(false));
+
+        getCurrentUser()
+            .then((user) => {
+
+                setIsAdmin(
+                    user?.role?.toLowerCase()
+                    === "admin"
+                );
+
+            })
+            .catch(() => {
+
+                setIsAdmin(false);
+
+            });
+
     }, []);
+
+
+    // Check whether a navigation section is active
+    function isActive(path) {
+
+        if (path === "/dashboard") {
+
+            return (
+                location.pathname
+                === "/dashboard"
+            );
+
+        }
+
+        if (path === "/surveys") {
+
+            return (
+                location.pathname
+                    .startsWith("/surveys")
+            );
+
+        }
+
+        return false;
+
+    }
+
+
+    // Clear session and return to login
     function handleLogout() {
 
-    // Remove JWT Token
-    localStorage.removeItem("token");
+        localStorage.removeItem(
+            "token"
+        );
 
-    // Go back to Login page
-    navigate("/login");
+        navigate(
+            "/login",
+            {
+                replace: true,
+            }
+        );
 
-}
-    return(
-        //Sidebar Container
-        <div className="sidebar">
-            <h2 className="sidebar-logo" >SurveyMS</h2>
+    }
 
-            {/*Navigation Menu*/}
-            <ul>
-                <li onClick={() => navigate("/dashboard")}>
-                    <FaHome/>
-                    <span>Dashboard</span>
-                </li>
 
-                {isAdmin && <li onClick={() => navigate("/surveys")}><FaClipboardList/><span>Surveys</span></li>}
+    return (
 
-                {isAdmin && <li onClick={() => navigate("/responses")}><FaUsers/><span>Responses</span></li>}
+        <aside className="sidebar">
 
-                {isAdmin && <li onClick={() => navigate("/surveys")}><FaChartBar/><span>Reports</span></li>}
 
-                <li>
-                    <FaCog/>
-                    <span>Settings</span>
+            {/* Logo */}
 
-                </li>
-            </ul>
-            {/*Logout*/}
-            <button className="logout-btn" onClick={handleLogout}>
-                <FaSignOutAlt/>
-                Logout
-            </button>
-            
-        </div>
+            <div className="sidebar-brand">
+
+                <h2 className="sidebar-logo">
+                    SurveyMS
+                </h2>
+
+            </div>
+
+
+            {/* Main navigation */}
+
+            <nav className="sidebar-nav">
+
+                <ul>
+
+
+                    {/* Dashboard */}
+
+                    <li>
+
+                        <button
+                            type="button"
+                            className={
+                                isActive("/dashboard")
+                                    ? "sidebar-nav-item active"
+                                    : "sidebar-nav-item"
+                            }
+                            onClick={() =>
+                                navigate(
+                                    "/dashboard"
+                                )
+                            }
+                        >
+                            <FaHome />
+
+                            <span>
+                                Dashboard
+                            </span>
+
+                        </button>
+
+                    </li>
+
+
+                    {/* Survey management */}
+
+                    {isAdmin && (
+
+                        <li>
+
+                            <button
+                                type="button"
+                                className={
+                                    isActive("/surveys")
+                                        ? "sidebar-nav-item active"
+                                        : "sidebar-nav-item"
+                                }
+                                onClick={() =>
+                                    navigate(
+                                        "/surveys"
+                                    )
+                                }
+                            >
+                                <FaClipboardList />
+
+                                <span>
+                                    Surveys
+                                </span>
+
+                            </button>
+
+                        </li>
+
+                    )}
+
+
+                </ul>
+
+            </nav>
+
+
+            {/* Logout */}
+
+            <div className="sidebar-footer">
+
+                <button
+                    type="button"
+                    className="logout-btn"
+                    onClick={handleLogout}
+                >
+                    <FaSignOutAlt />
+
+                    <span>
+                        Logout
+                    </span>
+
+                </button>
+
+            </div>
+
+
+        </aside>
 
     );
+
 }
 
-//Export Component
+
 export default Sidebar;

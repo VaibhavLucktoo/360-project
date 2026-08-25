@@ -1,86 +1,98 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { getSurveyQuestions, publishSurvey } from "../services/api";
-import { useSurvey } from "../context/SurveyContext";
+import {
+    Link,
+    useNavigate,
+    useParams,
+} from "react-router-dom";
+
+import { getAdminSurveyQuestions } from "../services/api";
+
+import "../styles/SurveyPreview.css";
 
 
+/* Convert API question to preview format */
 function normalizeQuestion(question) {
-
     return {
         id: question.id,
         text: question.question_text,
         type: question.question_type,
         required: question.is_required,
         display_order: question.display_order,
-        survey_id: question.survey_id,
     };
-
 }
 
+
+/* Keep questions in display order */
 function sortQuestions(questions) {
-
-    return [...questions].sort((firstQuestion, secondQuestion) => {
-        return (firstQuestion.display_order || 0) - (secondQuestion.display_order || 0);
-    });
-
+    return [...questions].sort(
+        (a, b) =>
+            (a.display_order || 0) -
+            (b.display_order || 0)
+    );
 }
+
 
 function SurveyPreview() {
 
     const { id } = useParams();
+    const navigate = useNavigate();
 
     const surveyId = Number(id);
 
-    const { questions: contextQuestions, activeSurveyId, setActiveSurveyId } = useSurvey();
-
+    // Preview data
+    const [survey, setSurvey] = useState(null);
     const [questions, setQuestions] = useState([]);
 
+    // Page state
     const [loading, setLoading] = useState(true);
-
     const [error, setError] = useState("");
 
-    const navigate = useNavigate();
 
     useEffect(() => {
 
         let isMounted = true;
 
-        if (surveyId) {
-            setActiveSurveyId(surveyId);
-        }
 
-        if (activeSurveyId === surveyId && contextQuestions.length > 0) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect
-            setQuestions(contextQuestions);
-            setLoading(false);
-            setError("");
-            return () => {
-                isMounted = false;
-            };
-        }
-
-        async function fetchQuestions() {
+        async function fetchPreview() {
 
             try {
 
                 setLoading(true);
                 setError("");
 
-                const payload = await getSurveyQuestions(surveyId);
+                // Admin can preview draft or published surveys
+                const payload =
+                    await getAdminSurveyQuestions(
+                        surveyId
+                    );
 
-                const normalizedQuestions = Array.isArray(payload?.questions)
-                    ? sortQuestions(payload.questions.map(normalizeQuestion))
-                    : [];
+
+                const normalizedQuestions =
+                    Array.isArray(payload?.questions)
+                        ? sortQuestions(
+                            payload.questions.map(
+                                normalizeQuestion
+                            )
+                        )
+                        : [];
+
 
                 if (isMounted) {
-                    setQuestions(normalizedQuestions);
+                    setSurvey(payload);
+                    setQuestions(
+                        normalizedQuestions
+                    );
                 }
 
             } catch (fetchError) {
 
                 if (isMounted) {
-                    setError(fetchError.message || "Failed to load preview questions.");
-                    setQuestions([]);
+
+                    setError(
+                        fetchError.message ||
+                        "Failed to load survey preview."
+                    );
+
                 }
 
             } finally {
@@ -93,121 +105,237 @@ function SurveyPreview() {
 
         }
 
+
         if (surveyId) {
-            fetchQuestions();
+
+            fetchPreview();
+
         } else {
+
+            setError("Invalid survey ID.");
             setLoading(false);
+
         }
+
 
         return () => {
             isMounted = false;
         };
 
-    }, [activeSurveyId, contextQuestions, setActiveSurveyId, surveyId]);
+    }, [surveyId]);
 
-    async function handlePublishSurvey() {
-        try {
-            const response = await publishSurvey(surveyId);
-            const data = await response.json().catch(() => ({}));
 
-            if (!response.ok) {
-                alert(data.detail || "Failed to publish survey.");
-                return;
-            }
+    /* Loading state */
+    if (loading) {
+        return (
+            <div className="survey-preview-page">
+                <p>Loading preview...</p>
+            </div>
+        );
+    }
 
-            alert("Survey published successfully!");
-            navigate("/dashboard");
-        } catch (error) {
-            console.error(error);
-            alert("Something went wrong.");
-        }
+
+    /* Error state */
+    if (error) {
+        return (
+            <div className="survey-preview-page">
+
+                <Link
+                    to="/dashboard"
+                    className="survey-preview-back-link"
+                >
+                    ← Back to Dashboard
+                </Link>
+
+                <p>
+                    {error}
+                </p>
+
+            </div>
+        );
     }
 
 
     return (
 
-        <div style={{ padding: "30px" }}>
+        <div className="survey-preview-page">
 
-            <h1>Survey Preview</h1>
-
-            <p>Survey ID: {id}</p>
-
-            {error && <p style={{ color: "#b00020" }}>{error}</p>}
-
-            <hr />
-
-            <h2>Preview</h2>
-
-            {loading ? (
-                <p>Loading preview...</p>
-            ) : questions.length === 0 ? (
-
-                <p>No questions added yet.</p>
-
-            ) : (
-
-                questions.map((question, index) => (
-
-                    <div
-                        key={question.id}
-                        style={{
-                            border: "1px solid #ddd",
-                            padding: "15px",
-                            marginBottom: "15px",
-                            borderRadius: "8px"
-                        }}
-                    >
-
-                        <h3>Question {index + 1}</h3>
-
-                        <p>{question.text}</p>
-
-                        {question.type === "text" && (
-                            <input
-                                type="text"
-                                placeholder="Your answer"
-                                disabled
-                            />
-                        )}
-
-                        {question.type === "rating" && (
-                            <div>⭐⭐⭐⭐⭐</div>
-                        )}
-
-                        {question.type === "radio" && (
-                            <input type="radio" disabled />
-                        )}
-
-                        {question.type === "checkbox" && (
-                            <input type="checkbox" disabled />
-                        )}
-
-                    </div>
-
-                ))
-
-            )}
-
-            <div style={{ marginTop: "30px", display: "flex", gap: "15px" }}>
-
-            <button
-            onClick={() => navigate(`/surveys/${id}/questions`)}
+            {/* Dashboard navigation */}
+            <Link
+                to="/dashboard"
+                className="survey-preview-back-link"
             >
-            ← Back to Builder
-        </button>
+                ← Back to Dashboard
+            </Link>
 
-        <button
-        onClick={handlePublishSurvey}
-    >
-            Publish Survey
-        </button>
 
-        </div>
+            {/* Preview header */}
+            <div className="survey-preview-header">
+
+                <h1>
+                    {survey?.title || "Survey Preview"}
+                </h1>
+
+                {survey?.description && (
+                    <p>
+                        {survey.description}
+                    </p>
+                )}
+
+            </div>
+
+
+            {/* Question preview */}
+            <div className="survey-preview-list">
+
+                {questions.length === 0 ? (
+
+                    <p className="survey-preview-empty">
+                        No questions added yet.
+                    </p>
+
+                ) : (
+
+                    questions.map(
+                        (question, index) => (
+
+                            <div
+                                key={question.id}
+                                className="survey-preview-question"
+                            >
+
+                                {/* Question heading */}
+                                <div className="preview-question-heading">
+
+                                    <span className="preview-question-index">
+                                        {index + 1}
+                                    </span>
+
+
+                                    <div className="preview-question-title">
+
+                                        <h3>
+
+                                            {question.text}
+
+                                            {question.required && (
+                                                <span className="preview-required-star">
+                                                    *
+                                                </span>
+                                            )}
+
+                                        </h3>
+
+
+                                        <span className="preview-question-type">
+                                            {question.type}
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                {/* Text question */}
+                                {question.type === "text" && (
+
+                                    <input
+                                        type="text"
+                                        placeholder="Your answer"
+                                        disabled
+                                    />
+
+                                )}
+
+
+                                {/* Rating question */}
+                                {question.type === "rating" && (
+
+                                    <div className="preview-rating">
+
+                                        {[1, 2, 3, 4, 5].map(
+                                            (rating) => (
+
+                                                <button
+                                                    key={rating}
+                                                    type="button"
+                                                    disabled
+                                                >
+                                                    {rating}
+                                                </button>
+
+                                            )
+                                        )}
+
+                                    </div>
+
+                                )}
+
+
+                                {/* Radio question */}
+                                {question.type === "radio" && (
+
+                                    <p>
+                                        Radio options will appear here.
+                                    </p>
+
+                                )}
+
+
+                                {/* Checkbox question */}
+                                {question.type === "checkbox" && (
+
+                                    <p>
+                                        Checkbox options will appear here.
+                                    </p>
+
+                                )}
+
+
+                                {/* Dropdown question */}
+                                {question.type === "dropdown" && (
+
+                                    <select disabled>
+
+                                        <option>
+                                            Select an option
+                                        </option>
+
+                                    </select>
+
+                                )}
+
+                            </div>
+
+                        )
+                    )
+
+                )}
+
+            </div>
+
+
+            {/* Builder navigation */}
+            <div className="survey-preview-actions">
+
+                <button
+                    type="button"
+                    onClick={() =>
+                        navigate(
+                            `/surveys/${surveyId}/builder`
+                        )
+                    }
+                >
+                    ← Back to Builder
+                </button>
+
+            </div>
 
         </div>
 
     );
 
 }
+
 
 export default SurveyPreview;

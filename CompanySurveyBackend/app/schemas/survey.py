@@ -8,6 +8,7 @@ class SurveyWithQuestions(BaseModel):
     description: str | None
     is_published: bool
 
+
     questions: list[QuestionResponse] 
 
     class Config:

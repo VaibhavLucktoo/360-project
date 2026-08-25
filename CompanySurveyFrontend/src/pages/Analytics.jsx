@@ -141,11 +141,9 @@ function Analytics() {
 
             {/* Back Navigation */}
 
-            <Link to={`/surveys/${id}`}>
-                ← Back to Survey
+            <Link to="/dashboard">
+            ← Back to Dashboard
             </Link>
-
-
             {/* Page Title */}
 
             <h1>
