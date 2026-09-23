@@ -79,9 +79,13 @@ def get_current_user(
         detail="Invalid token"
     )
 
-    user = db.query(User).filter(User.id == int(user_id)).first()
+    try:
+        user_id = int(user_id)
+    except (ValueError, TypeError):
+        raise HTTPException(status_code=401, detail="Invalid token")
+    user = db.query(User).filter(User.id == user_id).first()
 
-    if user is None:
+    if user is None or not user.is_active:
         raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="User not found"

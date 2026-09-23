@@ -20,7 +20,18 @@ class Question(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     survey = relationship("Survey", back_populates="questions")
-    responses = relationship("Response", back_populates="question")
+    responses = relationship(
+        "Response",
+        back_populates="question",
+        cascade="all, delete-orphan",
+    )
+
+    options = relationship(
+    "QuestionOption",
+    back_populates="question",
+    cascade="all, delete-orphan",
+    order_by="QuestionOption.display_order",
+)
 
     # A survey cannot have two questions at the same display position.
     __table_args__ = (

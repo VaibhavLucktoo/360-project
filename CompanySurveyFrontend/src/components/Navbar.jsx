@@ -1,10 +1,14 @@
 import "../styles/Navbar.css";
 import { FaBell,FaUserCircle } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 
 /*Navbar Function*/
 // Navbar receives the current user's name
 function Navbar({ title = "Dashboard",  userName = "User" }) {
+
+    const navigate = useNavigate();
+
     return(
 
         //Navbar Container
@@ -16,12 +20,27 @@ function Navbar({ title = "Dashboard",  userName = "User" }) {
 
             {/*Right Side*/}
             <div className="navbar-right">
-                <FaBell className="nav-icon"/>
-                <div className="profile">
+                <button
+                    type="button"
+                    className="nav-icon-btn"
+                    aria-label="View response notifications"
+                    title="Responses"
+                    onClick={() => navigate("/responses")}
+                >
+                    <FaBell className="nav-icon"/>
+                </button>
+
+                <button
+                    type="button"
+                    className="profile"
+                    aria-label="Open profile settings"
+                    title="Profile settings"
+                    onClick={() => navigate("/settings")}
+                >
                     <FaUserCircle className="profile-icon"/>
                     <span>{userName}</span>
 
-                </div>
+                </button>
             </div>
         </div>
 

@@ -3,13 +3,15 @@
 ========================================= */
 
 .survey-builder-page {
-    width: 100%;
+    width: auto;
     min-height: 100vh;
+    margin-left: var(--sidebar-width, 220px);
     box-sizing: border-box;
 
     padding: 32px clamp(16px, 3vw, 48px) 60px;
 
-    background: #eef5ff;
+    background: #f8fafc;
+    transition: margin-left 0.2s ease;
 }
 
 
@@ -204,6 +206,7 @@
 @media (max-width: 600px) {
 
     .survey-builder-page {
+        margin-left: 0;
         padding:
             22px
             14px
@@ -255,4 +258,46 @@
         font-size: 23px;
     }
 
+}
+
+
+/* =========================================
+   Dark Theme
+========================================= */
+
+:root[data-theme="dark"] .survey-builder-page {
+    background: #0f172a;
+    color: #e5e7eb;
+}
+
+:root[data-theme="dark"] .survey-builder-header h1 {
+    color: #f8fafc;
+}
+
+:root[data-theme="dark"] .survey-builder-header p,
+:root[data-theme="dark"] .survey-builder-page > p {
+    color: #cbd5e1;
+}
+
+:root[data-theme="dark"] .survey-builder-actions {
+    border-color: #334155;
+}
+
+:root[data-theme="dark"] .survey-builder-actions button {
+    background: #111827;
+    border-color: #475569;
+    color: #e5e7eb;
+}
+
+:root[data-theme="dark"] .survey-builder-actions button:hover:not(:disabled) {
+    background: #1e293b;
+    border-color: #3b82f6;
+    color: #ffffff;
+    box-shadow: 0 8px 22px rgba(37, 99, 235, 0.18);
+}
+
+:root[data-theme="dark"] .survey-builder-actions button:last-child {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #ffffff;
 }

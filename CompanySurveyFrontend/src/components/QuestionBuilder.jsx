@@ -1,3 +1,4 @@
+import { removeLeadingWhitespace } from "../utils/inputWhitespace";
 import { useEffect, useState } from "react";
 
 import {
@@ -8,6 +9,29 @@ import {
 } from "../services/api";
 
 import "../styles/QuestionBuilder.css";
+
+const QUESTION_TEXT_MAX_LENGTH = 2000;
+const QUESTION_TEXT_MAX_WORDS = 60;
+const OPTION_TEXT_MAX_LENGTH = 500;
+const OPTION_TEXT_MAX_WORDS = 20;
+
+
+/* Question types that support custom options */
+const CHOICE_QUESTION_TYPES = [
+    "radio",
+    "dropdown",
+    // "checkbox", // Reserved for future multi-select support.
+];
+
+
+function isChoiceQuestionType(type) {
+    return CHOICE_QUESTION_TYPES.includes(type);
+}
+
+
+function countWords(value) {
+    return value.trim().split(/\s+/).filter(Boolean).length;
+}
 
 
 /* Convert API question into UI format */
@@ -20,6 +44,21 @@ function normalizeQuestion(question) {
         required: question.is_required,
         display_order: question.display_order,
         survey_id: question.survey_id,
+
+        // Preserve saved option IDs for future editing.
+        options: Array.isArray(question.options)
+            ? [...question.options]
+                .sort(
+                    (firstOption, secondOption) =>
+                        (firstOption.display_order || 0) -
+                        (secondOption.display_order || 0)
+                )
+                .map((option) => ({
+                    id: option.id,
+                    option_text: option.option_text,
+                    display_order: option.display_order,
+                }))
+            : [],
     };
 
 }
@@ -37,31 +76,75 @@ function sortQuestions(questions) {
 }
 
 
-function QuestionBuilder({ surveyId,onQuestionCountChange, }) {
+function QuestionBuilder({
+    surveyId,
+    onQuestionCountChange,
+}) {
 
-    // Question list
+    /* ===========================================
+       Question List
+    =========================================== */
+
     const [questions, setQuestions] = useState([]);
 
-    // Question form
-    const [questionText, setQuestionText] = useState("");
-    const [questionType, setQuestionType] = useState("text");
-    const [required, setRequired] = useState(false);
 
-    // Editing state
-    const [editingQuestionId, setEditingQuestionId] =
-        useState(null);
+    /* ===========================================
+       Question Form
+    =========================================== */
 
-    // Request states
-    const [loading, setLoading] = useState(false);
-    const [saving, setSaving] = useState(false);
-
-    // Messages
-    const [error, setError] = useState("");
-    const [successMessage, setSuccessMessage] =
+    const [questionText, setQuestionText] =
         useState("");
 
+    const [questionType, setQuestionType] =
+        useState("text");
 
-    /* Load existing questions */
+    const [required, setRequired] =
+        useState(false);
+
+
+    // Options for Radio and Dropdown. Checkbox is reserved for future use.
+    const [options, setOptions] =
+        useState([]);
+
+
+    /* ===========================================
+       Editing State
+    =========================================== */
+
+    const [
+        editingQuestionId,
+        setEditingQuestionId,
+    ] = useState(null);
+
+
+    /* ===========================================
+       Request States
+    =========================================== */
+
+    const [loading, setLoading] =
+        useState(false);
+
+    const [saving, setSaving] =
+        useState(false);
+
+
+    /* ===========================================
+       Messages
+    =========================================== */
+
+    const [error, setError] =
+        useState("");
+
+    const [
+        successMessage,
+        setSuccessMessage,
+    ] = useState("");
+
+
+    /* ===========================================
+       Load Existing Questions
+    =========================================== */
+
     useEffect(() => {
 
         let isMounted = true;
@@ -69,21 +152,28 @@ function QuestionBuilder({ surveyId,onQuestionCountChange, }) {
 
         async function fetchQuestions() {
 
-            // Survey must exist first
             if (!surveyId) {
                 return;
             }
 
+
             try {
 
                 setLoading(true);
+
                 setError("");
 
+
                 const payload =
-                    await getAdminSurveyQuestions(surveyId);
+                    await getAdminSurveyQuestions(
+                        surveyId
+                    );
+
 
                 const normalizedQuestions =
-                    Array.isArray(payload?.questions)
+                    Array.isArray(
+                        payload?.questions
+                    )
                         ? sortQuestions(
                             payload.questions.map(
                                 normalizeQuestion
@@ -93,8 +183,13 @@ function QuestionBuilder({ surveyId,onQuestionCountChange, }) {
 
 
                 if (isMounted) {
-                    setQuestions(normalizedQuestions);
+
+                    setQuestions(
+                        normalizedQuestions
+                    );
+
                 }
+
 
             } catch (fetchError) {
 
@@ -109,10 +204,13 @@ function QuestionBuilder({ surveyId,onQuestionCountChange, }) {
 
                 }
 
+
             } finally {
 
                 if (isMounted) {
+
                     setLoading(false);
+
                 }
 
             }
@@ -124,34 +222,310 @@ function QuestionBuilder({ surveyId,onQuestionCountChange, }) {
 
 
         return () => {
+
             isMounted = false;
+
         };
 
     }, [surveyId]);
 
-    // Report current question count
-useEffect(() => {
 
-    if (onQuestionCountChange) {
-        onQuestionCountChange(questions.length);
+    /* ===========================================
+       Report Question Count
+    =========================================== */
+
+    useEffect(() => {
+
+        if (onQuestionCountChange) {
+
+            onQuestionCountChange(
+                questions.length
+            );
+
+        }
+
+    }, [
+        questions,
+        onQuestionCountChange,
+    ]);
+
+
+    /* ===========================================
+       Question Type Change
+    =========================================== */
+
+    function handleQuestionTypeChange(
+        event
+    ) {
+
+        const newType =
+            event.target.value;
+
+
+        setQuestionType(newType);
+
+
+        // Start choice questions with two option fields.
+        if (
+            isChoiceQuestionType(newType) &&
+            options.length === 0
+        ) {
+
+            setOptions([
+                {
+                    option_text: "",
+                },
+                {
+                    option_text: "",
+                },
+            ]);
+
+        }
+
     }
 
-}, [questions, onQuestionCountChange]);
+
+    /* ===========================================
+       Add Option
+    =========================================== */
+
+    function handleAddOption() {
+
+        setOptions(
+            (currentOptions) => [
+                ...currentOptions,
+                {
+                    option_text: "",
+                },
+            ]
+        );
+
+    }
 
 
-    /* Reset question form */
+    /* ===========================================
+       Change Option
+    =========================================== */
+
+    function handleOptionChange(
+        index,
+        value
+    ) {
+
+        setOptions(
+            (currentOptions) =>
+                currentOptions.map(
+                    (
+                        option,
+                        optionIndex
+                    ) => {
+
+                        if (
+                            optionIndex !==
+                            index
+                        ) {
+                            return option;
+                        }
+
+
+                        return {
+                            ...option,
+
+                            option_text:
+                                removeLeadingWhitespace(value),
+                        };
+
+                    }
+                )
+        );
+
+    }
+
+
+    /* ===========================================
+       Remove Option
+    =========================================== */
+
+    function handleRemoveOption(
+        index
+    ) {
+
+        setOptions(
+            (currentOptions) =>
+                currentOptions.filter(
+                    (
+                        _,
+                        optionIndex
+                    ) =>
+                        optionIndex !==
+                        index
+                )
+        );
+
+    }
+
+
+    /* ===========================================
+       Reset Question Form
+    =========================================== */
+
     function resetQuestionForm() {
 
         setQuestionText("");
+
         setQuestionType("text");
+
         setRequired(false);
+
+        setOptions([]);
+
         setEditingQuestionId(null);
 
     }
 
 
-    /* Add or update question */
-    async function handleSaveQuestion(event) {
+    /* ===========================================
+       Validate Choice Options
+    =========================================== */
+
+    function validateOptions() {
+
+        if (
+            !isChoiceQuestionType(
+                questionType
+            )
+        ) {
+
+            return true;
+
+        }
+
+
+        // Radio/Dropdown need at least two options.
+        if (options.length < 2) {
+
+            setError(
+                "Add at least two options."
+            );
+
+            return false;
+
+        }
+
+
+        const cleanedOptions =
+            options.map(
+                (option) =>
+                    option.option_text.trim()
+            );
+
+
+        // Do not allow empty option fields.
+        if (
+            cleanedOptions.some(
+                (option) =>
+                    !option
+            )
+        ) {
+
+            setError(
+                "Fill in every option or remove the empty option."
+            );
+
+            return false;
+
+        }
+
+        if (
+            cleanedOptions.some(
+                (option) =>
+                    countWords(option) >
+                    OPTION_TEXT_MAX_WORDS
+            )
+        ) {
+
+            setError(
+                `Each option must be ${OPTION_TEXT_MAX_WORDS} words or fewer.`
+            );
+
+            return false;
+
+        }
+
+
+        const lowercaseOptions =
+            cleanedOptions.map(
+                (option) =>
+                    option.toLowerCase()
+            );
+
+
+        // Prevent duplicate choices.
+        if (
+            new Set(
+                lowercaseOptions
+            ).size !==
+            lowercaseOptions.length
+        ) {
+
+            setError(
+                "Duplicate options are not allowed."
+            );
+
+            return false;
+
+        }
+
+
+        return true;
+
+    }
+
+
+    /* ===========================================
+       Prepare Options For API
+    =========================================== */
+
+    function prepareOptions() {
+
+        return options.map(
+            (option, index) => {
+
+                const preparedOption = {
+
+                    option_text:
+                        option.option_text.trim(),
+
+                    display_order:
+                        index + 1,
+
+                };
+
+
+                // Existing options keep their database IDs.
+                if (option.id) {
+
+                    preparedOption.id =
+                        option.id;
+
+                }
+
+
+                return preparedOption;
+
+            }
+        );
+
+    }
+
+
+    /* ===========================================
+       Add Or Update Question
+    =========================================== */
+
+    async function handleSaveQuestion(
+        event
+    ) {
 
         event.preventDefault();
 
@@ -163,6 +537,7 @@ useEffect(() => {
             );
 
             return;
+
         }
 
 
@@ -173,19 +548,43 @@ useEffect(() => {
             );
 
             return;
+
+        }
+
+        if (
+            countWords(questionText) >
+            QUESTION_TEXT_MAX_WORDS
+        ) {
+
+            setError(
+                `Question cannot exceed ${QUESTION_TEXT_MAX_WORDS} words.`
+            );
+
+            return;
+
+        }
+
+
+        if (!validateOptions()) {
+
+            return;
+
         }
 
 
         try {
 
             setSaving(true);
+
             setError("");
+
             setSuccessMessage("");
 
 
             const baseQuestionPayload = {
 
-                survey_id: surveyId,
+                survey_id:
+                    surveyId,
 
                 question_text:
                     questionText.trim(),
@@ -199,7 +598,23 @@ useEffect(() => {
             };
 
 
-            /* Update question */
+            // Only choice questions send option records.
+            if (
+                isChoiceQuestionType(
+                    questionType
+                )
+            ) {
+
+                baseQuestionPayload.options =
+                    prepareOptions();
+
+            }
+
+
+            /* ===================================
+               Update Question
+            =================================== */
+
             if (editingQuestionId) {
 
                 const existingQuestion =
@@ -214,21 +629,28 @@ useEffect(() => {
                     await updateQuestion(
                         editingQuestionId,
                         {
+
                             ...baseQuestionPayload,
 
                             display_order:
                                 existingQuestion
                                     ?.display_order ||
-                                questions.length + 1,
+                                questions.length +
+                                    1,
+
                         }
                     );
 
 
                 setQuestions(
-                    (currentQuestions) =>
+                    (
+                        currentQuestions
+                    ) =>
                         sortQuestions(
                             currentQuestions.map(
-                                (question) =>
+                                (
+                                    question
+                                ) =>
                                     question.id ===
                                     editingQuestionId
                                         ? normalizeQuestion(
@@ -244,9 +666,12 @@ useEffect(() => {
                     "Question updated successfully."
                 );
 
+
             } else {
 
-                /* Create question */
+                /* ===================================
+                   Create Question
+                =================================== */
 
                 const payload =
                     await createQuestion({
@@ -254,16 +679,22 @@ useEffect(() => {
                         ...baseQuestionPayload,
 
                         display_order:
-                            questions.length + 1,
+                            questions.length +
+                            1,
 
                     });
 
 
                 setQuestions(
-                    (currentQuestions) =>
+                    (
+                        currentQuestions
+                    ) =>
                         sortQuestions([
                             ...currentQuestions,
-                            normalizeQuestion(payload),
+
+                            normalizeQuestion(
+                                payload
+                            ),
                         ])
                 );
 
@@ -295,16 +726,44 @@ useEffect(() => {
     }
 
 
-    /* Load question into form */
-    function handleEditQuestion(question) {
+    /* ===========================================
+       Load Question Into Edit Form
+    =========================================== */
 
-        setEditingQuestionId(question.id);
+    function handleEditQuestion(
+        question
+    ) {
 
-        setQuestionText(question.text);
+        setEditingQuestionId(
+            question.id
+        );
 
-        setQuestionType(question.type);
+        setQuestionText(
+            question.text
+        );
 
-        setRequired(question.required);
+        setQuestionType(
+            question.type
+        );
+
+        setRequired(
+            question.required
+        );
+
+
+        // Load current saved options.
+        setOptions(
+            Array.isArray(
+                question.options
+            )
+                ? question.options.map(
+                    (option) => ({
+                        ...option,
+                    })
+                )
+                : []
+        );
+
 
         setError("");
 
@@ -313,52 +772,73 @@ useEffect(() => {
     }
 
 
-    /* Cancel editing */
+    /* ===========================================
+       Cancel Editing
+    =========================================== */
+
     function handleCancelEdit() {
 
         resetQuestionForm();
 
         setError("");
+
         setSuccessMessage("");
 
     }
 
 
-    /* Delete question */
-    async function handleDeleteQuestion(questionId) {
+    /* ===========================================
+       Delete Question
+    =========================================== */
 
-        const confirmed = window.confirm(
-            "Are you sure you want to delete this question?"
-        );
+    async function handleDeleteQuestion(
+        questionId
+    ) {
+
+        const confirmed =
+            window.confirm(
+                "Are you sure you want to delete this question?"
+            );
 
 
         if (!confirmed) {
+
             return;
+
         }
 
 
         try {
 
             setSaving(true);
+
             setError("");
+
             setSuccessMessage("");
 
 
-            await deleteQuestion(questionId);
+            await deleteQuestion(
+                questionId
+            );
 
 
             setQuestions(
-                (currentQuestions) =>
+                (
+                    currentQuestions
+                ) =>
                     currentQuestions.filter(
-                        (question) =>
-                            question.id !== questionId
+                        (
+                            question
+                        ) =>
+                            question.id !==
+                            questionId
                     )
             );
 
 
-            // Reset form if editing deleted question
             if (
-                editingQuestionId === questionId
+                editingQuestionId ===
+                questionId
             ) {
 
                 resetQuestionForm();
@@ -388,12 +868,16 @@ useEffect(() => {
     }
 
 
+    /* ===========================================
+       UI
+    =========================================== */
+
     return (
 
         <section className="question-builder">
 
 
-            {/* Section heading */}
+            {/* Header */}
 
             <div className="question-builder-header">
 
@@ -443,7 +927,9 @@ useEffect(() => {
             {error && (
 
                 <div className="question-builder-error">
+
                     {error}
+
                 </div>
 
             )}
@@ -454,19 +940,23 @@ useEffect(() => {
             {successMessage && (
 
                 <div className="question-builder-success">
+
                     {successMessage}
+
                 </div>
 
             )}
 
 
-            {/* Question form */}
+            {/* Question Form */}
 
             {surveyId && (
 
                 <form
                     className="question-form"
-                    onSubmit={handleSaveQuestion}
+                    onSubmit={
+                        handleSaveQuestion
+                    }
                 >
 
 
@@ -479,25 +969,35 @@ useEffect(() => {
                     </h3>
 
 
-                    {/* Question text */}
+                    {/* Question Text */}
 
                     <div className="question-form-group">
 
                         <label htmlFor="question-text">
+
                             Question
+
                         </label>
+
 
                         <input
                             id="question-text"
                             type="text"
-                            value={questionText}
-                            placeholder="Enter your question"
-                            onChange={(event) =>
-                                setQuestionText(
-                                    event.target.value
-                                )
+                            value={
+                                questionText
                             }
-                            disabled={saving}
+                            placeholder="Enter your question"
+                            maxLength={QUESTION_TEXT_MAX_LENGTH}
+                            onChange={
+                                (event) =>
+                                    setQuestionText(
+                                        removeLeadingWhitespace(event.target
+                                            .value)
+                                    )
+                            }
+                            disabled={
+                                saving
+                            }
                         />
 
                     </div>
@@ -506,36 +1006,47 @@ useEffect(() => {
                     <div className="question-form-row">
 
 
-                        {/* Question type */}
+                        {/* Question Type */}
 
                         <div className="question-form-group">
 
                             <label htmlFor="question-type">
+
                                 Question Type
+
                             </label>
+
 
                             <select
                                 id="question-type"
-                                value={questionType}
-                                onChange={(event) =>
-                                    setQuestionType(
-                                        event.target.value
-                                    )
+                                value={
+                                    questionType
                                 }
-                                disabled={saving}
+                                onChange={
+                                    handleQuestionTypeChange
+                                }
+                                disabled={
+                                    saving
+                                }
                             >
 
                                 <option value="text">
                                     Text
                                 </option>
 
+                                <option value="textarea">
+                                    Textarea
+                                </option>
+
                                 <option value="radio">
                                     Radio
                                 </option>
 
+                                {/*
                                 <option value="checkbox">
                                     Checkbox
                                 </option>
+                                */}
 
                                 <option value="rating">
                                     Rating
@@ -558,13 +1069,20 @@ useEffect(() => {
 
                                 <input
                                     type="checkbox"
-                                    checked={required}
-                                    onChange={(event) =>
-                                        setRequired(
-                                            event.target.checked
-                                        )
+                                    checked={
+                                        required
                                     }
-                                    disabled={saving}
+                                    onChange={
+                                        (event) =>
+                                            setRequired(
+                                                event
+                                                    .target
+                                                    .checked
+                                            )
+                                    }
+                                    disabled={
+                                        saving
+                                    }
                                 />
 
                                 Required question
@@ -573,20 +1091,186 @@ useEffect(() => {
 
                         </div>
 
+
                     </div>
 
 
-                    {/* Question actions */}
+                    {/* ===================================
+                        Choice Question Options
+                    =================================== */}
+
+                    {isChoiceQuestionType(
+                        questionType
+                    ) && (
+
+                        <div
+                            className="question-options-editor"
+                            style={{
+                                marginTop: "20px",
+                            }}
+                        >
+
+
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent:
+                                        "space-between",
+                                    alignItems:
+                                        "center",
+                                    gap: "15px",
+                                    marginBottom:
+                                        "12px",
+                                }}
+                            >
+
+                                <div>
+
+                                    <strong>
+                                        Options
+                                    </strong>
+
+                                    <p
+                                        style={{
+                                            margin:
+                                                "4px 0 0",
+                                        }}
+                                    >
+                                        Add the choices employees can select.
+                                    </p>
+
+                                </div>
+
+
+                                <button
+                                    type="button"
+                                    className="secondary-btn"
+                                    onClick={
+                                        handleAddOption
+                                    }
+                                    disabled={
+                                        saving
+                                    }
+                                >
+                                    + Add Option
+                                </button>
+
+                            </div>
+
+
+                            {options.map(
+                                (
+                                    option,
+                                    index
+                                ) => (
+
+                                    <div
+                                        key={
+                                            option.id ??
+                                            `new-${index}`
+                                        }
+                                        className="question-option-row"
+                                        style={{
+                                            display:
+                                                "flex",
+                                            alignItems:
+                                                "center",
+                                            gap: "10px",
+                                            marginBottom:
+                                                "10px",
+                                        }}
+                                    >
+
+                                        <span>
+                                            {index + 1}.
+                                        </span>
+
+
+                                        <input
+                                            type="text"
+                                            maxLength={OPTION_TEXT_MAX_LENGTH}
+                                            value={
+                                                option
+                                                    .option_text
+                                            }
+                                            placeholder={`Option ${index + 1}`}
+                                            onChange={
+                                                (
+                                                    event
+                                                ) =>
+                                                    handleOptionChange(
+                                                        index,
+                                                        event
+                                                            .target
+                                                            .value
+                                                    )
+                                            }
+                                            disabled={
+                                                saving
+                                            }
+                                            style={{
+                                                flex: 1,
+                                            }}
+                                        />
+
+
+                                        <button
+                                            type="button"
+                                            className="secondary-btn"
+                                            onClick={() =>
+                                                handleRemoveOption(
+                                                    index
+                                                )
+                                            }
+                                            disabled={
+                                                saving
+                                            }
+                                        >
+                                            Remove
+                                        </button>
+
+                                    </div>
+
+                                )
+                            )}
+
+
+                            {options.length === 0 && (
+
+                                <p>
+                                    No options yet. Click
+                                    {" "}
+                                    <strong>
+                                        + Add Option
+                                    </strong>
+                                    {" "}
+                                    to create one.
+                                </p>
+
+                            )}
+
+
+                        </div>
+
+                    )}
+
+
+                    {/* Question Actions */}
 
                     <div className="question-form-actions">
+
 
                         {editingQuestionId && (
 
                             <button
                                 type="button"
                                 className="secondary-btn"
-                                onClick={handleCancelEdit}
-                                disabled={saving}
+                                onClick={
+                                    handleCancelEdit
+                                }
+                                disabled={
+                                    saving
+                                }
                             >
                                 Cancel
                             </button>
@@ -597,7 +1281,9 @@ useEffect(() => {
                         <button
                             type="submit"
                             className="primary-btn"
-                            disabled={saving}
+                            disabled={
+                                saving
+                            }
                         >
 
                             {saving
@@ -608,16 +1294,21 @@ useEffect(() => {
 
                         </button>
 
+
                     </div>
+
 
                 </form>
 
             )}
 
 
-            {/* Question list */}
+            {/* ===========================================
+                Question List
+            =========================================== */}
 
             <div className="question-list">
+
 
                 {loading ? (
 
@@ -642,15 +1333,20 @@ useEffect(() => {
                 ) : (
 
                     questions.map(
-                        (question, index) => (
+                        (
+                            question,
+                            index
+                        ) => (
 
                             <div
                                 className="question-item"
-                                key={question.id}
+                                key={
+                                    question.id
+                                }
                             >
 
 
-                                {/* Question number */}
+                                {/* Number */}
 
                                 <div className="question-number">
 
@@ -659,9 +1355,10 @@ useEffect(() => {
                                 </div>
 
 
-                                {/* Question details */}
+                                {/* Details */}
 
                                 <div className="question-info">
+
 
                                     <h3>
                                         {question.text}
@@ -685,12 +1382,65 @@ useEffect(() => {
 
                                     </div>
 
+
+                                    {/* Saved Options */}
+
+                                    {question.options
+                                        ?.length > 0 && (
+
+                                        <div
+                                            style={{
+                                                marginTop:
+                                                    "10px",
+                                            }}
+                                        >
+
+                                            <strong>
+                                                Options:
+                                            </strong>
+
+
+                                            <ul
+                                                style={{
+                                                    margin:
+                                                        "6px 0 0",
+                                                    paddingLeft:
+                                                        "20px",
+                                                }}
+                                            >
+
+                                                {question.options.map(
+                                                    (
+                                                        option
+                                                    ) => (
+
+                                                        <li
+                                                            key={
+                                                                option.id
+                                                            }
+                                                        >
+                                                            {
+                                                                option.option_text
+                                                            }
+                                                        </li>
+
+                                                    )
+                                                )}
+
+                                            </ul>
+
+                                        </div>
+
+                                    )}
+
+
                                 </div>
 
 
-                                {/* Question controls */}
+                                {/* Controls */}
 
                                 <div className="question-item-actions">
+
 
                                     <button
                                         type="button"
@@ -699,7 +1449,9 @@ useEffect(() => {
                                                 question
                                             )
                                         }
-                                        disabled={saving}
+                                        disabled={
+                                            saving
+                                        }
                                     >
                                         Edit
                                     </button>
@@ -713,10 +1465,13 @@ useEffect(() => {
                                                 question.id
                                             )
                                         }
-                                        disabled={saving}
+                                        disabled={
+                                            saving
+                                        }
                                     >
                                         Delete
                                     </button>
+
 
                                 </div>
 
@@ -727,6 +1482,7 @@ useEffect(() => {
                     )
 
                 )}
+
 
             </div>
 

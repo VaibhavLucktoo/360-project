@@ -1,3 +1,4 @@
+import { removeWhitespace } from "../utils/inputWhitespace";
 // ===========================================
 // Icons
 // ===========================================
@@ -23,7 +24,9 @@ import "../styles/Login.css";
 // ===========================================
 // API
 // ===========================================
-import { loginUser } from "../services/api";
+import { loginUser, saveToken } from "../services/api";
+
+
 
 
 
@@ -38,6 +41,10 @@ function Login() {
 
     // Error Message
     const [error, setError] = useState("");
+
+    const [rememberMe, setRememberMe] = useState(false);
+
+    const [loading, setLoading] = useState(false);
 
     // Password Visibility
     const [showPassword, setShowPassword] = useState(false);
@@ -57,29 +64,54 @@ function Login() {
         // Clear previous error
         setError("");
 
+        const cleanedEmail = removeWhitespace(email);
+        const cleanedPassword = removeWhitespace(password);
+
+        if (!cleanedEmail || !cleanedPassword) {
+            setError("Email and password are required.");
+            return;
+        }
+
+        if (cleanedEmail !== email || cleanedPassword !== password) {
+            setError("Email and password cannot contain spaces.");
+            setEmail(cleanedEmail);
+            setPassword(cleanedPassword);
+            return;
+        }
+
+        if (loading) {
+            return;
+        }
+
         try {
+
+            setLoading(true);
 
             // Send Login Request
             const data = await loginUser({
 
-                email: email,
+                email: cleanedEmail,
 
-                password: password
+                password: cleanedPassword
 
             });
 
             // Read Response
-            localStorage.setItem("token", data.access_token);
+            saveToken(data.access_token, rememberMe);
             navigate("/dashboard");
 
-        }
-
-        catch (error) {
+        } catch (error) {
 
             console.error(error);
 
-            setError("Unable to connect to the server.");
+            setError(
+                error.message ||
+                "Unable to connect to the server."
+            );
 
+        } finally {
+
+            setLoading(false);
         }
 
     }
@@ -121,7 +153,13 @@ function Login() {
                         type="email"
                         placeholder="you@company.com"
                         value={email}
-                        onChange={(event) => setEmail(event.target.value)}
+                        onChange={(event) =>
+                            setEmail(
+                                removeWhitespace(
+                                    event.target.value
+                                )
+                            )
+                        }
                         required={true}
                     />
 
@@ -133,12 +171,34 @@ function Login() {
                         type={showPassword ? "text" : "password"}
                         placeholder="Enter your password"
                         value={password}
-                        onChange={(event) => setPassword(event.target.value)}
+                        onChange={(event) =>
+                            setPassword(
+                                removeWhitespace(
+                                    event.target.value
+                                )
+                            )
+                        }
                         required={true}
                         showToggle={true}
                         showPassword={showPassword}
                         onToggle={() => setShowPassword(!showPassword)}
                     />
+
+                    <label className="remember-me">
+                        <input
+                            type="checkbox"
+                            checked={rememberMe}
+                            onChange={(event) =>
+                                setRememberMe(
+                                    event.target.checked
+                                )
+                            }
+                        />
+
+                        <span>
+                            Remember me
+                        </span>
+                    </label>
 
                     {/* Error Message */}
                     {error && (
@@ -155,27 +215,15 @@ function Login() {
 
                     )}
 
-                    {/* Remember Me */}
-                    <div className="login-options">
-
-                        <label className="remember-me">
-
-                            <input type="checkbox" />
-
-                            Remember Me
-
-                        </label>
-
-                        <a href="#">
-                            Forgot Password?
-                        </a>
-
-                    </div>
-
                     {/* Login Button */}
                     <Button
-                        text="Login"
+                        text={
+                            loading
+                                ? "Logging in..."
+                                : "Login"
+                        }
                         type="submit"
+                        disabled={loading}
                     />
 
                     {/* Footer */}

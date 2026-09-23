@@ -7,10 +7,13 @@ from sqlalchemy import engine_from_config, pool
 
 from app.database.database import Base, DATABASE_URL
 from app.models.question import Question
+from app.models.question_option import QuestionOption
 from app.models.response import Response
 from app.models.role import Role
+from app.models.permission import Permission
 from app.models.survey import Survey
 from app.models.user import User
+
 
 config = context.config
 

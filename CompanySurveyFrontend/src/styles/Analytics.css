@@ -3,352 +3,174 @@
 =========================================== */
 
 .analytics-page {
+    width: auto;
+    min-height: 100vh;
+    margin-left: var(--sidebar-width, 220px);
+    padding: 36px 40px 60px;
+    box-sizing: border-box;
+    background: #f8fafc;
+    transition: margin-left 0.2s ease;
+}
+
+
+/* ===========================================
+   Analytics Header
+=========================================== */
+
+.analytics-header {
     width: 100%;
-    max-width: 1100px;
 
-    margin: 0 auto;
-    padding: 40px 24px 60px;
-
-    text-align: left;
-}
-
-
-/* ===========================================
-   Back Link
-=========================================== */
-
-.analytics-page > a {
-    display: inline-flex;
-    align-items: center;
-
-    margin-bottom: 24px;
-
-    color: #2563eb;
-
-    font-size: 15px;
-    font-weight: 600;
-
-    text-decoration: none;
-
-    transition: color 0.2s ease;
-}
-
-
-.analytics-page > a:hover {
-    color: #1d4ed8;
-    text-decoration: underline;
-}
-
-
-/* ===========================================
-   Analytics Page Title
-=========================================== */
-
-.analytics-page h1 {
-    margin: 0 0 28px;
-
-    color: #111827;
-
-    font-size: 34px;
-    font-weight: 700;
-
-    line-height: 1.25;
-
-    letter-spacing: -0.5px;
-}
-
-
-/* ===========================================
-   Analytics Summary Grid
-=========================================== */
-
-.analytics-summary {
     display: grid;
 
     grid-template-columns:
-        repeat(3, minmax(0, 1fr));
+        minmax(150px, 1fr)
+        minmax(360px, 2.2fr)
+        minmax(150px, 1fr);
 
-    gap: 18px;
+    align-items: start;
 
-    margin-bottom: 24px;
+    gap: 28px;
+
+    margin-bottom: 34px;
 }
 
 
 /* ===========================================
-   Summary Card
+   Header Left
 =========================================== */
 
-.summary-card {
+.analytics-header-left {
+    display: contents;
+}
+
+
+/* Back button area */
+
+.analytics-back-button {
+    grid-column: 1;
+
     display: flex;
-    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
 
-    gap: 10px;
+    padding-top: 4px;
+}
 
-    min-height: 120px;
 
-    padding: 22px;
+/* Back button */
+
+.dashboard-back-btn-analytics-page {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 118px;
+    height: 42px;
+
+    padding: 0 15px;
+
+    border: 1px solid #d0d5dd;
+    border-radius: 9px;
 
     background: #ffffff;
+    color: #344054;
 
-    border: 1px solid #e5e7eb;
-    border-radius: 14px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
 
     box-shadow:
-        0 2px 8px rgba(15, 23, 42, 0.05);
+        0 1px 2px rgba(16, 24, 40, 0.03);
 
     transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
+        background 0.18s ease,
+        border-color 0.18s ease,
+        transform 0.18s ease;
 }
 
 
-.summary-card:hover {
-    transform: translateY(-2px);
+.dashboard-back-btn-analytics-page:hover {
+    background: #000000;
+    border-color: #ffffff;
+    color: #ffffff;
 
-    box-shadow:
-        0 8px 20px rgba(15, 23, 42, 0.08);
-}
-
-
-.summary-label {
-    color: #6b7280;
-
-    font-size: 14px;
-    font-weight: 500;
-}
-
-
-.summary-value {
-    color: #111827;
-
-    font-size: 28px;
-    font-weight: 700;
-
-    line-height: 1.2;
+    transform: translateX(-2px);
 }
 
 
 /* ===========================================
-   Privacy Note
+   Header Center Content
 =========================================== */
 
-.privacy-note {
-    margin: 0 0 32px;
+.analytics-header-content {
+    grid-column: 2;
 
-    padding: 14px 18px;
-
-    color: #667085;
-
-    background: #ffffff;
-
-    border: 1px solid #e5e7eb;
-    border-left: 4px solid #2563eb;
-
-    border-radius: 8px;
-
-    font-size: 14px;
-    line-height: 1.5;
-}
-
-
-/* ===========================================
-   Divider
-=========================================== */
-
-.analytics-page hr {
-    margin: 0 0 30px;
-
-    border: 0;
-    border-top: 1px solid #e5e7eb;
-}
-
-
-/* ===========================================
-   Section Heading
-=========================================== */
-
-.analytics-page h2 {
-    margin: 0 0 20px;
-
-    color: #111827;
-
-    font-size: 26px;
-    font-weight: 700;
-}
-
-
-/* ===========================================
-   Question Analytics Card
-=========================================== */
-
-.question-card {
-    margin-bottom: 18px;
-
-    padding: 22px;
-
-    background: #ffffff;
-
-    border: 1px solid #e5e7eb;
-    border-radius: 14px;
-
-    box-shadow:
-        0 2px 8px rgba(15, 23, 42, 0.04);
-}
-
-
-.question-card h3 {
-    margin: 0 0 14px;
-
-    color: #111827;
-
-    font-size: 19px;
-    font-weight: 650;
-
-    line-height: 1.4;
-}
-
-
-.question-card p {
-    margin: 6px 0;
-
-    color: #667085;
-
-    font-size: 14px;
-}
-
-
-.question-card p strong {
-    color: #344054;
-}
-
-
-/* ===========================================
-   Rating Analytics
-=========================================== */
-
-.rating-result {
     display: flex;
     flex-direction: column;
+    align-items: center;
 
-    gap: 6px;
+    min-width: 0;
 
-    margin-top: 18px;
-
-    padding: 16px;
-
-    background: #f8faff;
-
-    border: 1px solid #dbe7ff;
-
-    border-radius: 10px;
+    text-align: center;
 }
 
 
-.rating-label {
-    color: #667085;
-
-    font-size: 14px;
-    font-weight: 500;
-}
-
-
-.rating-value {
-    color: #2563eb;
-
-    font-size: 34px;
-    font-weight: 750;
-
-    line-height: 1.2;
-}
-
-
-.rating-max {
-    color: #98a2b3;
-
-    font-size: 18px;
-    font-weight: 500;
-}
-
-
-/* ===========================================
-   No Responses
-=========================================== */
-
-.no-responses {
-    display: inline-block;
-
-    margin-top: 4px;
-
-    color: #98a2b3;
-
-    font-size: 14px;
-    font-style: italic;
-}
-
-
-/* ===========================================
-   Feedback Section
-=========================================== */
-
-.feedback-section {
-    margin-top: 18px;
-}
-
-
-.feedback-section > strong {
+.analytics-eyebrow {
     display: block;
 
     margin-bottom: 10px;
 
-    color: #344054;
+    color: #0062fb;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+
+.analytics-title,
+.analytics-header h1 {
+    margin: 0 0 10px;
+
+    color: #101828;
+
+    font-size: clamp(31px, 3vw, 42px);
+    font-weight: 750;
+
+    line-height: 1.08;
+    letter-spacing: -0.04em;
+}
+
+
+.analytics-description,
+.analytics-header p {
+    max-width: 620px;
+
+    margin: 0;
+
+    color: #667085;
 
     font-size: 14px;
+    line-height: 1.65;
 }
 
 
 /* ===========================================
-   Feedback List
+   Header Right
 =========================================== */
 
-.feedback-list {
+.analytics-header-right {
+    grid-column: 3;
+
     display: flex;
-    flex-direction: column;
-
-    gap: 12px;
-}
-
-
-/* ===========================================
-   Individual Feedback Card
-=========================================== */
-
-.feedback-card {
-    padding: 14px 16px;
-
-    color: #374151;
-
-    background: #f9fafb;
-
-    border: 1px solid #e5e7eb;
-    border-left: 4px solid #2563eb;
-
-    border-radius: 8px;
-
-    font-size: 15px;
-    line-height: 1.6;
-}
-
-
-/* ===========================================
-   Analytics Actions
-=========================================== */
-
-.analytics-actions {
-    display: flex;
-
+    align-items: flex-start;
     justify-content: flex-end;
 
-    margin-top: 30px;
+    padding-top: 4px;
 }
 
 
@@ -357,56 +179,604 @@
 =========================================== */
 
 .download-analytics-btn {
-    padding: 12px 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 
+    width: auto;
+    min-width: 130px;
+    height: 42px;
+
+    padding: 0 17px;
+
+    border: 1px solid #1d2939;
+    border-radius: 9px;
+
+    background: #1d2939;
     color: #ffffff;
 
-    background: #2563eb;
-
-    border: none;
-    border-radius: 8px;
-
     font-family: inherit;
-    font-size: 15px;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 650;
+
+    white-space: nowrap;
 
     cursor: pointer;
 
+    box-shadow:
+        0 1px 2px rgba(16, 24, 40, 0.06);
+
     transition:
-        background 0.2s ease,
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
+        background 0.18s ease,
+        transform 0.18s ease,
+        box-shadow 0.18s ease;
 }
 
 
 .download-analytics-btn:hover {
-    background: #1d4ed8;
+    background: #344054;
 
     transform: translateY(-1px);
 
     box-shadow:
-        0 6px 16px rgba(37, 99, 235, 0.22);
-}
-
-
-.download-analytics-btn:active {
-    transform: translateY(0);
+        0 6px 16px rgba(16, 24, 40, 0.12);
 }
 
 
 /* ===========================================
-   Error Message
+   Summary Grid
 =========================================== */
 
-.analytics-page .error {
+.analytics-summary {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 16px;
+
+    margin-bottom: 24px;
+}
+
+
+/* ===========================================
+   Summary Cards
+=========================================== */
+
+.analytics-page .summary-card {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+    min-height: 125px;
+
+    padding: 22px 20px;
+
+    border: 1px solid #e4e7ec;
+    border-radius: 14px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 1px 3px rgba(16, 24, 40, 0.035);
+
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        border-color 0.18s ease;
+}
+
+
+.analytics-page .summary-card:hover {
+    transform: translateY(-2px);
+
+    border-color: #d0d5dd;
+
+    box-shadow:
+        0 8px 22px rgba(16, 24, 40, 0.06);
+}
+
+
+.analytics-page .summary-label {
+    display: block;
+
+    margin-bottom: 15px;
+
+    color: #667085;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+.analytics-page .summary-value {
+    display: block;
+
+    margin-bottom: 9px;
+
+    color: #101828;
+
+    font-size: 29px;
+    font-weight: 750;
+
+    line-height: 1;
+
+    letter-spacing: -0.035em;
+}
+
+
+.analytics-page .summary-card small {
+    margin-top: auto;
+
+    color: #98a2b3;
+
+    font-size: 11px;
+}
+
+
+/* ===========================================
+   Status Badge
+=========================================== */
+
+.summary-status {
+    display: inline-flex;
+    align-items: center;
+
+    width: fit-content;
+
+    margin-bottom: 8px;
+    padding: 6px 10px;
+
+    border-radius: 999px;
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+.summary-status.published {
+    color: #027a48;
+    background: #ecfdf3;
+}
+
+
+.summary-status.draft {
+    color: #475467;
+    background: #f2f4f7;
+}
+
+
+/* ===========================================
+   Privacy Note
+=========================================== */
+
+.analytics-page .privacy-note {
+    margin: 0 0 34px;
+
+    padding: 13px 16px;
+
+    border: 1px solid #e4e7ec;
+    border-radius: 10px;
+
+    background: #ffffff;
+
+    color: #667085;
+
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+
+/* ===========================================
+   Analytics Section Heading
+=========================================== */
+
+.analytics-section-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 18px;
+}
+
+
+.analytics-section-heading h2 {
+    margin: 0 0 5px;
+
+    color: #101828;
+
+    font-size: 22px;
+    font-weight: 720;
+
+    letter-spacing: -0.02em;
+}
+
+
+.analytics-section-heading p {
+    margin: 0;
+
+    color: #667085;
+
+    font-size: 13px;
+}
+
+
+/* ===========================================
+   Question List
+=========================================== */
+
+.analytics-question-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 16px;
+}
+
+
+/* ===========================================
+   Question Card
+=========================================== */
+
+.analytics-question-card {
+    padding: 24px;
+
+    overflow: hidden;
+
+    border: 1px solid #e4e7ec;
+    border-radius: 15px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 1px 3px rgba(16, 24, 40, 0.035);
+
+    transition:
+        border-color 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+
+.analytics-question-card:hover {
+    border-color: #d0d5dd;
+
+    box-shadow:
+        0 7px 22px rgba(16, 24, 40, 0.05);
+}
+
+
+/* ===========================================
+   Question Header
+=========================================== */
+
+.analytics-question-header {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 14px;
+
+    padding-bottom: 18px;
+    margin-bottom: 22px;
+
+    border-bottom: 1px solid #f2f4f7;
+}
+
+
+.analytics-question-number {
+    display: grid;
+    place-items: center;
+
+    width: 34px;
+    height: 34px;
+
+    flex: 0 0 34px;
+
+    border-radius: 9px;
+
+    background: #f2f4f7;
+    color: #475467;
+
+    font-size: 12px;
+    font-weight: 750;
+}
+
+
+.analytics-question-title {
+    min-width: 0;
+}
+
+
+.analytics-question-title h3 {
+    margin: 1px 0 9px;
+
+    color: #101828;
+
+    font-size: 16px;
+    font-weight: 680;
+
+    line-height: 1.45;
+}
+
+
+.analytics-question-meta {
+    display: flex;
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 9px;
+
+    color: #98a2b3;
+
+    font-size: 11px;
+}
+
+
+.question-type-badge {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 4px 8px;
+
+    border-radius: 999px;
+
+    background: #f2f4f7;
+    color: #475467;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    text-transform: capitalize;
+}
+
+
+/* ===========================================
+   Rating Analytics
+=========================================== */
+
+.rating-result {
+    display: grid;
+
+    grid-template-columns:
+        minmax(170px, 0.35fr)
+        minmax(320px, 1fr);
+
+    gap: 30px;
+
+    align-items: center;
+}
+
+
+.rating-summary {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    min-height: 115px;
+
+    padding: 18px;
+
+    border: 1px solid #eaecf0;
+    border-radius: 12px;
+
+    background: #f9fafb;
+}
+
+
+.rating-label {
+    margin-bottom: 9px;
+
+    color: #667085;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+.rating-value {
+    color: #101828;
+
+    font-size: 35px;
+    font-weight: 750;
+
+    line-height: 1;
+
+    letter-spacing: -0.04em;
+}
+
+
+.rating-max {
+    color: #98a2b3;
+
+    font-size: 16px;
+    font-weight: 500;
+}
+
+
+/* ===========================================
+   Choice Analytics
+=========================================== */
+
+.choice-analytics {
+    display: flex;
+    flex-direction: column;
+
+    gap: 19px;
+}
+
+
+.choice-result-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 8px;
+}
+
+
+.choice-label {
+    color: #344054;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+.choice-result-count {
+    flex-shrink: 0;
+
+    color: #667085;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+.choice-progress-track {
+    width: 100%;
+    height: 8px;
+
+    overflow: hidden;
+
+    border-radius: 999px;
+
+    background: #eaecf0;
+}
+
+
+.choice-progress-bar {
+    height: 100%;
+
+    border-radius: inherit;
+
+    background: #667eea;
+
+    transition: width 0.4s ease;
+}
+
+
+/* ===========================================
+   Feedback
+=========================================== */
+
+.feedback-list {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 12px;
+}
+
+
+.feedback-card {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 11px;
+
+    min-width: 0;
+
+    padding: 14px 15px;
+
+    border: 1px solid #eaecf0;
+    border-radius: 10px;
+
+    background: #f9fafb;
+}
+
+
+.feedback-number {
+    flex-shrink: 0;
+
+    padding-top: 2px;
+
+    color: #98a2b3;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+
+.feedback-card p {
+    margin: 0;
+
+    color: #344054;
+
+    font-size: 13px;
+    line-height: 1.55;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* ===========================================
+   Empty / Error / Loading
+=========================================== */
+
+.analytics-empty,
+.analytics-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 180px;
+
+    padding: 30px;
+
+    border: 1px dashed #d0d5dd;
+    border-radius: 14px;
+
+    background: #ffffff;
+
+    color: #667085;
+
+    font-size: 13px;
+}
+
+
+.analytics-error {
+    margin-top: 20px;
+
     padding: 14px 16px;
 
-    color: #b42318;
+    border: 1px solid #fecdca;
+    border-radius: 9px;
 
     background: #fef3f2;
+    color: #b42318;
 
-    border: 1px solid #fecdca;
-    border-radius: 8px;
+    font-size: 13px;
+}
+
+
+.no-responses {
+    color: #98a2b3;
+
+    font-size: 13px;
+    font-style: italic;
+}
+
+
+/* ===========================================
+   Laptop
+=========================================== */
+
+@media (max-width: 1200px) {
+
+    .analytics-header {
+        grid-template-columns:
+            150px minmax(320px, 1fr) 150px;
+    }
+
+    .analytics-summary {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
 }
 
 
@@ -414,18 +784,58 @@
    Tablet
 =========================================== */
 
-@media (max-width: 850px) {
+@media (max-width: 900px) {
 
-    .analytics-summary {
+    .analytics-page {
+        margin-left: 0;
+
+        padding:
+            28px 22px 52px;
+    }
+
+
+    .analytics-header {
+        grid-template-columns:
+            1fr 1fr;
+
+        gap: 20px;
+    }
+
+
+    .analytics-header-left {
+        display: contents;
+    }
+
+
+    .analytics-back-button {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+
+    .analytics-header-right {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+
+    .analytics-header-content {
+        grid-column: 1 / -1;
+        grid-row: 2;
+
+        align-items: flex-start;
+
+        text-align: left;
+    }
+
+
+    .rating-result {
         grid-template-columns: 1fr;
     }
 
-    .analytics-page {
-        padding: 30px 18px 50px;
-    }
 
-    .analytics-page h1 {
-        font-size: 28px;
+    .feedback-list {
+        grid-template-columns: 1fr;
     }
 
 }
@@ -435,43 +845,716 @@
    Mobile
 =========================================== */
 
-@media (max-width: 520px) {
+@media (max-width: 600px) {
 
     .analytics-page {
-        padding: 24px 14px 40px;
+        padding:
+            22px 15px 42px;
     }
 
-    .analytics-page h1 {
-        font-size: 24px;
+
+    .analytics-header {
+        display: flex;
+        flex-direction: column;
+
+        gap: 18px;
     }
 
-    .analytics-page h2 {
-        font-size: 21px;
+
+    .analytics-header-left {
+        display: contents;
     }
 
-    .summary-card {
-        min-height: auto;
-        padding: 18px;
+
+    .analytics-back-button {
+        order: 1;
     }
 
-    .summary-value {
-        font-size: 24px;
+
+    .analytics-header-content {
+        order: 2;
+
+        align-items: flex-start;
+
+        text-align: left;
     }
 
-    .question-card {
-        padding: 18px;
+
+    .analytics-header-right {
+        order: 3;
+
+        width: 100%;
     }
 
-    .rating-value {
-        font-size: 29px;
-    }
-
-    .analytics-actions {
-        justify-content: stretch;
-    }
 
     .download-analytics-btn {
         width: 100%;
     }
 
+
+    .analytics-summary {
+        grid-template-columns: 1fr;
+
+        gap: 12px;
+    }
+
+
+    .analytics-page .summary-card {
+        min-height: auto;
+    }
+
+
+    .analytics-question-card {
+        padding: 18px 16px;
+    }
+
+}
+/* ===========================================
+   Analytics Landing Page
+   /analytics
+=========================================== */
+
+.analytics-landing-header {
+    margin-bottom: 30px;
+}
+
+.analytics-landing-header h1 {
+    margin: 0 0 10px;
+
+    color: #101828;
+
+    font-size: 40px;
+    font-weight: 750;
+
+    line-height: 1.08;
+    letter-spacing: -0.04em;
+}
+
+.analytics-landing-header p {
+    max-width: 620px;
+
+    margin: auto;
+
+    color: #667085;
+
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+
+/* ===========================================
+   Analytics Search Panel
+=========================================== */
+
+.analytics-search-panel {
+    display: grid;
+
+    grid-template-columns:
+        minmax(220px, 0.8fr)
+        minmax(420px, 1.4fr);
+
+    align-items: end;
+
+    gap: 45px;
+
+    margin-bottom: 38px;
+    padding: 28px 30px;
+
+    background: #ffffff;
+
+    border: 1px solid #e4e7ec;
+    border-radius: 16px;
+
+    box-shadow:
+        0 1px 3px rgba(16, 24, 40, 0.04);
+}
+
+
+/* ===========================================
+   Search Information
+=========================================== */
+
+.analytics-search-info h2 {
+    margin: 0 0 7px;
+
+    color: #101828;
+
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.analytics-search-info p {
+    margin: 0;
+
+    color: #667085;
+
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+
+/* ===========================================
+   Search Form
+=========================================== */
+
+.analytics-search-form {
+    min-width: 0;
+}
+
+.analytics-search-form label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #344054;
+
+    font-size: 12px;
+    font-weight: 650;
+}
+
+
+/* ===========================================
+   Search Control
+=========================================== */
+
+.analytics-search-control {
+    display: grid;
+
+    grid-template-columns:
+        42px
+        minmax(0, 1fr)
+        auto;
+
+    align-items: center;
+
+    min-height: 50px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #d0d5dd;
+    border-radius: 10px;
+
+    transition:
+        border-color 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+.analytics-search-control:focus-within {
+    border-color: #667eea;
+
+    box-shadow:
+        0 0 0 4px
+        rgba(102, 126, 234, 0.1);
+}
+
+
+/* Survey ID prefix */
+
+.analytics-search-control > span {
+    display: grid;
+    place-items: center;
+
+    height: 100%;
+
+    background: #f9fafb;
+
+    border-right: 1px solid #eaecf0;
+
+    color: #98a2b3;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+
+/* Survey ID input */
+
+.analytics-search-control input {
+    width: 100%;
+    height: 48px;
+
+    min-width: 0;
+
+    padding: 0 14px;
+
+    border: 0;
+    outline: 0;
+
+    background: transparent;
+
+    color: #101828;
+
+    font-family: inherit;
+    font-size: 14px;
+
+    box-sizing: border-box;
+}
+
+.analytics-search-control input::placeholder {
+    color: #98a2b3;
+}
+
+
+/* View Analytics button */
+
+.analytics-search-control button {
+    height: 42px;
+
+    margin-right: 4px;
+    padding: 0 18px;
+
+    border: 0;
+    border-radius: 8px;
+
+    background: #0037ff;
+    color: #ffffff;
+
+    font-family: inherit;
+
+    font-size: 12px;
+    font-weight: 650;
+
+    white-space: nowrap;
+
+    cursor: pointer;
+
+    transition:
+        background 0.18s ease,
+        transform 0.18s ease;
+}
+
+.analytics-search-control button:hover {
+    background: #344054;
+}
+
+.analytics-search-control button:active {
+    transform: scale(0.98);
+}
+
+
+/* ===========================================
+   Survey Directory
+=========================================== */
+
+.analytics-survey-directory {
+    margin-top: 4px;
+}
+
+
+/* Survey count badge */
+
+.analytics-survey-count {
+    display: grid;
+    place-items: center;
+
+    min-width: 34px;
+    height: 30px;
+
+    padding: 0 10px;
+
+    border-radius: 999px;
+
+    background: #f2f4f7;
+    color: #475467;
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* ===========================================
+   Survey Grid
+=========================================== */
+
+.analytics-survey-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 16px;
+}
+
+
+/* ===========================================
+   Survey Card
+=========================================== */
+
+.analytics-survey-card {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+    min-height: 190px;
+
+    padding: 20px;
+
+    text-align: left;
+
+    background: #ffffff;
+
+    border: 1px solid #e4e7ec;
+    border-radius: 14px;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 1px 2px rgba(16, 24, 40, 0.025);
+
+    transition:
+        transform 0.18s ease,
+        border-color 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+.analytics-survey-card:hover {
+    transform: translateY(-2px);
+
+    border-color: #c7d2fe;
+    background: #eff0f3;
+    color: #0d0d0e;
+
+    box-shadow:
+        0 8px 24px rgba(16, 24, 40, 0.07);
+}
+
+
+/* ===========================================
+   Survey Card Header
+=========================================== */
+
+.analytics-survey-card-top {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-bottom: 18px;
+}
+
+
+/* Survey ID */
+
+.analytics-survey-id {
+    color: #667085;
+
+    font-size: 11px;
+    font-weight: 650;
+}
+
+
+/* ===========================================
+   Survey Status
+=========================================== */
+
+.analytics-survey-status {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 5px 9px;
+
+    border-radius: 999px;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.analytics-survey-status.published {
+    background: #ecfdf3;
+    color: #027a48;
+}
+
+.analytics-survey-status.draft {
+    background: #f2f4f7;
+    color: #475467;
+}
+
+
+/* ===========================================
+   Survey Content
+=========================================== */
+
+.analytics-survey-card h3 {
+    margin: 0 0 8px;
+
+    color: #101828;
+
+    font-size: 17px;
+    font-weight: 700;
+
+    line-height: 1.4;
+}
+
+.analytics-survey-card p {
+    margin: 0 0 18px;
+
+    color: #667085;
+
+    font-size: 12px;
+    line-height: 1.55;
+
+    display: -webkit-box;
+
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
+}
+
+
+/* ===========================================
+   View Analytics Link
+=========================================== */
+
+.analytics-survey-open {
+    margin-top: auto;
+
+    color: #475467;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    transition:
+        color 0.18s ease,
+        transform 0.18s ease;
+}
+
+.analytics-survey-card:hover
+.analytics-survey-open {
+    color: #4338ca;
+}
+
+
+/* ===========================================
+   Laptop
+=========================================== */
+
+@media (max-width: 1150px) {
+
+    .analytics-survey-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+/* ===========================================
+   Tablet
+=========================================== */
+
+@media (max-width: 900px) {
+
+    .analytics-search-panel {
+        grid-template-columns: 1fr;
+
+        align-items: stretch;
+
+        gap: 22px;
+    }
+
+}
+
+
+/* ===========================================
+   Mobile
+=========================================== */
+
+@media (max-width: 600px) {
+
+    .analytics-landing-header h1 {
+        font-size: 30px;
+    }
+
+
+    .analytics-search-panel {
+        padding: 20px 18px;
+    }
+
+
+    .analytics-search-control {
+        grid-template-columns:
+            38px
+            minmax(0, 1fr);
+
+        overflow: visible;
+
+        border: 0;
+
+        background: transparent;
+    }
+
+
+    .analytics-search-control:focus-within {
+        box-shadow: none;
+    }
+
+
+    .analytics-search-control > span {
+        height: 46px;
+
+        border: 1px solid #d0d5dd;
+        border-right: 0;
+
+        border-radius:
+            9px 0 0 9px;
+    }
+
+
+    .analytics-search-control input {
+        height: 46px;
+
+        border: 1px solid #d0d5dd;
+        border-left: 0;
+
+        border-radius:
+            0 9px 9px 0;
+
+        background: #ffffff;
+    }
+
+
+    .analytics-search-control button {
+        grid-column: 1 / -1;
+
+        width: 100%;
+        height: 44px;
+
+        margin: 10px 0 0;
+    }
+
+
+    .analytics-survey-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+.analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+}
+
+.analytics-card {
+    padding: 22px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+}
+
+.analytics-card h3 {
+    margin: 0 0 12px;
+    color: #101828;
+    font-size: 16px;
+}
+
+.analytics-card ul {
+    margin: 0;
+    padding-left: 18px;
+    color: #475467;
+    line-height: 1.7;
+}
+
+.metric {
+    margin: 0;
+    color: #1d4ed8;
+    font-size: 28px;
+    font-weight: 750;
+}
+
+.question-analytics-icon {
+    color: #2563eb;
+    font-size: 28px;
+}
+
+
+/* ===========================================
+   Dark Theme
+=========================================== */
+
+:root[data-theme="dark"] .analytics-page {
+    background: #0f172a;
+    color: #e5e7eb;
+}
+
+:root[data-theme="dark"] .dashboard-back-btn-analytics-page,
+:root[data-theme="dark"] .analytics-card,
+:root[data-theme="dark"] .analytics-summary-card,
+:root[data-theme="dark"] .analytics-question-card,
+:root[data-theme="dark"] .analytics-overview-card,
+:root[data-theme="dark"] .analytics-empty,
+:root[data-theme="dark"] .analytics-state-card,
+:root[data-theme="dark"] .analytics-loading,
+:root[data-theme="dark"] .analytics-filter,
+:root[data-theme="dark"] .analytics-filter-select,
+:root[data-theme="dark"] .analytics-select,
+:root[data-theme="dark"] .analytics-export-card,
+:root[data-theme="dark"] .analytics-chart-card {
+    background: #111827;
+    border-color: #334155;
+    color: #e5e7eb;
+    box-shadow: none;
+}
+
+:root[data-theme="dark"] .analytics-title,
+:root[data-theme="dark"] .analytics-header h1,
+:root[data-theme="dark"] .analytics-card h3,
+:root[data-theme="dark"] .analytics-summary-card h3,
+:root[data-theme="dark"] .analytics-question-card h3,
+:root[data-theme="dark"] .analytics-overview-card h3,
+:root[data-theme="dark"] .analytics-empty h2,
+:root[data-theme="dark"] .analytics-empty h3,
+:root[data-theme="dark"] .analytics-stat-value {
+    color: #f8fafc;
+}
+
+:root[data-theme="dark"] .analytics-description,
+:root[data-theme="dark"] .analytics-header p,
+:root[data-theme="dark"] .analytics-card p,
+:root[data-theme="dark"] .analytics-card ul,
+:root[data-theme="dark"] .analytics-summary-card p,
+:root[data-theme="dark"] .analytics-question-card p,
+:root[data-theme="dark"] .analytics-overview-card p,
+:root[data-theme="dark"] .analytics-empty p,
+:root[data-theme="dark"] .analytics-meta,
+:root[data-theme="dark"] .analytics-label,
+:root[data-theme="dark"] .analytics-stat-label {
+    color: #cbd5e1;
+}
+
+:root[data-theme="dark"] .analytics-card li,
+:root[data-theme="dark"] .analytics-summary-card li,
+:root[data-theme="dark"] .analytics-question-card li {
+    color: #dbeafe;
+}
+
+:root[data-theme="dark"] .dashboard-back-btn-analytics-page:hover {
+    background: #1d4ed8;
+    border-color: #2563eb;
+    color: #ffffff;
+}
+
+:root[data-theme="dark"] .analytics-filter button,
+:root[data-theme="dark"] .analytics-tab,
+:root[data-theme="dark"] .analytics-chip,
+:root[data-theme="dark"] .analytics-pill {
+    background: #1e293b;
+    border-color: #334155;
+    color: #cbd5e1;
+}
+
+:root[data-theme="dark"] .analytics-filter button:hover,
+:root[data-theme="dark"] .analytics-tab:hover,
+:root[data-theme="dark"] .analytics-tab.active,
+:root[data-theme="dark"] .analytics-chip.active,
+:root[data-theme="dark"] .analytics-pill.active {
+    background: #1d4ed8;
+    border-color: #2563eb;
+    color: #ffffff;
 }

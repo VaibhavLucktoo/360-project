@@ -1,5 +1,3 @@
-import "../styles/SurveyTable.css";
-
 const surveys = [
     {
         id: 1,

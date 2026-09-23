@@ -1,3 +1,4 @@
+import { removeLeadingWhitespace } from "../utils/inputWhitespace";
 /* ===========================================
    Public Survey Page
 =========================================== */
@@ -9,6 +10,14 @@ import Swal from "sweetalert2";
 import * as API from "../services/api";
 
 import "../styles/TakeSurvey.css";
+
+const ANSWER_MAX_LENGTH = 2000;
+const ANSWER_MAX_WORDS = 300;
+
+
+function countWords(value) {
+    return value.trim().split(/\s+/).filter(Boolean).length;
+}
 
 
 /* Keep questions in display order */
@@ -74,42 +83,30 @@ function TakeSurvey() {
 
         setAnswers((previousAnswers) => ({
             ...previousAnswers,
-            [questionId]: value,
+            [questionId]: typeof value === "string" ? removeLeadingWhitespace(value) : value,
         }));
 
     }
 
 
-    /* Update checkbox answer */
-    function handleCheckboxChange(
-        questionId,
-        optionValue,
-        checked
-    ) {
+    /*
+    Reserved for future checkbox/multi-select support.
 
+    function handleCheckboxChange(questionId, optionValue, checked) {
         setAnswers((previousAnswers) => {
-
-            const selectedOptions = Array.isArray(
-                previousAnswers[questionId]
-            )
+            const selectedOptions = Array.isArray(previousAnswers[questionId])
                 ? previousAnswers[questionId]
                 : [];
 
-
             return {
                 ...previousAnswers,
-
                 [questionId]: checked
                     ? [...selectedOptions, optionValue]
-                    : selectedOptions.filter(
-                        (value) =>
-                            value !== optionValue
-                    ),
+                    : selectedOptions.filter((value) => value !== optionValue),
             };
-
         });
-
     }
+    */
 
 
     /* Update rating */
@@ -165,6 +162,43 @@ function TakeSurvey() {
                     title: "Required Question Missing",
                     text: "Please answer all required questions before submitting the survey.",
                     confirmButtonText: "Review Questions",
+                });
+
+
+                return false;
+            }
+
+        }
+
+
+        for (const question of questions) {
+
+            if (
+                !["text", "textarea"].includes(
+                    question.question_type
+                )
+            ) {
+                continue;
+            }
+
+            const answer =
+                answers[question.id];
+
+            if (
+                typeof answer === "string" &&
+                countWords(answer) > ANSWER_MAX_WORDS
+            ) {
+
+                setFormError(
+                    `Answer is too long for: ${question.question_text}`
+                );
+
+
+                Swal.fire({
+                    icon: "warning",
+                    title: "Answer Too Long",
+                    text: `Please keep text answers within ${ANSWER_MAX_WORDS} words.`,
+                    confirmButtonText: "Review Answer",
                 });
 
 
@@ -464,7 +498,7 @@ function TakeSurvey() {
                 <header className="take-survey-header">
 
                     <div className="survey-header-badge">
-                        Employee Survey
+                        360 Bytes
                     </div>
 
                     <h1>
@@ -546,7 +580,6 @@ function TakeSurvey() {
                                 const options =
                                     question.options || [];
 
-
                                 return (
 
                                     <section
@@ -588,8 +621,13 @@ function TakeSurvey() {
                                         </div>
 
 
-                                        <div className={
-                                            question.question_type === "rating" ?"question-answer rating-answer":  "question-answer"}>
+                                        <div
+                                            className={
+                                                question.question_type === "rating"
+                                                    ? "question-answer rating-answer"
+                                                    : "question-answer"
+                                            }
+                                        >
 
 
                                             {/* Text */}
@@ -601,6 +639,7 @@ function TakeSurvey() {
                                                     className="survey-text-input"
                                                     type="text"
                                                     placeholder="Type your answer..."
+                                                    maxLength={ANSWER_MAX_LENGTH}
                                                     value={
                                                         answers[
                                                             question.id
@@ -626,6 +665,7 @@ function TakeSurvey() {
                                                     className="survey-textarea"
                                                     rows="5"
                                                     placeholder="Type your answer..."
+                                                    maxLength={ANSWER_MAX_LENGTH}
                                                     value={
                                                         answers[
                                                             question.id
@@ -704,98 +744,53 @@ function TakeSurvey() {
                                                     <div className="survey-options">
 
                                                         {options.map(
-                                                            (option) => (
+                                                            (option) => {
 
-                                                                <label
-                                                                    key={option}
-                                                                    className="survey-option"
-                                                                >
+                                                                const optionValue =
+                                                                    String(
+                                                                        option.id
+                                                                    );
 
-                                                                    <input
-                                                                        type="radio"
-                                                                        name={`question-${question.id}`}
-                                                                        value={option}
-                                                                        checked={
-                                                                            answers[
-                                                                                question.id
-                                                                            ] ===
-                                                                            option
+                                                                return (
+
+                                                                    <label
+                                                                        key={
+                                                                            option.id
                                                                         }
-                                                                        onChange={(event) =>
-                                                                            handleAnswerChange(
-                                                                                question.id,
-                                                                                event.target.value
-                                                                            )
-                                                                        }
-                                                                    />
+                                                                        className="survey-option"
+                                                                    >
 
-                                                                    <span>
-                                                                        {option}
-                                                                    </span>
-
-                                                                </label>
-
-                                                            )
-                                                        )}
-
-                                                    </div>
-
-                                                ) : (
-
-                                                    <p className="options-unavailable">
-                                                        No options available.
-                                                    </p>
-
-                                                )
-
-                                            )}
-
-
-                                            {/* Checkbox */}
-
-                                            {question.question_type ===
-                                                "checkbox" && (
-
-                                                options.length > 0 ? (
-
-                                                    <div className="survey-options">
-
-                                                        {options.map(
-                                                            (option) => (
-
-                                                                <label
-                                                                    key={option}
-                                                                    className="survey-option"
-                                                                >
-
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        checked={
-                                                                            (
+                                                                        <input
+                                                                            type="radio"
+                                                                            name={`question-${question.id}`}
+                                                                            value={
+                                                                                optionValue
+                                                                            }
+                                                                            checked={
                                                                                 answers[
                                                                                     question.id
-                                                                                ] ||
-                                                                                []
-                                                                            ).includes(
-                                                                                option
-                                                                            )
-                                                                        }
-                                                                        onChange={(event) =>
-                                                                            handleCheckboxChange(
-                                                                                question.id,
-                                                                                option,
-                                                                                event.target.checked
-                                                                            )
-                                                                        }
-                                                                    />
+                                                                                ] ===
+                                                                                optionValue
+                                                                            }
+                                                                            onChange={(event) =>
+                                                                                handleAnswerChange(
+                                                                                    question.id,
+                                                                                    event.target.value
+                                                                                )
+                                                                            }
+                                                                        />
 
-                                                                    <span>
-                                                                        {option}
-                                                                    </span>
+                                                                        <span>
+                                                                            {
+                                                                                option.option_text
+                                                                            }
+                                                                        </span>
 
-                                                                </label>
+                                                                    </label>
 
-                                                            )
+                                                                );
+
+                                                            }
                                                         )}
 
                                                     </div>
@@ -809,6 +804,23 @@ function TakeSurvey() {
                                                 )
 
                                             )}
+
+
+                                            {/*
+                                            Checkbox support is reserved for future multi-select support.
+
+                                            {question.question_type === "checkbox" && (
+                                                options.length > 0 ? (
+                                                    <div className="survey-options">
+                                                        ...
+                                                    </div>
+                                                ) : (
+                                                    <p className="options-unavailable">
+                                                        No options available.
+                                                    </p>
+                                                )
+                                            )}
+                                            */}
 
 
                                             {/* Dropdown */}
@@ -841,10 +853,18 @@ function TakeSurvey() {
                                                             (option) => (
 
                                                                 <option
-                                                                    key={option}
-                                                                    value={option}
+                                                                    key={
+                                                                        option.id
+                                                                    }
+                                                                    value={
+                                                                        String(
+                                                                            option.id
+                                                                        )
+                                                                    }
                                                                 >
-                                                                    {option}
+                                                                    {
+                                                                        option.option_text
+                                                                    }
                                                                 </option>
 
                                                             )

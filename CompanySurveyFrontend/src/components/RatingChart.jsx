@@ -12,7 +12,7 @@ import {
 function RatingChart({ distribution }) {
 
     const chartData = [1, 2, 3, 4, 5].map((rating) => ({
-        rating: `${rating} ★`,
+        rating: `${rating} star`,
         responses: distribution?.[rating] || 0,
     }));
 

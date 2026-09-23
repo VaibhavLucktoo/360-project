@@ -1,3 +1,5 @@
+import { removeLeadingWhitespace } from "../utils/inputWhitespace";
+import PermissionGate from "../components/PermissionGate";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -296,17 +298,19 @@ function SurveyList() {
 
                         </div>
 
+                        <div className="survey-create-button-d">
 
-                        <button
-                            className="survey-create-button"
-                            onClick={() =>
-                                navigate(
-                                    "/surveys/create"
-                                )
-                            }
-                        >
+                    
+                            <PermissionGate permission="survey.create"><button className="survey-create-button"
+                                onClick={() =>
+                                    navigate(
+                                        "/surveys/create"
+                                    )
+                                }
+                            >
                             + Create Survey
-                        </button>
+                            </button></PermissionGate>
+                        </div>
 
                     </header>
 
@@ -377,7 +381,7 @@ function SurveyList() {
                             value={search}
                             onChange={(event) =>
                                 setSearch(
-                                    event.target.value
+                                    removeLeadingWhitespace(event.target.value)
                                 )
                             }
                         />
@@ -468,7 +472,7 @@ function SurveyList() {
                                             </button>
 
 
-                                            <button
+                                            <PermissionGate permission="survey.edit"><button
                                                 title="Build / Edit"
                                                 onClick={() =>
                                                     navigate(
@@ -478,10 +482,10 @@ function SurveyList() {
                                             >
                                                 <FaEdit />
                                                 <span>Edit</span>
-                                            </button>
+                                            </button></PermissionGate>
 
 
-                                            <button
+                                            <PermissionGate permission="analytics.view"><button
                                                 title="Analytics"
                                                 onClick={() =>
                                                     navigate(
@@ -491,7 +495,7 @@ function SurveyList() {
                                             >
                                                 <FaChartBar />
                                                 <span>Analytics</span>
-                                            </button>
+                                            </button></PermissionGate>
 
 
                                             {survey.is_published ? (
@@ -513,7 +517,7 @@ function SurveyList() {
                                                     </button>
 
 
-                                                    <button
+                                                    <PermissionGate permission="survey.publish"><button
                                                         title="Unpublish"
                                                         onClick={() =>
                                                             handleUnpublish(
@@ -525,13 +529,13 @@ function SurveyList() {
                                                         <span>
                                                             Unpublish
                                                         </span>
-                                                    </button>
+                                                    </button></PermissionGate>
 
                                                 </>
 
                                             ) : (
 
-                                                <button
+                                                <PermissionGate permission="survey.publish"><button
                                                     title="Publish"
                                                     onClick={() =>
                                                         handlePublish(
@@ -543,7 +547,7 @@ function SurveyList() {
                                                     <span>
                                                         Publish
                                                     </span>
-                                                </button>
+                                                </button></PermissionGate>
 
                                             )}
 

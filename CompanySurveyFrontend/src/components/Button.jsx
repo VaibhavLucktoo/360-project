@@ -9,6 +9,8 @@ function Button(props) {
 
             // Button type (default is "button")
             type={props.type || "button"}
+
+            disabled={props.disabled}
         >
             {/* Button text */}
             {props.text}

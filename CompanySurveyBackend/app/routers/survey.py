@@ -1,14 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
 from app.models.survey import Survey
 from app.auth.auth import get_current_user
 from app.database.database import get_db
-from app.dependencies.permissions import (
-    can_manage_survey,
-    require_management_user,
-)
+from app.dependencies.permissions import require_permission, require_survey_access, can_view_all_surveys
 
 from app.models.user import User
 
@@ -46,26 +43,24 @@ from app.services.survey_services import (
 router = APIRouter(prefix="/surveys", tags=["Surveys"])
 
 
-def managed_survey(db: Session, survey_id: int, user: User) -> Survey:
-    """Load a survey and enforce the admin-only content-management policy."""
+def load_survey(db: Session, survey_id: int) -> Survey:
+    """Load a survey after the route has checked its action permission."""
     survey = db.get(Survey, survey_id)
     if survey is None:
         raise HTTPException(status_code=404, detail="Survey not found")
-    if not can_manage_survey(user, survey.created_by):
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You cannot manage this survey")
     return survey
 
 
 @router.post("/", response_model=SurveyResponse)
-def add_survey(survey: SurveyCreate, db: Session = Depends(get_db), current_user: User = Depends(require_management_user)):
+def add_survey(survey: SurveyCreate, db: Session = Depends(get_db), current_user: User = Depends(require_permission("survey.create"))):
     return create_survey(db, survey, current_user.id)
 
 
 @router.get("/", response_model=list[SurveyResponse])
 def get_surveys(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     surveys = get_all_surveys(db)
-    # Every non-admin role is a survey respondent, including managers.
-    if not current_user.role or current_user.role.strip().lower() != "admin":
+    # Survey metadata access follows assigned permissions.
+    if not can_view_all_surveys(current_user):
         return [survey for survey in surveys if survey.is_published]
     return surveys
 
@@ -73,27 +68,27 @@ def get_surveys(db: Session = Depends(get_db), current_user: User = Depends(get_
 @router.get("/{survey_id}", response_model=SurveyResponse)
 def get_survey(survey_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     survey = get_survey_by_id(db, survey_id)
-    if survey is None or (current_user.role.strip().lower() != "admin" and not survey.is_published):
+    if survey is None or (not can_view_all_surveys(current_user) and not survey.is_published):
         raise HTTPException(status_code=404, detail="Survey not found")
     return survey
 
 
 @router.put("/{survey_id}", response_model=SurveyResponse)
-def edit_survey(survey_id: int, survey_data: SurveyUpdate, db: Session = Depends(get_db), current_user: User = Depends(require_management_user)):
-    managed_survey(db, survey_id, current_user)
+def edit_survey(survey_id: int, survey_data: SurveyUpdate, db: Session = Depends(get_db), current_user: User = Depends(require_permission("survey.edit"))):
+    load_survey(db, survey_id)
     return update_survey(db, survey_id, survey_data)
 
 
 @router.delete("/{survey_id}")
-def remove_survey(survey_id: int, db: Session = Depends(get_db), current_user: User = Depends(require_management_user)):
-    managed_survey(db, survey_id, current_user)
+def remove_survey(survey_id: int, db: Session = Depends(get_db), current_user: User = Depends(require_permission("survey.delete"))):
+    load_survey(db, survey_id)
     delete_survey(db, survey_id)
     return {"message": "Survey deleted successfully"}
 
 
 @router.put("/{survey_id}/publish", response_model=SurveyResponse)
-def publish_survey_api(survey_id: int, db: Session = Depends(get_db), current_user: User = Depends(require_management_user)):
-    managed_survey(db, survey_id, current_user)
+def publish_survey_api(survey_id: int, db: Session = Depends(get_db), current_user: User = Depends(require_permission("survey.publish"))):
+    load_survey(db, survey_id)
     return publish_survey(db, survey_id)
 
 # Unpublish survey and disable public access
@@ -101,9 +96,9 @@ def publish_survey_api(survey_id: int, db: Session = Depends(get_db), current_us
 def unpublish_survey_api(
     survey_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_management_user)
+    current_user: User = Depends(require_permission("survey.publish"))
 ):
-    managed_survey(db, survey_id, current_user)
+    load_survey(db, survey_id)
 
     survey = unpublish_survey(
         db,
@@ -138,15 +133,14 @@ def get_survey_with_questions_api(survey_id: int,db: Session = Depends(get_db)):
 
     return survey
 
-# Admin can view questions for draft or published surveys
+# Permission holders can preview draft or published surveys
 @router.get("/{survey_id}/questions/admin",response_model=SurveyWithQuestions)
-def get_admin_survey_questions(survey_id: int,db: Session = Depends(get_db),current_user: User = Depends(require_management_user)):
+def get_admin_survey_questions(survey_id: int,db: Session = Depends(get_db),current_user: User = Depends(require_survey_access)):
 
-    # Confirm admin can manage this survey
-    managed_survey(
+    # Confirm the survey exists after checking access
+    load_survey(
         db,
         survey_id,
-        current_user
     )
 
     survey = get_survey_with_questions(
@@ -181,8 +175,8 @@ def submit_employee_survey(
 
 
 @router.get("/{survey_id}/responses", response_model=list[ResponseView])
-def view_survey_responses(survey_id: int, db: Session = Depends(get_db), current_user: User = Depends(require_management_user)):
-    managed_survey(db, survey_id, current_user)
+def view_survey_responses(survey_id: int, db: Session = Depends(get_db), current_user: User = Depends(require_permission("response.view"))):
+    load_survey(db, survey_id)
     return get_responses_by_survey(db, survey_id)
 
 
@@ -190,15 +184,15 @@ def view_survey_responses(survey_id: int, db: Session = Depends(get_db), current
 def view_survey_analytics(
     survey_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_management_user),
+    current_user: User = Depends(require_permission("analytics.view")),
 ):
     """
     Return anonymous survey-level analytics.
-    Accessible only to administrators/managers.
+    Requires analytics.view.
     """
 
     # Ensure the user can manage this survey
-    managed_survey(db, survey_id, current_user)
+    load_survey(db, survey_id)
 
     analytics = get_survey_analytics(db, survey_id)
 
@@ -212,6 +206,6 @@ def view_survey_analytics(
 
 
 @router.get("/{survey_id}/export")
-def export_survey(survey_id: int, db: Session = Depends(get_db), current_user: User = Depends(require_management_user)):
-    managed_survey(db, survey_id, current_user)
+def export_survey(survey_id: int, db: Session = Depends(get_db), current_user: User = Depends(require_permission("response.export"))):
+    load_survey(db, survey_id)
     return StreamingResponse(export_survey_csv(db, survey_id), media_type="text/csv", headers={"Content-Disposition": f"attachment; filename=survey_{survey_id}.csv"})

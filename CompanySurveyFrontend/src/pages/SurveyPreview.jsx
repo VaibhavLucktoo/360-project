@@ -1,3 +1,4 @@
+import PermissionGate from "../components/PermissionGate";
 import { useEffect, useState } from "react";
 import {
     Link,
@@ -5,6 +6,7 @@ import {
     useParams,
 } from "react-router-dom";
 
+import Sidebar from "../components/Sidebar";
 import { getAdminSurveyQuestions } from "../services/api";
 
 import "../styles/SurveyPreview.css";
@@ -18,6 +20,13 @@ function normalizeQuestion(question) {
         type: question.question_type,
         required: question.is_required,
         display_order: question.display_order,
+        options: Array.isArray(question.options)
+            ? [...question.options].sort(
+                (firstOption, secondOption) =>
+                    (firstOption.display_order || 0) -
+                    (secondOption.display_order || 0)
+            )
+            : [],
     };
 }
 
@@ -56,6 +65,15 @@ function SurveyPreview() {
         async function fetchPreview() {
 
             try {
+
+                if (!surveyId) {
+
+                    setError("Invalid survey ID.");
+                    setLoading(false);
+
+                    return;
+                }
+
 
                 setLoading(true);
                 setError("");
@@ -106,16 +124,7 @@ function SurveyPreview() {
         }
 
 
-        if (surveyId) {
-
-            fetchPreview();
-
-        } else {
-
-            setError("Invalid survey ID.");
-            setLoading(false);
-
-        }
+        fetchPreview();
 
 
         return () => {
@@ -128,9 +137,13 @@ function SurveyPreview() {
     /* Loading state */
     if (loading) {
         return (
-            <div className="survey-preview-page">
-                <p>Loading preview...</p>
-            </div>
+            <>
+                <Sidebar />
+
+                <main className="survey-preview-page">
+                    <p>Loading preview...</p>
+                </main>
+            </>
         );
     }
 
@@ -138,34 +151,40 @@ function SurveyPreview() {
     /* Error state */
     if (error) {
         return (
-            <div className="survey-preview-page">
+            <>
+                <Sidebar />
 
-                <Link
-                    to="/dashboard"
-                    className="survey-preview-back-link"
-                >
-                    ← Back to Dashboard
-                </Link>
+                <main className="survey-preview-page">
+                    <Link
+                        to="/dashboard"
+                        className="survey-preview-back-link"
+                    >
+                        Back to Dashboard
+                    </Link>
 
-                <p>
-                    {error}
-                </p>
+                    <p>
+                        {error}
+                    </p>
+                </main>
 
-            </div>
+            </>
         );
     }
 
 
     return (
 
-        <div className="survey-preview-page">
+        <>
+            <Sidebar />
+
+            <main className="survey-preview-page">
 
             {/* Dashboard navigation */}
             <Link
                 to="/dashboard"
                 className="survey-preview-back-link"
             >
-                ← Back to Dashboard
+                Back to Dashboard
             </Link>
 
 
@@ -275,21 +294,56 @@ function SurveyPreview() {
                                 {/* Radio question */}
                                 {question.type === "radio" && (
 
-                                    <p>
-                                        Radio options will appear here.
-                                    </p>
+                                    question.options.length > 0 ? (
+
+                                        <div className="survey-options">
+
+                                            {question.options.map(
+                                                (option) => (
+
+                                                    <label
+                                                        key={option.id}
+                                                        className="survey-option"
+                                                    >
+
+                                                        <input
+                                                            type="radio"
+                                                            disabled
+                                                        />
+
+                                                        <span>
+                                                            {
+                                                                option.option_text
+                                                            }
+                                                        </span>
+
+                                                    </label>
+
+                                                )
+                                            )}
+
+                                        </div>
+
+                                    ) : (
+
+                                        <p>
+                                            No options available.
+                                        </p>
+
+                                    )
 
                                 )}
 
 
-                                {/* Checkbox question */}
-                                {question.type === "checkbox" && (
+                                {/*
+                                Checkbox support is reserved for future multi-select support.
 
+                                {question.type === "checkbox" && (
                                     <p>
                                         Checkbox options will appear here.
                                     </p>
-
                                 )}
+                                */}
 
 
                                 {/* Dropdown question */}
@@ -300,6 +354,20 @@ function SurveyPreview() {
                                         <option>
                                             Select an option
                                         </option>
+
+                                        {question.options.map(
+                                            (option) => (
+
+                                                <option
+                                                    key={option.id}
+                                                >
+                                                    {
+                                                        option.option_text
+                                                    }
+                                                </option>
+
+                                            )
+                                        )}
 
                                     </select>
 
@@ -318,7 +386,7 @@ function SurveyPreview() {
             {/* Builder navigation */}
             <div className="survey-preview-actions">
 
-                <button
+                <PermissionGate permission="survey.edit"><button
                     type="button"
                     onClick={() =>
                         navigate(
@@ -326,12 +394,13 @@ function SurveyPreview() {
                         )
                     }
                 >
-                    ← Back to Builder
-                </button>
+                    Back to Builder
+                </button></PermissionGate>
 
             </div>
 
-        </div>
+            </main>
+        </>
 
     );
 

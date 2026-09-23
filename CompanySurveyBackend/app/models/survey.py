@@ -17,7 +17,11 @@ class Survey(Base):
 
     is_published = Column(Boolean, default= False, index=True)
     creator = relationship("User", back_populates="surveys")
-    questions = relationship("Question", back_populates="survey")
+    questions = relationship(
+        "Question",
+        back_populates="survey",
+        cascade="all, delete-orphan",
+    )
     responses = relationship("Response", back_populates="survey")
 
     # Supports the published-survey list used by employee dashboards.

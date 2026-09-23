@@ -2,17 +2,6 @@
    GLOBAL PAGE
 =========================================== */
 
-body{
-    margin:0;
-    padding:0;
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background:linear-gradient(135deg,#eff6ff,#dbeafe);
-}
-
-/* ===========================================
-   LOGIN CONTAINER
-=========================================== */
-
 .login-container{
 
     display:flex;
@@ -24,6 +13,8 @@ body{
     min-height:100vh;
 
     padding:20px;
+
+    background:linear-gradient(135deg,#eff6ff,#dbeafe);
 
 }
 
@@ -237,53 +228,33 @@ body{
 
 }
 
-/* ===========================================
-   LOGIN OPTIONS
-=========================================== */
-
-.login-options{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    margin-bottom:25px;
-
-    font-size:14px;
-
-}
-
 .remember-me{
 
     display:flex;
 
     align-items:center;
 
-    gap:8px;
+    gap:10px;
 
-    cursor:pointer;
+    width:max-content;
+
+    margin-bottom:20px;
+
+    color:#374151;
+
+    font-size:14px;
+
+    font-weight:600;
 
 }
 
 .remember-me input{
 
-    width:auto;
+    width:16px;
 
-}
+    height:16px;
 
-.login-options a{
-
-    text-decoration:none;
-
-    color:#2563eb;
-
-}
-
-.login-options a:hover{
-
-    text-decoration:underline;
+    accent-color:#2563eb;
 
 }
 
@@ -291,7 +262,7 @@ body{
    BUTTON
 =========================================== */
 
-button{
+.login-card button{
 
     width:100%;
 
@@ -315,7 +286,7 @@ button{
 
 }
 
-button:hover{
+.login-card button:hover:not(:disabled){
 
     background:#1d4ed8;
 
@@ -325,7 +296,7 @@ button:hover{
 
 }
 
-button:active{
+.login-card button:active:not(:disabled){
 
     transform:scale(.98);
 
@@ -365,4 +336,10 @@ button:active{
 
     }
 
+}
+
+.login-card button:disabled{
+    opacity:0.65;
+    transform:none;
+    box-shadow:none;
 }

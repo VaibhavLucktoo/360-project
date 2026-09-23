@@ -1,6 +1,5 @@
 import csv
 
-from collections import Counter
 from io import StringIO
 from uuid import uuid4
 
@@ -20,6 +19,189 @@ from app.schemas.response import (
 
 
 # ===========================================
+# Choice Question Types
+# ===========================================
+
+CHOICE_TYPES = {
+    "radio",
+    "dropdown",
+    # "checkbox" can be added back when multi-select questions return.
+}
+
+
+TEXT_TYPES = {
+    "text",
+    "textarea",
+}
+
+
+# ===========================================
+# Resolve Stored Option IDs
+# ===========================================
+
+def resolve_answer_display(
+    question: Question | None,
+    answer: str
+):
+
+    # Return raw answer when the question is unavailable.
+    if question is None:
+        return answer
+
+
+    question_type = (
+        question.question_type
+        .strip()
+        .lower()
+    )
+
+
+    # Text and rating answers are already readable.
+    if question_type not in CHOICE_TYPES:
+        return answer
+
+
+    # Map option IDs to visible labels.
+    option_map = {
+        str(option.id):
+            option.option_text
+
+        for option in question.options
+    }
+
+
+    # Supports one value now and multiple values later.
+    answer_values = [
+        value.strip()
+
+        for value in answer.split(",")
+
+        if value.strip()
+    ]
+
+
+    readable_values = [
+
+        option_map.get(
+            value,
+            value
+        )
+
+        for value in answer_values
+    ]
+
+
+    return ", ".join(
+        readable_values
+    )
+
+
+def validate_answer_for_question(
+    question: Question,
+    answer: str,
+):
+    """Validate the submitted answer against the saved question definition."""
+
+    question_type = (
+        question.question_type
+        .strip()
+        .lower()
+    )
+
+    if question_type in TEXT_TYPES:
+        return
+
+    if question_type == "rating":
+        if answer not in {"1", "2", "3", "4", "5"}:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Rating answer for question {question.id} must be between 1 and 5.",
+            )
+
+        return
+
+    if question_type in CHOICE_TYPES:
+        valid_option_ids = {
+            str(option.id)
+            for option in question.options
+        }
+
+        if not valid_option_ids:
+            raise HTTPException(
+                status_code=400,
+                detail=f"{question_type} question {question.id} does not have any options.",
+            )
+
+        if answer not in valid_option_ids:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Answer for question {question.id} must be one of the saved option IDs.",
+            )
+
+        return
+
+    raise HTTPException(
+        status_code=400,
+        detail=f"Unsupported question type for question {question.id}.",
+    )
+
+
+# ===========================================
+# Add Admin Display Fields
+# ===========================================
+
+def attach_response_display_fields(
+    db: Session,
+    response: Response
+):
+
+    survey = db.get(
+        Survey,
+        response.survey_id
+    )
+
+
+    question = db.get(
+        Question,
+        response.question_id
+    )
+
+
+    # These fields are not database columns.
+    # They are only added for API responses.
+    response.survey_title = (
+        survey.title
+        if survey
+        else None
+    )
+
+
+    response.question_text = (
+        question.question_text
+        if question
+        else None
+    )
+
+
+    response.question_type = (
+        question.question_type
+        if question
+        else None
+    )
+
+
+    response.answer_display = (
+        resolve_answer_display(
+            question,
+            response.answer
+        )
+    )
+
+
+    return response
+
+
+# ===========================================
 # Create Individual Response
 # ===========================================
 
@@ -34,19 +216,48 @@ def create_response(
         response.question_id
     )
 
+
     if question is None:
         return None
 
-    # Generate an ID for this individual response
-    submission_id = str(uuid4())
+    survey = db.get(Survey, question.survey_id)
+    if survey is None or not survey.is_published:
+        raise HTTPException(status_code=400, detail="Survey is not published")
+
+    answer = (
+        response.answer.strip()
+    )
+
+    validate_answer_for_question(
+        question,
+        answer,
+    )
+
+    # Generate an ID for this individual response.
+    submission_id = str(
+        uuid4()
+    )
+
 
     item = Response(
-        survey_id=question.survey_id,
-        user_id=current_user_id,
-        submission_id=submission_id,
-        question_id=question.id,
-        answer=response.answer.strip(),
+
+        survey_id=
+            question.survey_id,
+
+        user_id=
+            current_user_id,
+
+        submission_id=
+            submission_id,
+
+        question_id=
+            question.id,
+
+        answer=
+            answer,
+
     )
+
 
     db.add(item)
 
@@ -54,7 +265,11 @@ def create_response(
 
     db.refresh(item)
 
-    return item
+
+    return attach_response_display_fields(
+        db,
+        item
+    )
 
 
 # ===========================================
@@ -66,19 +281,39 @@ def get_all_responses(
     survey_id: int | None = None
 ):
 
-    query = db.query(Response)
+    query = db.query(
+        Response
+    )
+
 
     if survey_id is not None:
 
-        return (
+        responses = (
             query
             .filter(
-                Response.survey_id == survey_id
+                Response.survey_id ==
+                survey_id
             )
             .all()
         )
 
-    return query.all()
+    else:
+
+        responses = (
+            query.all()
+        )
+
+
+    # Add readable admin values.
+    return [
+
+        attach_response_display_fields(
+            db,
+            response
+        )
+
+        for response in responses
+    ]
 
 
 # ===========================================
@@ -90,9 +325,19 @@ def get_response_by_id(
     response_id: int
 ):
 
-    return db.get(
+    response = db.get(
         Response,
         response_id
+    )
+
+
+    if response is None:
+        return None
+
+
+    return attach_response_display_fields(
+        db,
+        response
     )
 
 
@@ -111,16 +356,29 @@ def update_response(
         response_id
     )
 
+
     if response is None:
         return None
 
-    response.answer = response_data.answer.strip()
+    validate_answer_for_question(
+        response.question,
+        response_data.answer.strip(),
+    )
+
+    response.answer = (
+        response_data.answer.strip()
+    )
+
 
     db.commit()
 
     db.refresh(response)
 
-    return response
+
+    return attach_response_display_fields(
+        db,
+        response
+    )
 
 
 # ===========================================
@@ -137,12 +395,15 @@ def delete_response(
         response_id
     )
 
+
     if response is None:
         return None
+
 
     db.delete(response)
 
     db.commit()
+
 
     return response
 
@@ -165,6 +426,7 @@ def submit_survey(
         Survey,
         survey_id
     )
+
 
     if survey is None:
 
@@ -191,8 +453,13 @@ def submit_survey(
     # ===========================================
 
     questions = {
-        question.id: question
-        for question in survey.questions
+
+        question.id:
+            question
+
+        for question
+        in survey.questions
+
     }
 
 
@@ -201,8 +468,13 @@ def submit_survey(
     # ===========================================
 
     submitted = {
-        answer.question_id: answer.answer.strip()
-        for answer in submission.answers
+
+        answer.question_id:
+            answer.answer.strip()
+
+        for answer
+        in submission.answers
+
     }
 
 
@@ -211,16 +483,28 @@ def submit_survey(
     # ===========================================
 
     if (
-        len(submitted) != len(submission.answers)
+
+        len(submitted) !=
+        len(submission.answers)
+
         or any(
-            question_id not in questions
-            for question_id in submitted
+
+            question_id
+            not in questions
+
+            for question_id
+            in submitted
+
         )
+
     ):
 
         raise HTTPException(
             status_code=400,
-            detail="One or more answers do not belong to this survey"
+            detail=(
+                "One or more answers "
+                "do not belong to this survey"
+            )
         )
 
 
@@ -229,13 +513,22 @@ def submit_survey(
     # ===========================================
 
     missing = [
+
         question.question_text
-        for question in questions.values()
+
+        for question
+        in questions.values()
+
         if (
             question.is_required
-            and not submitted.get(question.id)
+            and
+            not submitted.get(
+                question.id
+            )
         )
+
     ]
+
 
     if missing:
 
@@ -249,29 +542,62 @@ def submit_survey(
 
 
     # ===========================================
+    # Validate Answer Values
+    # ===========================================
+
+    for (
+        question_id,
+        answer
+    ) in submitted.items():
+
+
+        if not answer:
+            continue
+
+
+        validate_answer_for_question(
+            questions[question_id],
+            answer,
+        )
+
+
+    # ===========================================
     # Validate Anonymous Submission
     # ===========================================
 
-    # Use the persistent ID sent by the browser
+    # Use the persistent browser submission ID.
     submission_id = str(
         submission.submission_id
     )
 
-    # Block repeat submission for this survey
+
     existing_submission = (
+
         db.query(Response)
+
         .filter(
-            Response.survey_id == survey_id,
-            Response.submission_id == submission_id,
+
+            Response.survey_id ==
+                survey_id,
+
+            Response.submission_id ==
+                submission_id,
+
         )
+
         .first()
+
     )
+
 
     if existing_submission:
 
         raise HTTPException(
             status_code=409,
-            detail="This survey has already been submitted."
+            detail=(
+                "This survey has already "
+                "been submitted."
+            )
         )
 
 
@@ -279,19 +605,35 @@ def submit_survey(
     # Save Responses
     # ===========================================
 
-    for question_id, answer in submitted.items():
+    for (
+        question_id,
+        answer
+    ) in submitted.items():
+
 
         if not answer:
             continue
 
-        # Group answers under one submission ID
+
         response = Response(
-            survey_id=survey_id,
-            user_id=None,
-            submission_id=submission_id,
-            question_id=question_id,
-            answer=answer,
+
+            survey_id=
+                survey_id,
+
+            user_id=
+                None,
+
+            submission_id=
+                submission_id,
+
+            question_id=
+                question_id,
+
+            answer=
+                answer,
+
         )
+
 
         db.add(response)
 
@@ -304,28 +646,44 @@ def submit_survey(
 
         db.commit()
 
+
     except IntegrityError:
 
         db.rollback()
 
-        # Handle simultaneous duplicate requests safely
+
         duplicate_submission = (
+
             db.query(Response)
+
             .filter(
-                Response.survey_id == survey_id,
-                Response.submission_id == submission_id,
+
+                Response.survey_id ==
+                    survey_id,
+
+                Response.submission_id ==
+                    submission_id,
+
             )
+
             .first()
+
         )
+
 
         if duplicate_submission:
 
             raise HTTPException(
                 status_code=409,
-                detail="This survey has already been submitted."
+                detail=(
+                    "This survey has already "
+                    "been submitted."
+                )
             )
 
+
         raise
+
 
     except Exception:
 
@@ -335,12 +693,17 @@ def submit_survey(
 
 
     # ===========================================
-    # Response
+    # Submission Response
     # ===========================================
 
     return {
-        "message": "Survey submitted successfully",
-        "submission_id": submission_id,
+
+        "message":
+            "Survey submitted successfully",
+
+        "submission_id":
+            submission_id,
+
     }
 
 
@@ -353,13 +716,30 @@ def get_responses_by_question(
     question_id: int
 ):
 
-    return (
+    responses = (
+
         db.query(Response)
+
         .filter(
-            Response.question_id == question_id
+            Response.question_id ==
+            question_id
         )
+
         .all()
+
     )
+
+
+    return [
+
+        attach_response_display_fields(
+            db,
+            response
+        )
+
+        for response in responses
+
+    ]
 
 
 # ===========================================
@@ -371,125 +751,30 @@ def get_responses_by_survey(
     survey_id: int
 ):
 
-    return (
+    responses = (
+
         db.query(Response)
+
         .filter(
-            Response.survey_id == survey_id
+            Response.survey_id ==
+            survey_id
         )
+
         .all()
+
     )
 
 
-# ===========================================
-# Question Analytics
-# ===========================================
+    return [
 
-def get_question_analytics(
-    db: Session,
-    question: Question
-):
-
-    answers = [
-        row.answer
-        for row in (
-            db.query(Response.answer)
-            .filter(
-                Response.question_id == question.id
-            )
-            .all()
+        attach_response_display_fields(
+            db,
+            response
         )
+
+        for response in responses
+
     ]
-
-    question_type = (
-        question.question_type.lower()
-    )
-
-    result = {
-        "question_id": question.id,
-        "question": question.question_text,
-        "question_type": question_type,
-        "total_responses": len(answers),
-        "average_rating": None,
-        "yes_count": None,
-        "no_count": None,
-        "answer_breakdown": None,
-        "text_responses": None,
-    }
-
-
-    # ===========================================
-    # Rating Analytics
-    # ===========================================
-
-    if question_type == "rating":
-
-        ratings = [
-            int(answer)
-            for answer in answers
-            if (
-                answer.isdigit()
-                and 1 <= int(answer) <= 5
-            )
-        ]
-
-        result["average_rating"] = (
-            round(
-                sum(ratings) / len(ratings),
-                2
-            )
-            if ratings
-            else None
-        )
-
-
-    # ===========================================
-    # Choice Analytics
-    # ===========================================
-
-    elif question_type in {
-        "yes/no",
-        "yes_no",
-        "radio",
-        "checkbox",
-        "dropdown",
-    }:
-
-        values = [
-            value.strip()
-            for answer in answers
-            for value in answer.split(",")
-            if value.strip()
-        ]
-
-        counts = Counter(values)
-
-        result["answer_breakdown"] = (
-            dict(counts)
-        )
-
-        result["yes_count"] = sum(
-            count
-            for value, count in counts.items()
-            if value.lower() == "yes"
-        )
-
-        result["no_count"] = sum(
-            count
-            for value, count in counts.items()
-            if value.lower() == "no"
-        )
-
-
-    # ===========================================
-    # Text Analytics
-    # ===========================================
-
-    else:
-
-        result["text_responses"] = answers
-
-
-    return result
 
 
 # ===========================================
@@ -506,6 +791,7 @@ def export_survey_csv(
         survey_id
     )
 
+
     if survey is None:
 
         raise HTTPException(
@@ -516,29 +802,137 @@ def export_survey_csv(
 
     output = StringIO()
 
-    writer = csv.writer(output)
+    writer = csv.writer(
+        output
+    )
+
+
+    questions = sorted(
+        survey.questions,
+        key=lambda question: question.display_order,
+    )
+
+
+    questions_by_id = {
+        question.id: question
+        for question in questions
+    }
+
+
+    responses = (
+
+        db.query(Response)
+
+        .filter(
+            Response.survey_id ==
+            survey_id
+        )
+
+        .order_by(
+            Response.created_at,
+            Response.submission_id,
+        )
+
+        .all()
+
+    )
+
+
+    submission_rows = {}
+
+
+    for response in responses:
+
+        question = questions_by_id.get(
+            response.question_id
+        )
+
+
+        if question is None:
+            continue
+
+
+        if response.submission_id not in submission_rows:
+
+            submission_rows[
+                response.submission_id
+            ] = {
+                "submitted_at":
+                    response.created_at,
+
+                "answers":
+                    {},
+            }
+
+
+        if (
+            response.created_at
+            <
+            submission_rows[
+                response.submission_id
+            ]["submitted_at"]
+        ):
+
+            submission_rows[
+                response.submission_id
+            ]["submitted_at"] = response.created_at
+
+
+        submission_rows[
+            response.submission_id
+        ]["answers"][
+            response.question_id
+        ] = resolve_answer_display(
+            question,
+            response.answer
+        )
 
 
     # CSV header
-    writer.writerow([
-        "Question",
-        "Question Type",
-        "Answer",
-    ])
+    writer.writerow(
+        [
+            "Submission ID",
+            "Submitted At",
+        ]
+        + [
+            question.question_text
+            for question in questions
+        ]
+    )
 
 
-    # CSV rows
-    for question in survey.questions:
+    # CSV rows: one row per survey submission.
+    ordered_submission_ids = sorted(
+        submission_rows,
+        key=lambda submission_id: (
+            submission_rows[submission_id]["submitted_at"],
+            submission_id,
+        ),
+    )
 
-        for response in question.responses:
 
-            writer.writerow([
-                question.question_text,
-                question.question_type,
-                response.answer,
-            ])
+    for submission_id in ordered_submission_ids:
+
+        submission_data = submission_rows[
+            submission_id
+        ]
+
+        writer.writerow(
+            [
+                submission_id,
+                submission_data["submitted_at"],
+            ]
+            + [
+                submission_data["answers"].get(
+                    question.id,
+                    ""
+                )
+                for question in questions
+            ]
+        )
 
 
     output.seek(0)
+
 
     return output

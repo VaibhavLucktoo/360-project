@@ -1,3 +1,5 @@
+import { removeLeadingWhitespace } from "../utils/inputWhitespace";
+import PermissionGate from "../components/PermissionGate";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -7,7 +9,19 @@ import {
     createSurvey,
 } from "../services/api";
 
+import Sidebar from "../components/Sidebar";
+
 import "../styles/CreateSurvey.css";
+
+const TITLE_MAX_LENGTH = 200;
+const TITLE_MAX_WORDS = 20;
+const DESCRIPTION_MAX_LENGTH = 5000;
+const DESCRIPTION_MAX_WORDS = 300;
+
+
+function countWords(value) {
+    return value.trim().split(/\s+/).filter(Boolean).length;
+}
 
 
 function CreateSurvey() {
@@ -28,6 +42,24 @@ function CreateSurvey() {
 
             setError(
                 "Title and description are required."
+            );
+
+            return null;
+        }
+
+        if (countWords(title) > TITLE_MAX_WORDS) {
+
+            setError(
+                `Survey title cannot exceed ${TITLE_MAX_WORDS} words.`
+            );
+
+            return null;
+        }
+
+        if (countWords(description) > DESCRIPTION_MAX_WORDS) {
+
+            setError(
+                `Survey description cannot exceed ${DESCRIPTION_MAX_WORDS} words.`
             );
 
             return null;
@@ -112,7 +144,10 @@ function CreateSurvey() {
 
     return (
 
-        <div className="create-survey-page">
+        <>
+            <Sidebar />
+
+            <main className="create-survey-page">
 
             <div className="create-survey-container">
 
@@ -134,6 +169,20 @@ function CreateSurvey() {
                         You can add questions and publish it
                         from the survey builder.
                     </p>
+
+                    <div>
+                        <button
+                    type="button"
+                    className="dashboard-back-btn-createsurvey-page"
+                    onClick={() =>
+                        navigate("/dashboard")
+                    }
+                    >
+
+                    Back to Dashboard
+
+                    </button>
+                    </div>
 
                 </div>
 
@@ -161,9 +210,10 @@ function CreateSurvey() {
                             id="survey-title"
                             type="text"
                             placeholder="e.g. Employee Satisfaction Survey"
+                            maxLength={TITLE_MAX_LENGTH}
                             value={title}
                             onChange={(event) => {
-                                setTitle(event.target.value);
+                                setTitle(removeLeadingWhitespace(event.target.value));
                                 setError("");
                             }}
                             disabled={loading}
@@ -183,9 +233,10 @@ function CreateSurvey() {
                             id="survey-description"
                             rows="5"
                             placeholder="Briefly explain the purpose of this survey..."
+                            maxLength={DESCRIPTION_MAX_LENGTH}
                             value={description}
                             onChange={(event) => {
-                                setDescription(event.target.value);
+                                setDescription(removeLeadingWhitespace(event.target.value));
                                 setError("");
                             }}
                             disabled={loading}
@@ -218,7 +269,7 @@ function CreateSurvey() {
                                 : "Save Draft"}
                         </button>
 
-                        <button
+                        <PermissionGate permission="survey.edit"><button
                             type="button"
                             className="primary-btn"
                             onClick={handleBuildSurvey}
@@ -227,7 +278,7 @@ function CreateSurvey() {
                             {loading
                                 ? "Creating..."
                                 : "Build Survey"}
-                        </button>
+                        </button></PermissionGate>
 
                     </div>
 
@@ -235,7 +286,8 @@ function CreateSurvey() {
 
             </div>
 
-        </div>
+            </main>
+        </>
 
     );
 }

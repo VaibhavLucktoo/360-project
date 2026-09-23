@@ -8,11 +8,11 @@
 
     align-items: center;
 
-    background-color: white;
+    background-color: #ffffff;
 
     padding: 18px 30px;
 
-    border-radius:  12px;
+    border-radius:  8px;
 
     box-shadow: 0 5px 15px rgba(0,0,0,.08);
 
@@ -37,9 +37,37 @@
 
     font-size:20px;
 
-    cursor:pointer;
-
     color:#374151;
+
+}
+
+.nav-icon-btn{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    width:40px;
+
+    height:40px;
+
+    padding:0;
+
+    border:1px solid transparent;
+
+    border-radius:8px;
+
+    background:transparent;
+
+}
+
+.nav-icon-btn:hover{
+
+    background:#eff6ff;
+
+    border-color:#bfdbfe;
 
 }
 
@@ -53,7 +81,23 @@
 
     gap:10px;
 
-    cursor:pointer;
+    padding:6px 8px;
+
+    border:1px solid transparent;
+
+    border-radius:8px;
+
+    background:transparent;
+
+    color:#111827;
+
+}
+
+.profile:hover{
+
+    background:#eff6ff;
+
+    border-color:#bfdbfe;
 
 }
 

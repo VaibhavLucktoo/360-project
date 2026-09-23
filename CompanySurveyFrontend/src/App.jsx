@@ -11,6 +11,9 @@ import ProtectedRoute from "./components/ProtectedRoute";
 // ===========================================
 // Pages
 // ===========================================
+import AccessManagement from "./pages/AccessManagement";
+import Roles from "./pages/Roles";
+import Users from "./pages/Users";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import CreateSurvey from "./pages/CreateSurvey";
@@ -20,8 +23,10 @@ import TakeSurvey from "./pages/TakeSurvey";
 import Analytics from "./pages/Analytics";
 import SurveyList from "./pages/SurveyList";
 import Responses from "./pages/Responses";
-import QuestionAnalytics from "./pages/QuestionAnalytics";
 import SurveyBuilder from "./pages/SurveyBuilder";
+import Settings from "./pages/Settings";
+import QuestionAnalytics from "./pages/QuestionAnalytics";
+import { getStoredToken } from "./services/api";
 // ===========================================
 // Main Application
 // ===========================================
@@ -40,11 +45,18 @@ function LegacySurveyQuestionsRedirect() {
 
 function App() {
 
-    const token = localStorage.getItem("token");
+    const token = getStoredToken();
 
     return (
 
         <Routes>
+            <Route path="/roles" element={<ProtectedRoute permission="role.manage"><Roles /></ProtectedRoute>} />
+            <Route path="/users" element={<ProtectedRoute permission="user.manage"><Users /></ProtectedRoute>} />
+            <Route path="/access" element={
+                <ProtectedRoute anyPermissions={["role.manage", "user.manage"]}>
+                    <AccessManagement />
+                </ProtectedRoute>
+            } />
 
             {/* ===========================================
                 Root Redirect
@@ -82,13 +94,26 @@ function App() {
             />
 
             {/* ===========================================
+                Settings
+            =========================================== */}
+
+            <Route
+                path="/settings"
+                element={
+                    <ProtectedRoute>
+                        <Settings />
+                    </ProtectedRoute>
+                }
+            />
+
+            {/* ===========================================
                 Create Survey
             =========================================== */}
 
             <Route
                 path="/surveys/create"
                 element={
-                    <ProtectedRoute>
+                    <ProtectedRoute permission="survey.create">
                         <CreateSurvey />
                     </ProtectedRoute>
                 }
@@ -112,7 +137,7 @@ function App() {
                     <Route
                         path="/surveys/:id/builder"
                         element={
-                            <ProtectedRoute>
+                            <ProtectedRoute permission="survey.edit">
                                 <SurveyBuilder />
                             </ProtectedRoute>
                         }
@@ -122,7 +147,7 @@ function App() {
             <Route
                 path="/surveys/:id/questions"
                 element={
-                    <ProtectedRoute>
+                    <ProtectedRoute permission="survey.edit">
                         <LegacySurveyQuestionsRedirect />
                     </ProtectedRoute>
                 }
@@ -134,18 +159,8 @@ function App() {
             <Route
                 path="/surveys"
                 element={
-                    <ProtectedRoute>
+                    <ProtectedRoute surveyAccess>
                         <SurveyList />
-                    </ProtectedRoute>
-                }
-            />
-
-            {/*Question Analytics*/}
-            <Route
-                path="/surveys/:surveyId/questions/:questionId/analytics"
-                element={
-                    <ProtectedRoute>
-                        <QuestionAnalytics />
                     </ProtectedRoute>
                 }
             />
@@ -157,7 +172,7 @@ function App() {
             <Route
                 path="/surveys/:id/preview"
                 element={
-                    <ProtectedRoute>
+                    <ProtectedRoute surveyAccess>
                         <SurveyPreview />
                     </ProtectedRoute>
                 }
@@ -175,18 +190,44 @@ function App() {
                 }
             />
 
-            {/* ===========================================
-                Survey Responses
-            =========================================== */}
+{/* ===========================================
+    Responses
+=========================================== */}
 
-            <Route
-                path="/surveys/:id/responses"
-                element={
-                    <ProtectedRoute>
-                        <Responses />
-                    </ProtectedRoute>
-                }
-            />
+{/* Main responses page */}
+<Route
+    path="/responses"
+    element={
+        <ProtectedRoute permission="response.view">
+            <Responses />
+        </ProtectedRoute>
+    }
+/>
+
+
+{/* Responses for one survey */}
+<Route
+    path="/surveys/:id/responses"
+    element={
+        <ProtectedRoute permission="response.view">
+            <Responses />
+        </ProtectedRoute>
+    }
+
+/>
+
+{/* ===========================================
+    Analytics Landing Page
+=========================================== */}
+
+<Route
+    path="/analytics"
+    element={
+        <ProtectedRoute permission="analytics.view">
+            <Analytics />
+        </ProtectedRoute>
+    }
+/>
 
             {/* ===========================================
                 Survey Analytics
@@ -195,8 +236,17 @@ function App() {
             <Route
                 path="/surveys/:id/analytics"
                 element={
-                    <ProtectedRoute>
+                    <ProtectedRoute permission="analytics.view">
                         <Analytics />
+                    </ProtectedRoute>
+                }
+            />
+
+            <Route
+                path="/questions/:id/analytics"
+                element={
+                    <ProtectedRoute permission="analytics.view">
+                        <QuestionAnalytics />
                     </ProtectedRoute>
                 }
             />

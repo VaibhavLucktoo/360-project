@@ -1,3 +1,5 @@
+import PermissionGate from "../components/PermissionGate";
+import { useAuth } from "../context/useAuth";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -78,6 +80,8 @@ function normalizeUserData(payload) {
 
 
 function Dashboard() {
+    const { can, canSurvey, user: currentAccount } = useAuth();
+    const accessKey = (currentAccount?.permissions || []).join(",");
 
     const navigate = useNavigate();
 
@@ -130,15 +134,13 @@ function Dashboard() {
                     responsesPayload,
                 ] = await Promise.all([
 
-                    normalizedUser?.role?.toLowerCase()
-                        === "admin"
+                    normalizedUser?.permissions?.includes("user.manage")
                         ? getUsers()
                         : Promise.resolve([]),
 
                     getSurveys(),
 
-                    normalizedUser?.role?.toLowerCase()
-                        !== "employee"
+                    normalizedUser?.permissions?.includes("response.view")
                         ? getResponses().catch(() => [])
                         : Promise.resolve([]),
 
@@ -267,7 +269,7 @@ function Dashboard() {
             isMounted = false;
         };
 
-    }, []);
+    }, [accessKey]);
 
 
     /* Publish survey */
@@ -571,10 +573,7 @@ function Dashboard() {
         ).length;
 
 
-    // Admin controls
-    const isAdmin =
-        user?.role?.toLowerCase()
-        === "admin";
+
 
 
     return (
@@ -613,13 +612,13 @@ function Dashboard() {
                     <StatCard
                         icon={<FaUsers />}
                         title="Employees"
-                        value={userCount}
+                        value={can("user.manage") ? userCount : "?"}
                     />
 
                     <StatCard
                         icon={<FaChartBar />}
                         title="Responses"
-                        value={responseCount}
+                        value={can("response.view") ? responseCount : "?"}
                     />
 
                     <StatCard
@@ -653,7 +652,7 @@ function Dashboard() {
                     </div>
 
 
-                    {isAdmin && (
+                    {can("survey.create") && (
 
                         <button
                             className="create-survey-btn"
@@ -689,6 +688,8 @@ function Dashboard() {
 
 
                         {surveys.length > 0 ? (
+
+                            <div className="survey-table-wrapper">
 
                             <table className="survey-table">
 
@@ -784,7 +785,7 @@ function Dashboard() {
 
                                                     <td>
                                                         {
-                                                            surveyResponses
+                                                            can("response.view") ? surveyResponses : "?"
                                                         }
                                                     </td>
 
@@ -793,7 +794,10 @@ function Dashboard() {
 
                                                     <td>
 
-                                                        {isAdmin && (
+                                                        {survey.is_published && !canSurvey && (
+                                                            <button onClick={() => navigate(`/surveys/${survey.id}/take`)}>Take survey</button>
+                                                        )}
+                                                        {canSurvey && (
 
                                                             <div className="survey-actions">
 
@@ -803,6 +807,7 @@ function Dashboard() {
                                                                 <button
                                                                     type="button"
                                                                     title="Preview Survey"
+                                                                    className="survey-actions-preview-btn"
                                                                     onClick={() =>
                                                                         navigate(
                                                                             `/surveys/${survey.id}/preview`
@@ -821,9 +826,10 @@ function Dashboard() {
 
                                                                         {/* Build / Edit */}
 
-                                                                        <button
+                                                                        <PermissionGate permission="survey.edit"><button
                                                                             type="button"
                                                                             title="Build / Edit Survey"
+                                                                            className="survey-actions-edit-btn"
                                                                             onClick={() =>
                                                                                 navigate(
                                                                                     `/surveys/${survey.id}/builder`
@@ -831,16 +837,17 @@ function Dashboard() {
                                                                             }
                                                                         >
                                                                             <FaEdit />
-                                                                        </button>
+                                                                        </button></PermissionGate>
 
 
                                                                         {/* Existing analytics */}
 
                                                                         {surveyResponses > 0 && (
 
-                                                                            <button
+                                                                            <PermissionGate permission="analytics.view"><button
                                                                                 type="button"
                                                                                 title="View Analytics"
+                                                                                className="survey-actions-analytics-btn"
                                                                                 onClick={() =>
                                                                                     navigate(
                                                                                         `/surveys/${survey.id}/analytics`
@@ -848,16 +855,17 @@ function Dashboard() {
                                                                                 }
                                                                             >
                                                                                 <FaChartBar />
-                                                                            </button>
+                                                                            </button></PermissionGate>
 
                                                                         )}
 
 
                                                                         {/* Publish */}
 
-                                                                        <button
+                                                                        <PermissionGate permission="survey.publish"><button
                                                                             type="button"
                                                                             title="Publish Survey"
+                                                                            className="survey-actions-publish-btn"
                                                                             onClick={() =>
                                                                                 handlePublish(
                                                                                     survey
@@ -865,7 +873,7 @@ function Dashboard() {
                                                                             }
                                                                         >
                                                                             <FaPaperPlane />
-                                                                        </button>
+                                                                        </button></PermissionGate>
 
                                                                     </>
 
@@ -880,9 +888,10 @@ function Dashboard() {
 
                                                                         {/* Analytics */}
 
-                                                                        <button
+                                                                        <PermissionGate permission="analytics.view"><button
                                                                             type="button"
                                                                             title="View Analytics"
+                                                                            className="survey-actions-analytics-btn"
                                                                             onClick={() =>
                                                                                 navigate(
                                                                                     `/surveys/${survey.id}/analytics`
@@ -890,7 +899,7 @@ function Dashboard() {
                                                                             }
                                                                         >
                                                                             <FaChartBar />
-                                                                        </button>
+                                                                        </button></PermissionGate>
 
 
                                                                         {/* Copy public link */}
@@ -898,6 +907,7 @@ function Dashboard() {
                                                                         <button
                                                                             type="button"
                                                                             title="Copy Public Link"
+                                                                            className="survey-actions-copy-link-btn"
                                                                             onClick={() =>
                                                                                 handleCopyLink(
                                                                                     survey.id
@@ -910,7 +920,7 @@ function Dashboard() {
 
                                                                         {/* Unpublish */}
 
-                                                                        <button
+                                                                        <PermissionGate permission="survey.publish"><button
                                                                             type="button"
                                                                             title="Unpublish Survey"
                                                                             onClick={() =>
@@ -918,9 +928,10 @@ function Dashboard() {
                                                                                     survey
                                                                                 )
                                                                             }
+                                                                            className="survey-actions-unpublish-btn"
                                                                         >
                                                                             <FaPauseCircle />
-                                                                        </button>
+                                                                        </button></PermissionGate>
 
                                                                     </>
 
@@ -929,7 +940,7 @@ function Dashboard() {
 
                                                                 {/* Delete - always available */}
 
-                                                                <button
+                                                                <PermissionGate permission="survey.delete"><button
                                                                     type="button"
                                                                     title="Delete Survey"
                                                                     onClick={() =>
@@ -937,9 +948,10 @@ function Dashboard() {
                                                                             survey
                                                                         )
                                                                     }
+                                                                    className="survey-actions-delete-btn"
                                                                 >
                                                                     <FaTrash />
-                                                                </button>
+                                                                </button></PermissionGate>
 
 
                                                             </div>
@@ -958,6 +970,7 @@ function Dashboard() {
                                 </tbody>
 
                             </table>
+                            </div>
 
                         ) : (
 

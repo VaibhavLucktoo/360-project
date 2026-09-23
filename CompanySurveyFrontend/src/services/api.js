@@ -1,13 +1,52 @@
+import { parseApiError } from "../utils/apiErrors";
 const BASE_URL =
-    import.meta.env.VITE_API_URL ||
+    import.meta.env?.VITE_API_URL ||
     "http://127.0.0.1:8000";
+
+const TOKEN_KEY = "token";
+
+
+export function getStoredToken() {
+
+    return (
+        localStorage.getItem(TOKEN_KEY) ||
+        sessionStorage.getItem(TOKEN_KEY)
+    );
+
+}
+
+
+export function saveToken(token, rememberMe = false) {
+
+    const selectedStorage =
+        rememberMe
+            ? localStorage
+            : sessionStorage;
+
+    const otherStorage =
+        rememberMe
+            ? sessionStorage
+            : localStorage;
+
+    otherStorage.removeItem(TOKEN_KEY);
+    selectedStorage.setItem(TOKEN_KEY, token);
+
+}
+
+
+export function clearStoredToken() {
+
+    localStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem(TOKEN_KEY);
+
+}
 
 
 /* Build request headers */
 function headers(json = false) {
 
     const token =
-        localStorage.getItem("token");
+        getStoredToken();
 
     return {
         ...(json
@@ -34,7 +73,7 @@ function headers(json = false) {
 function handleUnauthorized() {
 
     // Remove only authentication data
-    localStorage.removeItem("token");
+    clearStoredToken();
 
     // Send protected pages back to login
     if (
@@ -97,14 +136,14 @@ async function request(
     }
 
 
+    if (response.status === 403) window.dispatchEvent(new Event("permissions-changed"));
+
     // Handle other API errors
     if (!response.ok) {
 
-        const error =
-            new Error(
-                data?.detail ||
-                "Request failed"
-            );
+        const parsed = parseApiError(data?.detail, "Request failed. Please try again.");
+        const error = new Error(parsed.message);
+        error.fieldErrors = parsed.fields;
 
         // Keep status for page-specific handling
         error.status =
@@ -182,8 +221,23 @@ export const getCurrentUser = () =>
     request("/users/me");
 
 
+export const changePassword = (data) =>
+    request(
+        "/users/me/password",
+        {
+            method: "PUT",
+
+            body:
+                JSON.stringify(data),
+        }
+    );
+
+
 export const getUsers = () =>
     request("/users/");
+
+export const deleteUser = (id) =>
+    request(`/users/${id}`, { method: "DELETE" });
 
 
 /* =========================================
@@ -428,3 +482,14 @@ export async function exportSurveyAnalytics(
 
 
 export default BASE_URL;
+
+// Dynamic roles and assignments.
+export const getRoles = () => request("/roles/");
+export const getPermissions = () => request("/roles/permissions");
+export const createRole = (data) => request("/roles/", { method: "POST", body: JSON.stringify(data) });
+export const updateRole = (id, data) => request(`/roles/${id}`, { method: "PUT", body: JSON.stringify(data) });
+export const deleteRole = (id) => request(`/roles/${id}`, { method: "DELETE" });
+export const createUser = (data) => request("/users/", { method: "POST", body: JSON.stringify(data) });
+export const assignUserRole = (id, roleId) => request(`/users/${id}/role`, { method: "PUT", body: JSON.stringify({ role_id: roleId }) });
+
+export const updateUser = (id, data) => request(`/users/${id}`, { method: "PUT", body: JSON.stringify(data) });

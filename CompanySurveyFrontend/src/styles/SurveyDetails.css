@@ -1,0 +1,199 @@
+.survey-details-page {
+    width: auto;
+    min-height: 100vh;
+    margin-left: var(--sidebar-width, 220px);
+    padding: 42px clamp(16px, 4vw, 52px) 60px;
+    background: #f8fafc;
+    transition: margin-left 0.2s ease;
+}
+
+.survey-details-card {
+    width: min(100%, 900px);
+    margin: 0 auto;
+    padding: 30px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+}
+
+.survey-details-back {
+    display: inline-flex;
+    align-items: center;
+    width: max-content;
+    min-height: 40px;
+    margin-bottom: 24px;
+    padding: 0 12px;
+    border: 1px solid #d0d5dd;
+    border-radius: 9px;
+    color: #344054;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.survey-details-back:hover {
+    color: #2563eb;
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.survey-details-label {
+    display: block;
+    margin-bottom: 10px;
+    color: #2563eb;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.survey-details-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.survey-details-heading h1 {
+    margin: 0 0 10px;
+    color: #0f172a;
+    font-size: clamp(28px, 4vw, 38px);
+    line-height: 1.2;
+}
+
+.survey-details-heading p {
+    max-width: 700px;
+    margin: 0;
+    color: #64748b;
+    font-size: 15px;
+    line-height: 1.65;
+}
+
+.survey-details-status {
+    flex: 0 0 auto;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.survey-details-status.published {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.survey-details-status.draft {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.survey-details-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.survey-details-actions a,
+.survey-details-actions button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #334155;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.survey-details-actions a:hover,
+.survey-details-actions button:hover {
+    color: #2563eb;
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+@media (max-width: 600px) {
+    .survey-details-page {
+        margin-left: 0;
+        padding: 24px 14px 40px;
+    }
+
+    .survey-details-card {
+        padding: 22px 16px;
+    }
+
+    .survey-details-heading {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .survey-details-actions {
+        flex-direction: column;
+    }
+
+    .survey-details-actions a,
+.survey-details-actions button {
+        width: 100%;
+    }
+}
+
+
+/* =========================================
+   Dark Theme
+========================================= */
+
+:root[data-theme="dark"] .survey-details-page {
+    background: #0f172a;
+    color: #e5e7eb;
+}
+
+:root[data-theme="dark"] .survey-details-card,
+:root[data-theme="dark"] .survey-details-back,
+:root[data-theme="dark"] .survey-details-actions a,
+.survey-details-actions button {
+    background: #111827;
+    border-color: #334155;
+    color: #e5e7eb;
+    box-shadow: none;
+}
+
+:root[data-theme="dark"] .survey-details-heading h1 {
+    color: #f8fafc;
+}
+
+:root[data-theme="dark"] .survey-details-heading p,
+:root[data-theme="dark"] .survey-details-status.draft {
+    color: #cbd5e1;
+}
+
+:root[data-theme="dark"] .survey-details-actions {
+    border-color: #334155;
+}
+
+:root[data-theme="dark"] .survey-details-back:hover,
+:root[data-theme="dark"] .survey-details-actions a:hover,
+.survey-details-actions button:hover {
+    background: #1d4ed8;
+    border-color: #2563eb;
+    color: #ffffff;
+}
+
+:root[data-theme="dark"] .survey-details-status.draft {
+    background: #334155;
+}
+
+:root[data-theme="dark"] .survey-details-status.published {
+    background: #064e3b;
+    color: #bbf7d0;
+}
+
+.survey-details-actions button { cursor: pointer; font-family: inherit; }
+.survey-details-actions button:disabled { opacity: .6; cursor: wait; }

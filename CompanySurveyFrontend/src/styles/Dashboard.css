@@ -171,12 +171,28 @@
 }
 
 
-/* =========================================
-   SURVEY TABLE
-========================================= */
+
+/* ===========================================
+   Survey Table Wrapper
+=========================================== */
+
+.survey-table-wrapper {
+    width: 100%;
+    max-width: 100%;
+
+    overflow-x: auto;
+
+    box-sizing: border-box;
+}
+
+
+/* ===========================================
+   Survey Table
+=========================================== */
 
 .survey-table {
     width: 100%;
+    max-width: 100%;
 
     border-collapse: separate;
     border-spacing: 0;
@@ -187,6 +203,8 @@
     border-radius: 12px;
 
     overflow: hidden;
+
+    box-sizing: border-box;
 
     box-shadow:
         0 2px 8px rgba(15, 23, 42, 0.04);
@@ -315,50 +333,89 @@
     white-space: nowrap;
 }
 
+/* ===========================================
+   Survey Action Buttons - Base
+=========================================== */
+
 .survey-actions button {
-    width: 36px;
-    height: 36px;
-
-    flex: 0 0 36px;
-
     display: inline-flex;
     align-items: center;
     justify-content: center;
 
-    padding: 0;
+    width: 36px;
+    height: 36px;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
 
     background: #ffffff;
-    color: #475569;
-
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
+    color: #6b7280;
 
     cursor: pointer;
 
     transition:
-        background 0.18s ease,
-        color 0.18s ease,
-        border-color 0.18s ease,
-        transform 0.15s ease;
+        color 0.2s ease,
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
 }
 
-.survey-actions button svg {
-    width: 16px;
-    height: 16px;
-}
 
 .survey-actions button:hover {
-    background: #eff6ff;
+    transform: translateY(-2px);
+}
+
+
+/* ===========================================
+   BLUE ACTIONS
+   Preview / Analytics / Copy Link
+=========================================== */
+
+.survey-actions-preview-btn:hover,
+.survey-actions-analytics-btn:hover{
     color: #2563eb;
-
-    border-color: #bfdbfe;
-
-    transform: translateY(-1px);
+    background: #eff6ff;
+    border-color: #93c5fd;
 }
 
-.survey-actions button:active {
-    transform: translateY(0);
+
+/* ===========================================
+   GREEN ACTION
+   Publish
+=========================================== */
+
+.survey-actions-publish-btn:hover,
+.survey-actions-copy-link-btn:hover {
+    color: #16a34a;
+    background: #f0fdf4;
+    border-color: #86efac;
 }
+
+
+/* ===========================================
+   YELLOW ACTIONS
+   Edit / Unpublish
+=========================================== */
+
+.survey-actions-edit-btn:hover,
+.survey-actions-unpublish-btn:hover {
+    color: #ca8a04;
+    background: #fefce8;
+    border-color: #fde047;
+}
+
+
+/* ===========================================
+   RED ACTION
+   Delete
+=========================================== */
+
+.survey-actions-delete-btn:hover {
+    color: #dc2626;
+    background: #fef2f2;
+    border-color: #fca5a5;
+}
+
 
 
 /* =========================================

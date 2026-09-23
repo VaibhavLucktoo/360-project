@@ -403,3 +403,90 @@
     }
 
 }
+
+
+/* ===========================================
+   Dark Theme
+=========================================== */
+
+:root[data-theme="dark"] .question-builder {
+    border-color: #334155;
+}
+
+:root[data-theme="dark"] .question-builder-header h2,
+:root[data-theme="dark"] .question-form h3,
+:root[data-theme="dark"] .question-info h3,
+:root[data-theme="dark"] .question-empty h3 {
+    color: #f8fafc;
+}
+
+:root[data-theme="dark"] .question-builder-header p,
+:root[data-theme="dark"] .question-form-group label,
+:root[data-theme="dark"] .question-required label,
+:root[data-theme="dark"] .question-empty p {
+    color: #cbd5e1;
+}
+
+:root[data-theme="dark"] .question-form,
+:root[data-theme="dark"] .question-item,
+:root[data-theme="dark"] .question-empty {
+    background: #111827;
+    border-color: #334155;
+    color: #e5e7eb;
+}
+
+:root[data-theme="dark"] .question-form-group input,
+:root[data-theme="dark"] .question-form-group select,
+:root[data-theme="dark"] .question-item-actions button {
+    background: #0f172a;
+    border-color: #475569;
+    color: #e5e7eb;
+}
+
+:root[data-theme="dark"] .question-form-group input:focus,
+:root[data-theme="dark"] .question-form-group select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+}
+
+:root[data-theme="dark"] .question-count,
+:root[data-theme="dark"] .question-number,
+:root[data-theme="dark"] .question-meta span {
+    background: #1e293b;
+    color: #dbeafe;
+}
+
+:root[data-theme="dark"] .question-item:hover,
+:root[data-theme="dark"] .question-item-actions button:hover {
+    background: #1e293b;
+    border-color: #3b82f6;
+    color: #ffffff;
+}
+
+:root[data-theme="dark"] .question-item-actions .delete-question-btn {
+    color: #fca5a5;
+}
+
+:root[data-theme="dark"] .question-item-actions .delete-question-btn:hover {
+    background: #7f1d1d;
+    border-color: #ef4444;
+    color: #ffffff;
+}
+
+:root[data-theme="dark"] .question-builder-notice {
+    background: #451a03;
+    border-color: #92400e;
+    color: #fde68a;
+}
+
+:root[data-theme="dark"] .question-builder-success {
+    background: #052e16;
+    border-color: #166534;
+    color: #bbf7d0;
+}
+
+:root[data-theme="dark"] .question-builder-error {
+    background: #450a0a;
+    border-color: #991b1b;
+    color: #fecaca;
+}
