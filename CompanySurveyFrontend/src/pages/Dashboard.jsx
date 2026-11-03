@@ -609,13 +609,11 @@ function Dashboard() {
                         value={surveyCount}
                     />
 
-                    {can("user.manage") && userCount != null && (
-                        <StatCard
+                    <StatCard
                         icon={<FaUsers />}
                         title="Employees"
-                        value={userCount}
-                        />
-                    )}
+                        value={can("user.manage") ? userCount : "?"}
+                    />
 
                     <StatCard
                         icon={<FaChartBar />}
@@ -975,26 +973,11 @@ function Dashboard() {
                             </div>
 
                         ) : (
-                            <div className="dashboard-empty-state">
-                                <div className="empty-state-icon" aria-hidden="true">
-                                    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                                        <rect x="3" y="4" width="18" height="16" rx="3" />
-                                        <path d="M9 10h6" />
-                                        <circle cx="12" cy="15" r="1.5" fill="currentColor" />
-                                    </svg>
-                                </div>
-                                <h3>No surveys yet</h3>
-                                <p>Set up questions to take your team's emotional temperature anonymously and safely.</p>
-                                {can("survey.create") && (
-                                    <button
-                                        type="button"
-                                        className="create-survey-btn"
-                                        onClick={() => navigate("/surveys/create")}
-                                    >
-                                        <FaClipboardList style={{ marginRight: 8 }} /> Create First Survey
-                                    </button>
-                                )}
-                            </div>
+
+                            <p className="no-data">
+                                No surveys available.
+                            </p>
+
                         )}
 
                     </>

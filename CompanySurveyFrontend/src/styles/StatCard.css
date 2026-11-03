@@ -1,0 +1,134 @@
+/* ===========================================
+   Stat Card
+=========================================== */
+
+.stat-card {
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+
+    padding: 22px;
+
+    box-shadow:
+        0 2px 8px rgba(15, 23, 42, 0.05);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+/* Slight hover lift */
+.stat-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+
+/* ===========================================
+   Card Header
+=========================================== */
+
+.card-header {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-bottom: 18px;
+}
+
+
+/* ===========================================
+   Card Icon
+=========================================== */
+
+.card-icon {
+    width: 44px;
+
+    height: 44px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 10px;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+
+    font-size: 20px;
+}
+
+
+/* ===========================================
+   Card Title
+=========================================== */
+
+.card-header h3 {
+    margin: 0;
+
+    color: #667085;
+
+    font-size: 14px;
+
+    font-weight: 600;
+}
+
+
+/* ===========================================
+   Card Value
+=========================================== */
+
+.stat-card h1 {
+    margin: 0;
+
+    color: #111827;
+
+    font-size: 32px;
+
+    font-weight: 700;
+
+    line-height: 1.2;
+}
+
+
+/* ===========================================
+   Card Subtitle
+=========================================== */
+
+.stat-card p {
+    margin: 8px 0 0;
+
+    color: #98a2b3;
+
+    font-size: 13px;
+
+    line-height: 1.4;
+}
+
+
+/* ===========================================
+   Responsive
+=========================================== */
+
+@media (max-width: 768px) {
+
+    .stat-card {
+        padding: 18px;
+    }
+
+    .stat-card h1 {
+        font-size: 28px;
+    }
+
+}

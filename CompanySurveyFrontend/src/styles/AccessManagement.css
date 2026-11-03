@@ -1,0 +1,83 @@
+.access-page {
+    --access-border: #e2e8f0;
+    --access-muted: #64748b;
+    --access-bg: #fff;
+    margin-left: var(--sidebar-width, 220px);
+    min-height: 100vh;
+    padding: 32px clamp(16px, 3vw, 40px);
+    color: #172033;
+    background: #f8fafc;
+}
+.access-page .access-header { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 24px; }
+.access-page h1 { font-size: 28px; margin: 0 0 6px; }
+.access-page h2 { font-size: 17px; margin: 0 0 16px; }
+.access-page h3 { font-size: 14px; margin: 22px 0 8px; }
+.access-page .access-header p { margin: 0; color: var(--access-muted); font-size: 14px; }
+.access-card { background: var(--access-bg); border: 1px solid var(--access-border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+.access-card fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.access-card label { display: grid; gap: 7px; font-size: 13px; font-weight: 500; }
+.access-card input:not([type=checkbox]), .access-card select {
+    width: 100%; min-height: 36px; padding: 8px 10px; border: 1px solid var(--access-border);
+    border-radius: 6px; background: transparent; color: inherit; box-sizing: border-box; font: inherit;
+}
+.access-card input[aria-invalid=true], .access-card select[aria-invalid=true] { border-color: #dc2626; }
+.access-page :is(input, select, button, summary):focus-visible { outline: 2px solid #3b82f6; outline-offset: 3px; }
+.access-page .access-button, .access-page .access-icon-button {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    width: auto; min-width: 0; min-height: 32px; height: 32px; padding: 5px 10px;
+    border: 1px solid var(--access-border); border-radius: 6px; background: var(--access-bg);
+    color: inherit; font: inherit; font-size: 12px; font-weight: 500; line-height: 1;
+    box-shadow: none; cursor: pointer; flex: 0 0 auto; white-space: nowrap;
+}
+.access-page .access-icon-button { width: 32px; padding: 0; }
+.access-page :is(.access-button, .access-icon-button) svg { width: 12px; height: 12px; }
+.access-page .access-button.primary { background: #3157c6; color: #fff; border-color: #3157c6; }
+.access-page .access-icon-button.danger { color: #b42318; }
+.access-page :is(.access-button, .access-icon-button):hover:not(:disabled) { background: #eff4ff; border-color: #a5b8ee; }
+.access-page .access-button.primary:hover:not(:disabled) { background: #2448ad; }
+.access-page .access-icon-button.danger:hover:not(:disabled) { background: #fff1f0; border-color: #fda29b; }
+.access-page button:disabled, .access-page fieldset:disabled button { opacity: .5; cursor: not-allowed; }
+.access-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.access-name-field { max-width: 420px; }
+.permission-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; margin: 16px 0; }
+.access-card .permission-option { display: flex; align-items: flex-start; gap: 9px; padding: 10px; border: 1px solid var(--access-border); border-radius: 7px; }
+.permission-option input { margin: 3px 0 0; flex-shrink: 0; }
+.permission-option strong { font-size: 12px; }
+.permission-option small { display: block; margin-top: 4px; color: var(--access-muted); line-height: 1.45; font-weight: 400; }
+.access-table-scroll { overflow-x: auto; }
+.access-card table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.access-card th, .access-card td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--access-border); vertical-align: middle; }
+.access-card th { color: var(--access-muted); font-size: 12px; font-weight: 600; }
+.access-card tbody tr:last-child td { border-bottom: 0; }
+.access-action-column { width: 84px; }
+.access-card .user-fields { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.access-card .access-checkbox { display: flex; align-items: center; gap: 8px; margin-top: 18px; }
+.access-help, .access-muted { color: var(--access-muted); font-weight: 400; }
+.access-help { font-size: 12px; line-height: 1.6; margin: 10px 0 16px; }
+.access-block { display: block; margin-top: 4px; }
+.access-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+.access-toolbar h2 { margin: 0; }
+.access-toolbar input { max-width: 260px; }
+.access-error, .access-success { padding: 12px; border-radius: 7px; font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; }
+.access-error { color: #b42318; background: #fee4e2; }
+.access-success { color: #05603a; background: #d1fadf; }
+.access-field-error { color: #b42318; font-size: 12px; line-height: 1.5; }
+.access-status { display: inline-block; border-radius: 20px; padding: 3px 8px; font-size: 11px; }
+.access-status.active { color: #067647; background: #ecfdf3; }
+.access-status.inactive { color: #475467; background: #f2f4f7; }
+.access-page summary { cursor: pointer; }
+.permission-summary { padding-left: 20px; margin: 8px 0; font-size: 12px; line-height: 1.8; }
+.access-card .access-empty { text-align: center; padding: 28px; color: var(--access-muted); }
+:root[data-theme="dark"] .access-page { --access-border: #334155; --access-muted: #a1aec0; --access-bg: #111827; color: #e2e8f0; background: #0b1120; }
+:root[data-theme="dark"] .access-card select option { background: #111827; }
+:root[data-theme="dark"] .access-field-error, :root[data-theme="dark"] .access-icon-button.danger { color: #fda29b; }
+:root[data-theme="dark"] .access-status.active { background: #064e3b; color: #bbf7d0; }
+:root[data-theme="dark"] .access-status.inactive { background: #334155; color: #cbd5e1; }
+@media(max-width: 640px) {
+    .access-page { margin-left: 0; padding: 64px 14px 20px; }
+    .access-card { padding: 14px; }
+    .access-toolbar { align-items: stretch; flex-direction: column; gap: 12px; }
+    .access-toolbar input { max-width: none; }
+    .access-page .access-header { align-items: flex-start; }
+    .access-page .access-icon-button { width: 36px; height: 36px; }
+}

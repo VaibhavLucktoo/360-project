@@ -1,0 +1,573 @@
+/* =========================================
+   Global Sidebar Variables
+========================================= */
+
+:root {
+    --sidebar-width: 250px;
+    --sidebar-expanded-width: 250px;
+    --sidebar-collapsed-width: 72px;
+}
+
+
+/* =========================================
+   Sidebar
+========================================= */
+
+.sidebar {
+    position: fixed;
+
+    top: 0;
+    bottom: 0;
+    left: 0;
+
+    z-index: 1000;
+
+    width: var(--sidebar-width);
+    height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 12px 10px;
+
+    box-sizing: border-box;
+
+    background: #d8efff;
+    color: #171717;
+
+    border-right: 1px solid #ececec;
+
+    transition:
+        width 0.24s ease,
+        transform 0.24s ease;
+
+    overflow: hidden;
+}
+
+
+/* =========================================
+   Header
+========================================= */
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    min-height: 48px;
+
+    margin-bottom: 14px;
+
+    gap: 8px;
+}
+
+
+/* =========================================
+   Brand
+========================================= */
+
+.sidebar-brand {
+    min-width: 0;
+
+    padding-left: 8px;
+
+    overflow: hidden;
+}
+
+
+.sidebar-logo {
+    margin: 0;
+
+    color: #171717;
+
+    font-size: 20px;
+    font-weight: 650;
+
+    white-space: nowrap;
+
+    letter-spacing: -0.025em;
+
+    transition:
+        opacity 0.16s ease,
+        width 0.2s ease;
+}
+
+
+/* =========================================
+   Hamburger
+========================================= */
+
+.sidebar-toggle-btn {
+    width: 40px;
+    height: 40px;
+
+    flex: 0 0 40px;
+
+    display: grid;
+    place-items: center;
+
+    padding: 0;
+
+    border: 0;
+    border-radius: 9px;
+
+    background: transparent;
+    color: #5f5f5f;
+
+    font-size: 17px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.16s ease,
+        color 0.16s ease;
+}
+
+
+.sidebar-toggle-btn:hover {
+    background: #ececec;
+    color: #171717;
+}
+
+
+/* =========================================
+   Navigation
+========================================= */
+
+.sidebar-nav {
+    flex: 1;
+
+    min-height: 0;
+}
+
+
+.sidebar-nav ul {
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+}
+
+
+.sidebar-nav li {
+    width: 100%;
+}
+
+
+/* =========================================
+   Navigation Item
+========================================= */
+
+.sidebar-nav-item {
+    width: 100%;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 0 11px;
+
+    box-sizing: border-box;
+
+    border: 0;
+    border-radius: 9px;
+
+    background: transparent;
+    color: #353535;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 450;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+
+    transition:
+        background 0.16s ease,
+        color 0.16s ease;
+}
+
+
+.sidebar-nav-item:hover {
+    background: #ececec;
+    color: #171717;
+}
+
+
+/* =========================================
+   Navigation Icon
+========================================= */
+
+.sidebar-nav-icon {
+    width: 20px;
+    height: 20px;
+
+    flex: 0 0 20px;
+
+    display: grid;
+    place-items: center;
+}
+
+
+.sidebar-nav-icon svg {
+    width: 17px;
+    height: 17px;
+}
+
+
+/* =========================================
+   Navigation Label
+========================================= */
+
+.sidebar-nav-label {
+    overflow: hidden;
+
+    opacity: 1;
+
+    transition:
+        opacity 0.12s ease;
+}
+
+
+/* =========================================
+   Active Route
+========================================= */
+
+.sidebar-nav-item.active {
+    background: #e7e7e7;
+    color: #171717;
+
+    font-weight: 600;
+}
+
+
+/* Keep active state subtle, ChatGPT-like */
+
+.sidebar-nav-item.active:hover {
+    background: #dfdfdf;
+}
+
+
+/* =========================================
+   Footer
+========================================= */
+
+.sidebar-footer {
+    padding-top: 10px;
+
+    border-top: 1px solid #e7e7e7;
+}
+
+
+/* =========================================
+   Logout
+========================================= */
+
+.logout-btn {
+    width: 100%;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 0 11px;
+
+    box-sizing: border-box;
+
+    border: 0;
+    border-radius: 9px;
+
+    background: transparent;
+    color: #555555;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+
+    white-space: nowrap;
+
+    cursor: pointer;
+
+    transition:
+        background 0.16s ease,
+        color 0.16s ease;
+}
+
+
+/* Destructive action */
+
+.logout-btn:hover {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+
+/* =========================================
+   Collapsed Desktop Sidebar
+========================================= */
+
+.sidebar.sidebar-collapsed {
+    width: var(--sidebar-collapsed-width);
+
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+
+/* Hide brand */
+
+.sidebar-collapsed .sidebar-brand {
+    width: 0;
+
+    padding: 0;
+
+    opacity: 0;
+
+    pointer-events: none;
+}
+
+
+/* Center hamburger */
+
+.sidebar-collapsed .sidebar-header {
+    justify-content: center;
+}
+
+
+/* Hide labels */
+
+.sidebar-collapsed .sidebar-nav-label {
+    width: 0;
+
+    opacity: 0;
+
+    pointer-events: none;
+}
+
+
+/* Center nav items */
+
+.sidebar-collapsed .sidebar-nav-item,
+.sidebar-collapsed .logout-btn {
+    justify-content: center;
+
+    padding-left: 0;
+    padding-right: 0;
+
+    gap: 0;
+}
+
+
+/* =========================================
+   Mobile Hamburger
+========================================= */
+
+.sidebar-mobile-trigger {
+    display: none;
+
+    position: fixed;
+
+    top: 12px;
+    left: 12px;
+
+    z-index: 1200;
+
+    width: 40px;
+    height: 40px;
+
+    place-items: center;
+
+    padding: 0;
+
+    border: 1px solid #e7e7e7;
+    border-radius: 9px;
+
+    background: rgba(255, 255, 255, 0.96);
+    color: #333333;
+
+    font-size: 17px;
+
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.06);
+
+    cursor: pointer;
+}
+
+
+/* =========================================
+   Mobile Backdrop
+========================================= */
+
+.sidebar-backdrop {
+    display: none;
+}
+
+
+/* =========================================
+   Tablet
+========================================= */
+
+@media (max-width: 1024px)
+and (min-width: 641px) {
+
+    /* We no longer automatically collapse
+       the sidebar on tablet.
+
+       The user controls it with the hamburger.
+    */
+
+}
+
+
+/* =========================================
+   Mobile Drawer
+========================================= */
+
+@media (max-width: 640px) {
+
+    :root {
+        --sidebar-width: 0px;
+    }
+
+
+    .sidebar-mobile-trigger {
+        display: grid;
+    }
+
+
+    .sidebar {
+        width: min(
+            82vw,
+            300px
+        );
+
+        padding:
+            12px 10px;
+
+        transform:
+            translateX(-105%);
+
+        box-shadow:
+            8px 0 30px
+            rgba(0, 0, 0, 0.12);
+    }
+
+
+    /* Mobile ignores desktop collapsed mode */
+
+    .sidebar.sidebar-collapsed {
+        width: min(
+            82vw,
+            300px
+        );
+    }
+
+
+    .sidebar-collapsed .sidebar-brand {
+        width: auto;
+
+        padding-left: 8px;
+
+        opacity: 1;
+
+        pointer-events: auto;
+    }
+
+
+    .sidebar-collapsed .sidebar-header {
+        justify-content:
+            space-between;
+    }
+
+
+    .sidebar-collapsed .sidebar-nav-label {
+        width: auto;
+
+        opacity: 1;
+
+        pointer-events: auto;
+    }
+
+
+    .sidebar-collapsed .sidebar-nav-item,
+    .sidebar-collapsed .logout-btn {
+        justify-content:
+            flex-start;
+
+        padding:
+            0 11px;
+
+        gap: 12px;
+    }
+
+
+    /* Open drawer */
+
+    .sidebar.sidebar-mobile-open {
+        transform:
+            translateX(0);
+    }
+
+
+    /* Backdrop */
+
+    .sidebar-backdrop {
+        display: block;
+
+        position: fixed;
+
+        inset: 0;
+
+        z-index: 900;
+
+        padding: 0;
+
+        border: 0;
+
+        background:
+            rgba(0, 0, 0, 0.35);
+
+        cursor: pointer;
+    }
+
+
+    /* Desktop hamburger hidden
+       because mobile has floating trigger */
+
+    .sidebar-toggle-btn {
+        display: none;
+    }
+
+}
+
+
+/* =========================================
+   Reduced Motion
+========================================= */
+
+@media (
+    prefers-reduced-motion:
+    reduce
+) {
+
+    .sidebar,
+    .sidebar-nav-item,
+    .logout-btn,
+    .sidebar-toggle-btn,
+    .sidebar-nav-label {
+        transition: none;
+    }
+
+}
