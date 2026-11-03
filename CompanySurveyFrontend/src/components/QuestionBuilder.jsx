@@ -17,6 +17,10 @@ import {
     getAdminSurveyQuestions,
     updateQuestion,
 } from "../services/api";
+import {
+    parseRatingQuestion,
+    formatRatingQuestion,
+} from "../utils/ratingStyles";
 
 import "../styles/QuestionBuilder.css";
 
@@ -37,7 +41,10 @@ function countWords(value) {
 }
 
 /* Helper to get friendly badge icon and label for each question type */
-function getQuestionTypeBadge(type) {
+function getQuestionTypeBadge(question) {
+    const type = question.type;
+    const rStyle = question.ratingStyle || "stars";
+
     switch (type) {
         case "radio":
             return {
@@ -49,11 +56,15 @@ function getQuestionTypeBadge(type) {
                 label: "Dropdown Select",
                 icon: <FaListUl className="type-badge-icon" />,
             };
-        case "rating":
+        case "rating": {
+            let styleTag = "⭐️ Stars";
+            if (rStyle === "emojis") styleTag = "😊 Emojis";
+            if (rStyle === "numeric") styleTag = "🔢 Numeric";
             return {
-                label: "Rating Scale (1-5)",
+                label: `Rating (${styleTag})`,
                 icon: <FaStar className="type-badge-icon type-rating-icon" />,
             };
+        }
         case "textarea":
             return {
                 label: "Long Textarea",
@@ -70,9 +81,14 @@ function getQuestionTypeBadge(type) {
 
 /* Convert API question into UI format */
 function normalizeQuestion(question) {
+    const { cleanText, ratingStyle } = parseRatingQuestion(
+        question.question_text
+    );
+
     return {
         id: question.id,
-        text: question.question_text,
+        text: cleanText,
+        ratingStyle: ratingStyle || "stars",
         type: question.question_type,
         required: question.is_required,
         display_order: question.display_order,
@@ -111,6 +127,7 @@ function QuestionBuilder({ surveyId, onQuestionCountChange }) {
     // Question form state (used for Add New or active Inline Edit)
     const [questionText, setQuestionText] = useState("");
     const [questionType, setQuestionType] = useState("text");
+    const [ratingStyle, setRatingStyle] = useState("stars"); // "stars" | "emojis" | "numeric"
     const [required, setRequired] = useState(false);
     const [options, setOptions] = useState([]);
 
@@ -219,6 +236,7 @@ function QuestionBuilder({ surveyId, onQuestionCountChange }) {
     function resetQuestionForm() {
         setQuestionText("");
         setQuestionType("text");
+        setRatingStyle("stars");
         setRequired(false);
         setOptions([]);
         setEditingQuestionId(null);
@@ -312,9 +330,14 @@ function QuestionBuilder({ surveyId, onQuestionCountChange }) {
             setError("");
             setSuccessMessage("");
 
+            const formattedText =
+                questionType === "rating"
+                    ? formatRatingQuestion(questionText, ratingStyle)
+                    : questionText.trim();
+
             const baseQuestionPayload = {
                 survey_id: surveyId,
-                question_text: questionText.trim(),
+                question_text: formattedText,
                 question_type: questionType,
                 is_required: required,
             };
@@ -379,6 +402,7 @@ function QuestionBuilder({ surveyId, onQuestionCountChange }) {
         setEditingQuestionId(question.id);
         setQuestionText(question.text || "");
         setQuestionType(question.type || "text");
+        setRatingStyle(question.ratingStyle || "stars");
         setRequired(Boolean(question.required));
         setOptions(
             Array.isArray(question.options)
@@ -439,6 +463,119 @@ function QuestionBuilder({ surveyId, onQuestionCountChange }) {
         } finally {
             setSaving(false);
         }
+    }
+
+    /* Helper to render Rating Style Selector & Live Preview */
+    function renderRatingStyleSelector() {
+        return (
+            <div className="rating-style-selector-panel">
+                <div className="rating-style-header">
+                    <label>Rating Display Style for Respondents</label>
+                    <span className="rating-style-subhint">
+                        Choose how employees interact with this rating question
+                    </span>
+                </div>
+
+                <div className="rating-style-options">
+                    <button
+                        type="button"
+                        className={`rating-style-btn ${
+                            ratingStyle === "stars" ? "active" : ""
+                        }`}
+                        onClick={() => setRatingStyle("stars")}
+                        disabled={saving}
+                    >
+                        <span className="style-btn-icon">⭐️</span>
+                        <div className="style-btn-info">
+                            <span className="style-btn-title">5-Star Scale</span>
+                            <span className="style-btn-desc">Hover & glowing stars</span>
+                        </div>
+                    </button>
+
+                    <button
+                        type="button"
+                        className={`rating-style-btn ${
+                            ratingStyle === "emojis" ? "active" : ""
+                        }`}
+                        onClick={() => setRatingStyle("emojis")}
+                        disabled={saving}
+                    >
+                        <span className="style-btn-icon">😊</span>
+                        <div className="style-btn-info">
+                            <span className="style-btn-title">Mood Emojis</span>
+                            <span className="style-btn-desc">5 sentiment faces</span>
+                        </div>
+                    </button>
+
+                    <button
+                        type="button"
+                        className={`rating-style-btn ${
+                            ratingStyle === "numeric" ? "active" : ""
+                        }`}
+                        onClick={() => setRatingStyle("numeric")}
+                        disabled={saving}
+                    >
+                        <span className="style-btn-icon">🔢</span>
+                        <div className="style-btn-info">
+                            <span className="style-btn-title">Numeric Chips</span>
+                            <span className="style-btn-desc">1 to 5 score tiles</span>
+                        </div>
+                    </button>
+                </div>
+
+                {/* Live Respondent Preview Box */}
+                <div className="rating-live-preview-box">
+                    <div className="preview-box-badge">
+                        <span>Interactive Respondent Preview:</span>
+                    </div>
+
+                    {ratingStyle === "stars" && (
+                        <div className="preview-stars-display">
+                            <div className="preview-stars-cluster">
+                                <span className="preview-star glow">★</span>
+                                <span className="preview-star glow">★</span>
+                                <span className="preview-star glow">★</span>
+                                <span className="preview-star glow">★</span>
+                                <span className="preview-star muted">★</span>
+                            </div>
+                            <span className="preview-feedback-pill">
+                                ⭐️⭐️⭐️⭐️ 4 of 5 Stars — High / Agree
+                            </span>
+                        </div>
+                    )}
+
+                    {ratingStyle === "emojis" && (
+                        <div className="preview-emojis-display">
+                            <div className="preview-emojis-cluster">
+                                <span className="preview-emoji">😡</span>
+                                <span className="preview-emoji">🙁</span>
+                                <span className="preview-emoji">😐</span>
+                                <span className="preview-emoji active-glow">🙂</span>
+                                <span className="preview-emoji">🤩</span>
+                            </div>
+                            <span className="preview-feedback-pill">
+                                Selected: 🙂 Satisfied / Agree
+                            </span>
+                        </div>
+                    )}
+
+                    {ratingStyle === "numeric" && (
+                        <div className="preview-numeric-display">
+                            <div className="preview-numeric-cluster">
+                                <span className="preview-chip">1</span>
+                                <span className="preview-chip">2</span>
+                                <span className="preview-chip">3</span>
+                                <span className="preview-chip active-chip">4</span>
+                                <span className="preview-chip">5</span>
+                            </div>
+                            <span className="preview-feedback-pill">
+                                Selected: 4 — Agree
+                            </span>
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -558,7 +695,7 @@ function QuestionBuilder({ surveyId, onQuestionCountChange }) {
                                     type="text"
                                     className="form-control-input"
                                     value={questionText}
-                                    placeholder="e.g., How supported do you feel by leadership during tight deadlines?"
+                                    placeholder="e.g., How would you rate psychological safety on our team?"
                                     maxLength={QUESTION_TEXT_MAX_LENGTH}
                                     onChange={(event) =>
                                         setQuestionText(
@@ -595,7 +732,7 @@ function QuestionBuilder({ surveyId, onQuestionCountChange }) {
                                                 Multiple Choice (Single Option)
                                             </option>
                                             <option value="rating">
-                                                1 - 5 Emotional Rating Scale
+                                                1 - 5 Rating Scale
                                             </option>
                                             <option value="dropdown">
                                                 Dropdown Menu
@@ -624,6 +761,9 @@ function QuestionBuilder({ surveyId, onQuestionCountChange }) {
                                     </label>
                                 </div>
                             </div>
+
+                            {/* Rating Style Selector (if rating) */}
+                            {questionType === "rating" && renderRatingStyleSelector()}
 
                             {/* Options if choice */}
                             {isChoiceQuestionType(questionType) && (
@@ -745,7 +885,7 @@ function QuestionBuilder({ surveyId, onQuestionCountChange }) {
                     <div className="questions-stream">
                         {questions.map((question, index) => {
                             const isEditing = editingQuestionId === question.id;
-                            const badgeInfo = getQuestionTypeBadge(question.type);
+                            const badgeInfo = getQuestionTypeBadge(question);
 
                             return (
                                 <div
@@ -852,7 +992,7 @@ function QuestionBuilder({ surveyId, onQuestionCountChange }) {
                                                                 Multiple Choice (Single Option)
                                                             </option>
                                                             <option value="rating">
-                                                                1 - 5 Emotional Rating Scale
+                                                                1 - 5 Rating Scale
                                                             </option>
                                                             <option value="dropdown">
                                                                 Dropdown Menu
@@ -882,6 +1022,10 @@ function QuestionBuilder({ surveyId, onQuestionCountChange }) {
                                                     </label>
                                                 </div>
                                             </div>
+
+                                            {/* Rating Style Selector (if rating) */}
+                                            {questionType === "rating" &&
+                                                renderRatingStyleSelector()}
 
                                             {/* Choice Options editor if choice */}
                                             {isChoiceQuestionType(

@@ -18,6 +18,7 @@ import {
 
 import { useTheme } from "../context/useTheme";
 import { removeLeadingWhitespace } from "../utils/inputWhitespace";
+import { parseRatingQuestion } from "../utils/ratingStyles";
 import * as API from "../services/api";
 
 import "../styles/TakeSurvey.css";
@@ -27,6 +28,36 @@ const ANSWER_MAX_WORDS = 300;
 
 function countWords(value) {
     return value.trim().split(/\s+/).filter(Boolean).length;
+}
+
+/* Sentiment descriptions for 1-5 emotional rating scale */
+const RATING_SENTIMENTS = {
+    1: { label: "Strongly Disagree", mood: "Very Low" },
+    2: { label: "Disagree", mood: "Low" },
+    3: { label: "Neutral", mood: "Neutral" },
+    4: { label: "Agree", mood: "High" },
+    5: { label: "Strongly Agree", mood: "Very High" },
+};
+
+const EMOJI_SENTIMENTS = {
+    1: { emoji: "😡", label: "Frustrated / Strongly Disagree" },
+    2: { emoji: "🙁", label: "Dissatisfied / Disagree" },
+    3: { emoji: "😐", label: "Neutral / Okay" },
+    4: { emoji: "🙂", label: "Satisfied / Agree" },
+    5: { emoji: "🤩", label: "Thriving / Strongly Agree" },
+};
+
+/* Convert API question to display format with parsed rating style */
+function normalizeTakeQuestion(question) {
+    const { cleanText, ratingStyle } = parseRatingQuestion(
+        question.question_text
+    );
+
+    return {
+        ...question,
+        question_text: cleanText,
+        ratingStyle: ratingStyle || "stars",
+    };
 }
 
 /* Keep questions in display order */
@@ -49,15 +80,6 @@ function getSubmissionId(surveyId) {
     return submissionId;
 }
 
-/* Sentiment descriptions for 1-5 emotional rating scale */
-const RATING_SENTIMENTS = {
-    1: { label: "Strongly Disagree", mood: "Very Low" },
-    2: { label: "Disagree", mood: "Low" },
-    3: { label: "Neutral", mood: "Neutral" },
-    4: { label: "Agree", mood: "High" },
-    5: { label: "Strongly Agree", mood: "Very High" },
-};
-
 function TakeSurvey() {
     const { id } = useParams();
     const { resolvedTheme, setTheme } = useTheme();
@@ -78,6 +100,9 @@ function TakeSurvey() {
 
     // Employee answers
     const [answers, setAnswers] = useState({});
+
+    // Star hover states per question
+    const [hoverRating, setHoverRating] = useState({});
 
     // Page state
     const [loading, setLoading] = useState(true);
@@ -278,7 +303,8 @@ function TakeSurvey() {
                 if (!isMounted) return;
 
                 setSurvey(data);
-                setQuestions(sortQuestions(data.questions || []));
+                const sorted = sortQuestions(data.questions || []);
+                setQuestions(sorted.map(normalizeTakeQuestion));
             } catch (error) {
                 console.error("Survey loading error:", error);
                 if (isMounted) {
@@ -472,6 +498,8 @@ function TakeSurvey() {
                                 answers[question.id] !== undefined &&
                                 answers[question.id] !== null &&
                                 String(answers[question.id]).trim() !== "";
+                            const currentRating = Number(answers[question.id]) || 0;
+                            const activeHover = hoverRating[question.id];
 
                             return (
                                 <section
@@ -521,7 +549,15 @@ function TakeSurvey() {
                                                             : question.question_type === "dropdown"
                                                             ? "Dropdown Select"
                                                             : question.question_type === "rating"
-                                                            ? "Rating Scale (1-5)"
+                                                            ? `Rating (${
+                                                                  question.ratingStyle ===
+                                                                  "emojis"
+                                                                      ? "😊 Emojis"
+                                                                      : question.ratingStyle ===
+                                                                        "numeric"
+                                                                      ? "🔢 Numeric"
+                                                                      : "⭐️ Stars"
+                                                              })`
                                                             : question.question_type === "textarea"
                                                             ? "Paragraph Response"
                                                             : "Short Response"}
@@ -588,58 +624,241 @@ function TakeSurvey() {
                                             </div>
                                         )}
 
-                                        {/* Rating Scale (1 to 5) */}
+                                        {/* Rating Scale: Stars / Emojis / Numeric */}
                                         {question.question_type === "rating" && (
                                             <div className="survey-rating-container">
-                                                <div className="survey-rating">
-                                                    {[1, 2, 3, 4, 5].map((rating) => {
-                                                        const isSelected =
-                                                            answers[question.id] ===
-                                                            String(rating);
+                                                {/* 1. Stars Mode */}
+                                                {question.ratingStyle === "stars" && (
+                                                    <div className="survey-stars-rating-wrapper">
+                                                        <div
+                                                            className="stars-cluster-bar"
+                                                            onMouseLeave={() =>
+                                                                setHoverRating(
+                                                                    (prev) => ({
+                                                                        ...prev,
+                                                                        [question.id]: null,
+                                                                    })
+                                                                )
+                                                            }
+                                                        >
+                                                            {[1, 2, 3, 4, 5].map(
+                                                                (star) => {
+                                                                    const activeLevel =
+                                                                        activeHover !==
+                                                                        null &&
+                                                                        activeHover !==
+                                                                        undefined
+                                                                            ? activeHover
+                                                                            : currentRating;
+                                                                    const isLit =
+                                                                        star <=
+                                                                        activeLevel;
 
-                                                        return (
-                                                            <button
-                                                                key={rating}
-                                                                type="button"
-                                                                className={`rating-chip-button ${
-                                                                    isSelected
-                                                                        ? "selected"
-                                                                        : ""
-                                                                }`}
-                                                                onClick={() =>
-                                                                    handleRatingChange(
-                                                                        question.id,
-                                                                        rating
-                                                                    )
+                                                                    return (
+                                                                        <button
+                                                                            key={star}
+                                                                            type="button"
+                                                                            className={`star-chip-btn ${
+                                                                                isLit
+                                                                                    ? "lit"
+                                                                                    : ""
+                                                                            } ${
+                                                                                star ===
+                                                                                currentRating
+                                                                                    ? "current-pick"
+                                                                                    : ""
+                                                                            }`}
+                                                                            onMouseEnter={() =>
+                                                                                setHoverRating(
+                                                                                    (prev) => ({
+                                                                                        ...prev,
+                                                                                        [question.id]: star,
+                                                                                    })
+                                                                                )
+                                                                            }
+                                                                            onClick={() =>
+                                                                                handleRatingChange(
+                                                                                    question.id,
+                                                                                    star
+                                                                                )
+                                                                            }
+                                                                            aria-label={`${star} Star`}
+                                                                        >
+                                                                            <FaStar className="star-svg-icon" />
+                                                                        </button>
+                                                                    );
                                                                 }
-                                                                aria-pressed={isSelected}
-                                                            >
-                                                                <span className="rating-number">
-                                                                    {rating}
-                                                                </span>
-                                                                <span className="rating-sentiment-hint">
+                                                            )}
+                                                        </div>
+
+                                                        {answers[question.id] && (
+                                                            <div className="rating-selection-feedback">
+                                                                <span>Rating:</span>
+                                                                <strong>
+                                                                    ⭐️ {answers[question.id]} of 5 Stars —{" "}
                                                                     {
                                                                         RATING_SENTIMENTS[
-                                                                            rating
-                                                                        ].mood
+                                                                            answers[
+                                                                                question.id
+                                                                            ]
+                                                                        ]?.label
                                                                     }
-                                                                </span>
-                                                            </button>
-                                                        );
-                                                    })}
-                                                </div>
+                                                                </strong>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )}
 
-                                                {answers[question.id] && (
-                                                    <div className="rating-selection-feedback">
-                                                        <span>Selected:</span>
-                                                        <strong>
-                                                            {answers[question.id]} —{" "}
-                                                            {
-                                                                RATING_SENTIMENTS[
-                                                                    answers[question.id]
-                                                                ]?.label
-                                                            }
-                                                        </strong>
+                                                {/* 2. Mood Emojis Mode */}
+                                                {question.ratingStyle === "emojis" && (
+                                                    <div className="survey-emojis-rating-wrapper">
+                                                        <div className="emojis-cluster-bar">
+                                                            {[1, 2, 3, 4, 5].map(
+                                                                (level) => {
+                                                                    const isSelected =
+                                                                        answers[
+                                                                            question.id
+                                                                        ] ===
+                                                                        String(
+                                                                            level
+                                                                        );
+                                                                    const info =
+                                                                        EMOJI_SENTIMENTS[
+                                                                            level
+                                                                        ];
+
+                                                                    return (
+                                                                        <button
+                                                                            key={level}
+                                                                            type="button"
+                                                                            className={`emoji-rate-btn ${
+                                                                                isSelected
+                                                                                    ? "selected"
+                                                                                    : ""
+                                                                            }`}
+                                                                            onClick={() =>
+                                                                                handleRatingChange(
+                                                                                    question.id,
+                                                                                    level
+                                                                                )
+                                                                            }
+                                                                            aria-label={
+                                                                                info.label
+                                                                            }
+                                                                        >
+                                                                            <span className="emoji-face">
+                                                                                {
+                                                                                    info.emoji
+                                                                                }
+                                                                            </span>
+                                                                            <span className="emoji-mood-tag">
+                                                                                {
+                                                                                    RATING_SENTIMENTS[
+                                                                                        level
+                                                                                    ]
+                                                                                        .mood
+                                                                                }
+                                                                            </span>
+                                                                        </button>
+                                                                    );
+                                                                }
+                                                            )}
+                                                        </div>
+
+                                                        {answers[question.id] && (
+                                                            <div className="rating-selection-feedback">
+                                                                <span>Sentiment:</span>
+                                                                <strong>
+                                                                    {
+                                                                        EMOJI_SENTIMENTS[
+                                                                            answers[
+                                                                                question.id
+                                                                            ]
+                                                                        ]?.emoji
+                                                                    }{" "}
+                                                                    {
+                                                                        EMOJI_SENTIMENTS[
+                                                                            answers[
+                                                                                question.id
+                                                                            ]
+                                                                        ]?.label
+                                                                    }
+                                                                </strong>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )}
+
+                                                {/* 3. Numeric Chips Mode */}
+                                                {question.ratingStyle === "numeric" && (
+                                                    <div className="survey-numeric-rating-wrapper">
+                                                        <div className="survey-rating">
+                                                            {[1, 2, 3, 4, 5].map(
+                                                                (rating) => {
+                                                                    const isSelected =
+                                                                        answers[
+                                                                            question.id
+                                                                        ] ===
+                                                                        String(
+                                                                            rating
+                                                                        );
+
+                                                                    return (
+                                                                        <button
+                                                                            key={rating}
+                                                                            type="button"
+                                                                            className={`rating-chip-button ${
+                                                                                isSelected
+                                                                                    ? "selected"
+                                                                                    : ""
+                                                                            }`}
+                                                                            onClick={() =>
+                                                                                handleRatingChange(
+                                                                                    question.id,
+                                                                                    rating
+                                                                                )
+                                                                            }
+                                                                            aria-pressed={isSelected}
+                                                                        >
+                                                                            <span className="rating-number">
+                                                                                {
+                                                                                    rating
+                                                                                }
+                                                                            </span>
+                                                                            <span className="rating-sentiment-hint">
+                                                                                {
+                                                                                    RATING_SENTIMENTS[
+                                                                                        rating
+                                                                                    ]
+                                                                                        .mood
+                                                                                }
+                                                                            </span>
+                                                                        </button>
+                                                                    );
+                                                                }
+                                                            )}
+                                                        </div>
+
+                                                        {answers[question.id] && (
+                                                            <div className="rating-selection-feedback">
+                                                                <span>Selected:</span>
+                                                                <strong>
+                                                                    {
+                                                                        answers[
+                                                                            question.id
+                                                                        ]
+                                                                    }{" "}
+                                                                    —{" "}
+                                                                    {
+                                                                        RATING_SENTIMENTS[
+                                                                            answers[
+                                                                                question.id
+                                                                            ]
+                                                                        ]?.label
+                                                                    }
+                                                                </strong>
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 )}
                                             </div>
