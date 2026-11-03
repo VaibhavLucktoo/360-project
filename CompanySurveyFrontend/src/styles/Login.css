@@ -1,75 +1,363 @@
 /* ==========================================================================
-   Modern Suggestion Box & Feedback Portal - Login Styles
+   Modern Suggestion Box & Feedback Portal - Split Screen Login Styles
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   1. Page Container & Ambient Canvas
+   1. Page Container & Ambient Animated Canvas
    -------------------------------------------------------------------------- */
 .login-container {
     min-height: 100vh;
     width: 100%;
+    position: relative;
+    overflow-x: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: clamp(20px, 4vw, 40px);
     box-sizing: border-box;
-    background: radial-gradient(circle at 50% 12%, rgba(79, 70, 229, 0.12) 0%, rgba(224, 231, 255, 0.4) 35%, #f8fafc 75%);
+    background-color: #f8fafc;
+    background-image: radial-gradient(#cbd5e1 1.2px, transparent 1.2px);
+    background-size: 28px 28px;
     color: #0f172a;
-    transition: background 0.3s ease, color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* --------------------------------------------------------------------------
-   2. Login Card & Elevation
+   2. Floating Ambient Glow Orbs (GPU Animated)
    -------------------------------------------------------------------------- */
-.login-card {
+.login-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.65;
+}
+
+.login-orb.orb-1 {
+    top: 5%;
+    left: 8%;
+    width: 440px;
+    height: 440px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.35) 0%, rgba(168, 85, 247, 0.15) 70%, transparent 100%);
+    animation: floatOrb1 14s ease-in-out infinite alternate;
+}
+
+.login-orb.orb-2 {
+    bottom: 5%;
+    right: 8%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(14, 165, 233, 0.3) 0%, rgba(99, 102, 241, 0.15) 70%, transparent 100%);
+    animation: floatOrb2 16s ease-in-out infinite alternate;
+}
+
+@keyframes floatOrb1 {
+    0% {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+    100% {
+        transform: translate3d(40px, 60px, 0) scale(1.12);
+    }
+}
+
+@keyframes floatOrb2 {
+    0% {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+    100% {
+        transform: translate3d(-50px, -40px, 0) scale(1.08);
+    }
+}
+
+/* --------------------------------------------------------------------------
+   3. Top-Right Quick Theme Toggle Button
+   -------------------------------------------------------------------------- */
+.login-theme-toggle {
+    position: fixed;
+    top: 24px;
+    right: 28px;
+    z-index: 50;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid #e2e8f0;
+    border-radius: 9999px;
+    color: #1e293b;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.login-theme-toggle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+    background: #ffffff;
+}
+
+.login-theme-toggle .theme-toggle-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #6366f1;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.login-theme-toggle:hover .theme-toggle-icon {
+    transform: rotate(20deg) scale(1.15);
+}
+
+/* --------------------------------------------------------------------------
+   4. Split Screen Master Wrapper
+   -------------------------------------------------------------------------- */
+.login-split-wrapper {
+    position: relative;
+    z-index: 10;
+    display: flex;
     width: 100%;
-    max-width: 420px;
+    max-width: 1000px;
+    min-height: 580px;
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 18px;
-    padding: 42px 36px 36px;
-    box-sizing: border-box;
-    box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.05),
-                0 20px 35px -5px rgba(15, 23, 42, 0.08);
-    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.12),
+                0 0 1px 1px rgba(15, 23, 42, 0.04);
+    animation: splitFadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.login-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08),
-                0 25px 45px -5px rgba(15, 23, 42, 0.12);
+@keyframes splitFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.985);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 /* --------------------------------------------------------------------------
-   3. Graphic Logo Emblem
+   5. Left Side - Brand & Suggestion Box Graphics Showcase
    -------------------------------------------------------------------------- */
+.login-brand-panel {
+    flex: 1.15;
+    padding: clamp(32px, 5vw, 48px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(145deg, #1e1b4b 0%, #2e1065 45%, #312e81 100%);
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-brand-panel::before {
+    content: "";
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(14, 165, 233, 0.25) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.brand-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: #e0e7ff;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    width: fit-content;
+    backdrop-filter: blur(8px);
+}
+
+.brand-badge-icon {
+    color: #38bdf8;
+    font-size: 13px;
+}
+
+.brand-hero h2 {
+    font-size: clamp(22px, 3vw, 28px);
+    font-weight: 800;
+    line-height: 1.25;
+    color: #ffffff;
+    margin: 22px 0 12px;
+    letter-spacing: -0.02em;
+}
+
+.brand-hero p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #c7d2fe;
+    margin: 0;
+    max-width: 440px;
+}
+
+/* Feature & Metric Cards */
+.brand-metric-cards {
+    margin: 28px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.metric-card {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    padding: 16px 18px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.metric-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.22);
+}
+
+.metric-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 600;
+    color: #e0e7ff;
+}
+
+.metric-value {
+    color: #38bdf8;
+    font-weight: 700;
+}
+
+.metric-bar-track {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 9999px;
+    overflow: hidden;
+    margin: 10px 0 8px;
+}
+
+.metric-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #38bdf8 0%, #818cf8 100%);
+    border-radius: 9999px;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+
+.metric-stars {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #fbbf24;
+}
+
+.metric-sub {
+    font-size: 11px;
+    color: #a5b4fc;
+    font-weight: 500;
+}
+
+.feature-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.feature-icon-well {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(56, 189, 248, 0.16);
+    color: #38bdf8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.feature-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 3px;
+}
+
+.feature-desc {
+    font-size: 12px;
+    color: #cbd5e1;
+    line-height: 1.5;
+}
+
+.brand-footer-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: #a5b4fc;
+}
+
+.brand-footer-note .check-icon {
+    color: #34d399;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+   6. Right Side - Authentication Form Card
+   -------------------------------------------------------------------------- */
+.login-card {
+    flex: 1;
+    padding: clamp(32px, 5vw, 48px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: #ffffff;
+    box-sizing: border-box;
+}
+
 .login-card .logo {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 60px;
-    height: 60px;
-    margin: 0 auto 20px;
-    border-radius: 16px;
+    width: 54px;
+    height: 54px;
+    border-radius: 14px;
     background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
     color: #ffffff;
-    font-size: 26px;
-    box-shadow: 0 10px 22px rgba(79, 70, 229, 0.32);
-    transition: transform 0.2s ease;
+    font-size: 24px;
+    margin-bottom: 18px;
+    box-shadow: 0 10px 20px rgba(79, 70, 229, 0.32);
+    transition: transform 0.25s ease;
 }
 
 .login-card .logo:hover {
     transform: scale(1.05) rotate(2deg);
 }
 
-/* --------------------------------------------------------------------------
-   4. Typography & Headings
-   -------------------------------------------------------------------------- */
 .login-card h1 {
     font-size: 22px;
     font-weight: 700;
     color: #0f172a;
-    text-align: center;
     margin: 0 0 6px;
     letter-spacing: -0.02em;
 }
@@ -77,14 +365,10 @@
 .login-card .subtitle {
     font-size: 14px;
     color: #64748b;
-    text-align: center;
-    margin: 0 0 28px;
+    margin: 0 0 24px;
     font-weight: 400;
 }
 
-/* --------------------------------------------------------------------------
-   5. Form & Form Controls
-   -------------------------------------------------------------------------- */
 .login-form {
     display: flex;
     flex-direction: column;
@@ -94,7 +378,7 @@
 .input-group {
     display: flex;
     flex-direction: column;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
     width: 100%;
     box-sizing: border-box;
 }
@@ -104,7 +388,7 @@
     font-size: 13px;
     font-weight: 600;
     color: #334155;
-    margin-bottom: 8px;
+    margin-bottom: 7px;
     letter-spacing: -0.01em;
 }
 
@@ -130,7 +414,7 @@
 
 .input-wrapper input {
     width: 100%;
-    height: 48px;
+    height: 46px;
     padding: 0 42px 0 42px;
     font-size: 14px;
     color: #0f172a;
@@ -176,17 +460,14 @@
     color: #4f46e5;
 }
 
-/* --------------------------------------------------------------------------
-   6. Remember Me Checkbox
-   -------------------------------------------------------------------------- */
 .remember-me {
     display: inline-flex;
     align-items: center;
-    gap: 9px;
+    gap: 8px;
     font-size: 13px;
     font-weight: 500;
     color: #475569;
-    margin-bottom: 22px;
+    margin-bottom: 20px;
     cursor: pointer;
     user-select: none;
 }
@@ -200,9 +481,25 @@
     margin: 0;
 }
 
-/* --------------------------------------------------------------------------
-   7. Submit Button
-   -------------------------------------------------------------------------- */
+.login-error-alert {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 18px;
+    line-height: 1.4;
+    animation: alertShake 0.3s ease;
+}
+
+@keyframes alertShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+}
+
 .login-card button[type="submit"] {
     width: 100%;
     height: 48px;
@@ -234,52 +531,97 @@
     box-shadow: none;
 }
 
-/* --------------------------------------------------------------------------
-   8. Footer
-   -------------------------------------------------------------------------- */
 .login-card .footer {
     text-align: center;
     font-size: 12px;
     color: #94a3b8;
-    margin-top: 24px;
+    margin-top: 22px;
     margin-bottom: 0;
 }
 
 /* --------------------------------------------------------------------------
-   9. Responsive Design
+   7. Responsive Design (Mobile & Tablet)
    -------------------------------------------------------------------------- */
-@media (max-width: 480px) {
-    .login-container {
-        padding: 16px;
+@media (max-width: 880px) {
+    .login-split-wrapper {
+        flex-direction: column;
+        max-width: 480px;
+    }
+
+    .login-brand-panel {
+        padding: 32px 24px 28px;
+    }
+
+    .brand-hero h2 {
+        font-size: 20px;
+        margin: 14px 0 8px;
+    }
+
+    .brand-metric-cards {
+        display: none;
     }
 
     .login-card {
-        padding: 32px 22px 28px;
-        border-radius: 16px;
+        padding: 32px 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-theme-toggle {
+        top: 14px;
+        right: 14px;
+        padding: 6px 12px;
+        font-size: 12px;
     }
 
-    .login-card h1 {
-        font-size: 20px;
+    .login-brand-panel {
+        display: none;
+    }
+
+    .login-split-wrapper {
+        border-radius: 18px;
     }
 }
 
 /* ==========================================================================
-   10. Dark Theme Overrides
+   8. Dark Theme Overrides
    ========================================================================== */
 :root[data-theme="dark"] .login-container {
-    background: radial-gradient(circle at 50% 12%, rgba(99, 102, 241, 0.15) 0%, rgba(15, 23, 42, 0.6) 45%, #090d16 85%) !important;
+    background-color: #090d16 !important;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1.2px, transparent 1.2px) !important;
     color: #f8fafc !important;
+}
+
+:root[data-theme="dark"] .login-theme-toggle {
+    background: rgba(15, 23, 42, 0.85) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    color: #f8fafc !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5) !important;
+}
+
+:root[data-theme="dark"] .login-theme-toggle:hover {
+    background: #1e293b !important;
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.25) !important;
+}
+
+:root[data-theme="dark"] .login-theme-toggle .theme-toggle-icon {
+    color: #fbbf24 !important;
+}
+
+:root[data-theme="dark"] .login-split-wrapper {
+    background: #0f172a !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 25px 70px -15px rgba(0, 0, 0, 0.7),
+                0 0 1px 1px rgba(255, 255, 255, 0.06) !important;
+}
+
+:root[data-theme="dark"] .login-brand-panel {
+    background: linear-gradient(145deg, #0f172a 0%, #1e1b4b 50%, #1e293b 100%) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.06) !important;
 }
 
 :root[data-theme="dark"] .login-card {
     background: #0f172a !important;
-    border-color: rgba(255, 255, 255, 0.08) !important;
-    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 1px 1px rgba(255, 255, 255, 0.05) !important;
-}
-
-:root[data-theme="dark"] .login-card:hover {
-    border-color: rgba(99, 102, 241, 0.3) !important;
-    box-shadow: 0 14px 40px -5px rgba(0, 0, 0, 0.6), 0 0 20px rgba(99, 102, 241, 0.15) !important;
 }
 
 :root[data-theme="dark"] .login-card h1 {
@@ -325,6 +667,12 @@
 
 :root[data-theme="dark"] .remember-me {
     color: #94a3b8 !important;
+}
+
+:root[data-theme="dark"] .login-error-alert {
+    background: rgba(220, 38, 38, 0.15) !important;
+    border-color: rgba(220, 38, 38, 0.3) !important;
+    color: #fca5a5 !important;
 }
 
 :root[data-theme="dark"] .login-card .footer {
