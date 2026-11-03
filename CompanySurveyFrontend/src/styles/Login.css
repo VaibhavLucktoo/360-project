@@ -1,345 +1,332 @@
-/* ===========================================
-   GLOBAL PAGE
-=========================================== */
+/* ==========================================================================
+   Modern Suggestion Box & Feedback Portal - Login Styles
+   ========================================================================== */
 
-.login-container{
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    min-height:100vh;
-
-    padding:20px;
-
-    background:linear-gradient(135deg,#eff6ff,#dbeafe);
-
+/* --------------------------------------------------------------------------
+   1. Page Container & Ambient Canvas
+   -------------------------------------------------------------------------- */
+.login-container {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    box-sizing: border-box;
+    background: radial-gradient(circle at 50% 12%, rgba(79, 70, 229, 0.12) 0%, rgba(224, 231, 255, 0.4) 35%, #f8fafc 75%);
+    color: #0f172a;
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* ===========================================
-   LOGIN CARD
-=========================================== */
-
-.login-card{
-
-    width:420px;
-
-    max-width:100%;
-
-    background:white;
-
-    padding:40px;
-
-    border-radius:18px;
-
-    box-shadow:0px 12px 40px rgba(0,0,0,.12);
-
-    transition:.3s;
-
+/* --------------------------------------------------------------------------
+   2. Login Card & Elevation
+   -------------------------------------------------------------------------- */
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 42px 36px 36px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.05),
+                0 20px 35px -5px rgba(15, 23, 42, 0.08);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
-.login-card:hover{
-
-    transform:translateY(-4px);
-
+.login-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08),
+                0 25px 45px -5px rgba(15, 23, 42, 0.12);
 }
 
-/* ===========================================
-   LOGO
-=========================================== */
-
-.logo{
-
-    width:85px;
-
-    height:85px;
-
-    margin:auto;
-
-    margin-bottom:20px;
-
-    border-radius:50%;
-
-    background:#2563eb;
-
-    color:white;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    font-size:38px;
-
-    box-shadow:0 8px 20px rgba(37,99,235,.35);
-
+/* --------------------------------------------------------------------------
+   3. Graphic Logo Emblem
+   -------------------------------------------------------------------------- */
+.login-card .logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 20px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: #ffffff;
+    font-size: 26px;
+    box-shadow: 0 10px 22px rgba(79, 70, 229, 0.32);
+    transition: transform 0.2s ease;
 }
 
-/* ===========================================
-   TITLES
-=========================================== */
-
-.login-card h1{
-
-    margin:0;
-
-    text-align:center;
-
-    color:#1f2937;
-
-    font-size:30px;
-
+.login-card .logo:hover {
+    transform: scale(1.05) rotate(2deg);
 }
 
-.subtitle{
-
-    text-align:center;
-
-    margin-top:10px;
-
-    margin-bottom:30px;
-
-    color:#6b7280;
-
+/* --------------------------------------------------------------------------
+   4. Typography & Headings
+   -------------------------------------------------------------------------- */
+.login-card h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #0f172a;
+    text-align: center;
+    margin: 0 0 6px;
+    letter-spacing: -0.02em;
 }
 
-/* ===========================================
-   INPUT GROUP
-=========================================== */
-
-.input-group{
-
-    margin-bottom:20px;
-
+.login-card .subtitle {
+    font-size: 14px;
+    color: #64748b;
+    text-align: center;
+    margin: 0 0 28px;
+    font-weight: 400;
 }
 
-.input-group label{
-
-    display:block;
-
-    margin-bottom:8px;
-
-    font-weight:600;
-
-    color:#374151;
-
+/* --------------------------------------------------------------------------
+   5. Form & Form Controls
+   -------------------------------------------------------------------------- */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 }
 
-/* ===========================================
-   INPUT WRAPPER
-=========================================== */
-
-.input-wrapper{
-
-    position:relative;
-
+.input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-/* ===========================================
-   LEFT ICON
-=========================================== */
-
-.input-icon{
-
-    position:absolute;
-
-    top:50%;
-
-    left:15px;
-
-    transform:translateY(-50%);
-
-    color:#6b7280;
-
-    font-size:15px;
-
+.input-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
 }
 
-/* ===========================================
-   INPUT
-=========================================== */
-
-.input-wrapper input{
-
-    width:100%;
-
-    height:50px;
-
-    padding-left:45px;
-
-    padding-right:45px;
-
-    border:1px solid #d1d5db;
-
-    border-radius:10px;
-
-    font-size:15px;
-
-    outline:none;
-
-    box-sizing:border-box;
-
-    transition:.3s;
-
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-.input-wrapper input:focus{
-
-    border-color:#2563eb;
-
-    box-shadow:0 0 10px rgba(37,99,235,.25);
-
+.input-wrapper .input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 15px;
+    pointer-events: none;
+    z-index: 2;
+    transition: color 0.2s ease;
 }
 
-/* ===========================================
-   PASSWORD ICON
-=========================================== */
-
-.toggle-password{
-
-    position:absolute;
-
-    top:50%;
-
-    right:15px;
-
-    transform:translateY(-50%);
-
-    cursor:pointer;
-
-    color:#6b7280;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    font-size:18px;
-
+.input-wrapper input {
+    width: 100%;
+    height: 48px;
+    padding: 0 42px 0 42px;
+    font-size: 14px;
+    color: #0f172a;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.toggle-password:hover{
-
-    color:#2563eb;
-
+.input-wrapper input::placeholder {
+    color: #94a3b8;
 }
 
-.remember-me{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:10px;
-
-    width:max-content;
-
-    margin-bottom:20px;
-
-    color:#374151;
-
-    font-size:14px;
-
-    font-weight:600;
-
+.input-wrapper input:focus {
+    background: #ffffff;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
 }
 
-.remember-me input{
-
-    width:16px;
-
-    height:16px;
-
-    accent-color:#2563eb;
-
+.input-wrapper:focus-within .input-icon {
+    color: #4f46e5;
 }
 
-/* ===========================================
-   BUTTON
-=========================================== */
-
-.login-card button{
-
-    width:100%;
-
-    height:50px;
-
-    border:none;
-
-    border-radius:10px;
-
-    background:#2563eb;
-
-    color:white;
-
-    font-size:16px;
-
-    font-weight:600;
-
-    cursor:pointer;
-
-    transition:.3s;
-
+.input-wrapper .toggle-password {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    z-index: 2;
+    user-select: none;
+    transition: color 0.2s ease;
 }
 
-.login-card button:hover:not(:disabled){
-
-    background:#1d4ed8;
-
-    transform:translateY(-2px);
-
-    box-shadow:0 8px 20px rgba(37,99,235,.35);
-
+.input-wrapper .toggle-password:hover {
+    color: #4f46e5;
 }
 
-.login-card button:active:not(:disabled){
-
-    transform:scale(.98);
-
+/* --------------------------------------------------------------------------
+   6. Remember Me Checkbox
+   -------------------------------------------------------------------------- */
+.remember-me {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #475569;
+    margin-bottom: 22px;
+    cursor: pointer;
+    user-select: none;
 }
 
-/* ===========================================
-   FOOTER
-=========================================== */
-
-.footer{
-
-    text-align:center;
-
-    margin-top:25px;
-
-    color:#9ca3af;
-
-    font-size:13px;
-
+.remember-me input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    accent-color: #4f46e5;
+    cursor: pointer;
+    margin: 0;
 }
 
-/* ===========================================
-   RESPONSIVE
-=========================================== */
+/* --------------------------------------------------------------------------
+   7. Submit Button
+   -------------------------------------------------------------------------- */
+.login-card button[type="submit"] {
+    width: 100%;
+    height: 48px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.32);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+    box-sizing: border-box;
+}
 
-@media(max-width:500px){
+.login-card button[type="submit"]:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.42);
+}
 
-    .login-card{
+.login-card button[type="submit"]:active:not(:disabled) {
+    transform: translateY(0);
+}
 
-        padding:25px;
+.login-card button[type="submit"]:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
 
+/* --------------------------------------------------------------------------
+   8. Footer
+   -------------------------------------------------------------------------- */
+.login-card .footer {
+    text-align: center;
+    font-size: 12px;
+    color: #94a3b8;
+    margin-top: 24px;
+    margin-bottom: 0;
+}
+
+/* --------------------------------------------------------------------------
+   9. Responsive Design
+   -------------------------------------------------------------------------- */
+@media (max-width: 480px) {
+    .login-container {
+        padding: 16px;
     }
 
-    .login-card h1{
-
-        font-size:24px;
-
+    .login-card {
+        padding: 32px 22px 28px;
+        border-radius: 16px;
     }
 
+    .login-card h1 {
+        font-size: 20px;
+    }
 }
 
-.login-card button:disabled{
-    opacity:0.65;
-    transform:none;
-    box-shadow:none;
+/* ==========================================================================
+   10. Dark Theme Overrides
+   ========================================================================== */
+:root[data-theme="dark"] .login-container {
+    background: radial-gradient(circle at 50% 12%, rgba(99, 102, 241, 0.15) 0%, rgba(15, 23, 42, 0.6) 45%, #090d16 85%) !important;
+    color: #f8fafc !important;
+}
+
+:root[data-theme="dark"] .login-card {
+    background: #0f172a !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 1px 1px rgba(255, 255, 255, 0.05) !important;
+}
+
+:root[data-theme="dark"] .login-card:hover {
+    border-color: rgba(99, 102, 241, 0.3) !important;
+    box-shadow: 0 14px 40px -5px rgba(0, 0, 0, 0.6), 0 0 20px rgba(99, 102, 241, 0.15) !important;
+}
+
+:root[data-theme="dark"] .login-card h1 {
+    color: #f8fafc !important;
+}
+
+:root[data-theme="dark"] .login-card .subtitle {
+    color: #94a3b8 !important;
+}
+
+:root[data-theme="dark"] .input-group label {
+    color: #cbd5e1 !important;
+}
+
+:root[data-theme="dark"] .input-wrapper input {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+    -webkit-text-fill-color: #f8fafc !important;
+}
+
+:root[data-theme="dark"] .input-wrapper input:focus {
+    background: #1e293b !important;
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25) !important;
+}
+
+:root[data-theme="dark"] .input-wrapper .input-icon {
+    color: #64748b !important;
+}
+
+:root[data-theme="dark"] .input-wrapper:focus-within .input-icon {
+    color: #818cf8 !important;
+}
+
+:root[data-theme="dark"] .input-wrapper .toggle-password {
+    color: #64748b !important;
+}
+
+:root[data-theme="dark"] .input-wrapper .toggle-password:hover {
+    color: #818cf8 !important;
+}
+
+:root[data-theme="dark"] .remember-me {
+    color: #94a3b8 !important;
+}
+
+:root[data-theme="dark"] .login-card .footer {
+    color: #64748b !important;
 }
