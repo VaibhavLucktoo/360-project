@@ -1,49 +1,70 @@
 import "../styles/Navbar.css";
-import { FaBell,FaUserCircle } from "react-icons/fa";
+import { FaBell, FaUserCircle, FaSun, FaMoon } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../context/useTheme";
 
-
-/*Navbar Function*/
-// Navbar receives the current user's name
-function Navbar({ title = "Dashboard",  userName = "User" }) {
-
+function Navbar({ title = "Dashboard", userName = "User" }) {
     const navigate = useNavigate();
+    const { resolvedTheme, setTheme } = useTheme();
 
-    return(
+    const toggleTheme = () => {
+        setTheme(resolvedTheme === "dark" ? "light" : "dark");
+    };
 
-        //Navbar Container
-        <div className="navbar">
-            <div>
-                <h2>{title}</h2>
+    const firstLetter = (userName && userName.length > 0)
+        ? userName.trim().charAt(0).toUpperCase()
+        : "U";
 
+    return (
+        <header className="navbar">
+            <div className="navbar-left">
+                <span className="navbar-badge-pulse" aria-hidden="true" />
+                <h1 className="navbar-title">{title}</h1>
             </div>
 
-            {/*Right Side*/}
+            {/* Right Side Controls */}
             <div className="navbar-right">
+                {/* Theme Quick Toggle */}
+                <button
+                    type="button"
+                    className="nav-icon-btn theme-toggle-btn"
+                    aria-label={`Switch to ${resolvedTheme === "dark" ? "light" : "dark"} theme`}
+                    title={`Switch to ${resolvedTheme === "dark" ? "light" : "dark"} mode`}
+                    onClick={toggleTheme}
+                >
+                    {resolvedTheme === "dark" ? (
+                        <FaSun className="nav-icon sun-icon" />
+                    ) : (
+                        <FaMoon className="nav-icon moon-icon" />
+                    )}
+                </button>
+
+                {/* Notifications Link */}
                 <button
                     type="button"
                     className="nav-icon-btn"
                     aria-label="View response notifications"
-                    title="Responses"
+                    title="View responses"
                     onClick={() => navigate("/responses")}
                 >
-                    <FaBell className="nav-icon"/>
+                    <FaBell className="nav-icon" />
                 </button>
 
+                {/* User Profile Pill */}
                 <button
                     type="button"
-                    className="profile"
+                    className="navbar-profile-pill"
                     aria-label="Open profile settings"
-                    title="Profile settings"
+                    title="Profile & account settings"
                     onClick={() => navigate("/settings")}
                 >
-                    <FaUserCircle className="profile-icon"/>
-                    <span>{userName}</span>
-
+                    <div className="navbar-avatar-circle" aria-hidden="true">
+                        {firstLetter}
+                    </div>
+                    <span className="navbar-username">{userName}</span>
                 </button>
             </div>
-        </div>
-
+        </header>
     );
 }
 

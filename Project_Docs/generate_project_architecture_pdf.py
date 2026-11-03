@@ -322,7 +322,7 @@ def build_document():
 
     story.append(Paragraph("8. Run and Deployment Notes", styles["SectionHeading"]))
     story.append(bullet_list([
-        "Backend runs with Uvicorn on <b>http://127.0.0.1:8000</b>.",
+        "Backend runs with Uvicorn on <b>http://127.0.0.1:8001</b>.",
         "Frontend runs with Vite on <b>http://localhost:5173</b>.",
         "CORS is configured on the backend to allow the frontend origin.",
         "Database connectivity uses PostgreSQL and SQLAlchemy models are created at startup.",

@@ -486,6 +486,15 @@ function TakeSurvey() {
     }
 
 
+    const answeredCount = questions.filter((question) => {
+        const val = answers[question.id];
+        return val !== undefined && val !== null && String(val).trim() !== "";
+    }).length;
+
+    const progressPercent = questions.length > 0
+        ? Math.round((answeredCount / questions.length) * 100)
+        : 0;
+
     return (
 
         <main className="take-survey-page">
@@ -498,7 +507,7 @@ function TakeSurvey() {
                 <header className="take-survey-header">
 
                     <div className="survey-header-badge">
-                        360 Bytes
+                        🔒 100% Confidential &amp; Anonymous Suggestion Box
                     </div>
 
                     <h1>
@@ -513,6 +522,16 @@ function TakeSurvey() {
 
                     )}
 
+                    <div className="survey-progress-box">
+                        <div className="survey-progress-info">
+                            <span>Progress</span>
+                            <strong>{answeredCount} of {questions.length} answered ({progressPercent}%)</strong>
+                        </div>
+                        <div className="survey-progress-track">
+                            <div className="survey-progress-bar" style={{ width: `${progressPercent}%` }} />
+                        </div>
+                    </div>
+
                     <div className="survey-header-meta">
 
                         <span>
@@ -523,7 +542,7 @@ function TakeSurvey() {
                         </span>
 
                         <span>
-                            Your responses are anonymous
+                            Zero tracking • Identity protected
                         </span>
 
                     </div>

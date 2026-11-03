@@ -362,9 +362,20 @@ function Sidebar() {
 
                     <div className="sidebar-brand">
 
-                        <h2 className="sidebar-logo">
-                            SurveyMS
-                        </h2>
+                        <div className="sidebar-logo-container">
+                            <div className="sidebar-logo-icon" aria-hidden="true">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                    <rect x="3" y="4" width="18" height="16" rx="3" />
+                                    <path d="M9 10h6" />
+                                    <path d="M12 7v6" />
+                                    <circle cx="12" cy="16" r="1" fill="currentColor" />
+                                </svg>
+                            </div>
+                            <div className="sidebar-logo-text">
+                                <h2 className="sidebar-logo">SurveyMS</h2>
+                                <span className="sidebar-tagline">Pulse 360°</span>
+                            </div>
+                        </div>
 
                     </div>
 
