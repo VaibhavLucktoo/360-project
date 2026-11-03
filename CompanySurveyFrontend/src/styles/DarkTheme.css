@@ -1,582 +1,1162 @@
-/* Final dark-theme layer. Keep this imported after page styles. */
-
-/* Page surfaces that also appear in directory, detail and public survey views. */
-:root[data-theme="dark"] :is(
-    .analytics-search-panel,
-    .analytics-search-control,
-    .analytics-survey-card,
-    .analytics-page .summary-card,
-    .analytics-page .privacy-note,
-    .take-survey-header,
-    .survey-submit-area,
-    .survey-empty-state,
-    .survey-state-card,
-    .swal2-popup
-) {
-    background: #111827 !important;
-    border-color: #334155 !important;
-    color: #e5e7eb !important;
-    box-shadow: none !important;
-}
-
-:root[data-theme="dark"] .take-survey-state {
-    background: #0f172a;
-    color: #e5e7eb;
-}
-
-:root[data-theme="dark"] :is(
-    .analytics-search-control > span,
-    .analytics-survey-count,
-    .analytics-question-number,
-    .question-type-badge,
-    .rating-summary,
-    .feedback-card,
-    .survey-option,
-    .options-unavailable,
-    .question-index,
-    .survey-header-badge,
-    .card-icon,
-    .settings-theme-status
-) {
-    background: #1e293b !important;
-    border-color: #334155 !important;
-    color: #dbeafe !important;
-}
-
-/* Neutral controls need a dark resting state as well as a dark hover state. */
-:root[data-theme="dark"] :is(
-    .dashboard-back-btn-analytics-page,
-    .dashboard-back-btn-createsurvey-page,
-    .dashboard-back-btn-response-page,
-    .responses-back-btn,
-    .settings-back,
-    .theme-option,
-    .survey-actions button,
-    .survey-card-actions button,
-    .question-item-actions button,
-    .survey-builder-actions button,
-    .survey-preview-actions button,
-    .survey-details-actions a,
-    .create-survey-page .secondary-btn,
-    .rating-button,
-    .sidebar-mobile-trigger
-) {
-    background: #1e293b !important;
-    border-color: #475569 !important;
-    color: #e5e7eb !important;
-}
-
-:root[data-theme="dark"] :is(
-    .survey-option,
-    .survey-table tbody tr
-):hover {
-    background: #1e293b !important;
-}
-
-:root[data-theme="dark"] :is(
-    .theme-option.active,
-    .rating-button.selected,
-    .survey-filter-tabs button.active,
-    .survey-option:has(input:checked)
-) {
-    background: rgba(99, 102, 241, 0.22) !important;
-    border-color: #818cf8 !important;
-    color: #ffffff !important;
-}
-
-:root[data-theme="dark"] :is(
-    .summary-status.published,
-    .analytics-survey-status.published,
-    .survey-success-icon
-) {
-    background: #064e3b !important;
-    color: #bbf7d0 !important;
-}
-
-:root[data-theme="dark"] :is(
-    .summary-status.draft,
-    .analytics-survey-status.draft,
-    .choice-progress-track
-) {
-    background: #334155 !important;
-    color: #cbd5e1 !important;
-}
-
-:root[data-theme="dark"] :is(
-    .analytics-error,
-    .create-survey-error,
-    .survey-form-error,
-    .survey-state-icon:not(.survey-success-icon)
-) {
-    background: #450a0a !important;
-    border-color: #991b1b !important;
-    color: #fecaca !important;
-}
-
-:root[data-theme="dark"] :is(
-    .analytics-page .summary-value,
-    .rating-value,
-    .choice-label
-) {
-    color: #f8fafc !important;
-}
-
-:root[data-theme="dark"] :is(
-    .analytics-page .summary-label,
-    .analytics-survey-id,
-    .analytics-survey-open,
-    .analytics-question-meta,
-    .rating-label,
-    .rating-max,
-    .choice-result-count,
-    .feedback-number,
-    .no-responses,
-    .swal2-html-container
-) {
-    color: #cbd5e1 !important;
-}
-
-:root[data-theme="dark"] .analytics-question-header {
-    border-color: #334155;
-}
-
-/* Match the mobile search rule's specificity, including its !important. */
-:root[data-theme="dark"] :is(
-    .response-search-control input,
-    .analytics-search-control input
-) {
-    background: #0f172a !important;
-    border-color: #475569 !important;
-    color: #f8fafc !important;
-}
-
-:root[data-theme="dark"] .sidebar-toggle-btn {
-    color: #cbd5e1;
-}
-
-/* Recharts supplies light SVG defaults and inline tooltip backgrounds. */
-:root[data-theme="dark"] .recharts-default-tooltip {
-    background: #1e293b !important;
-    border-color: #475569 !important;
-    color: #f8fafc !important;
-}
-
-:root[data-theme="dark"] .recharts-tooltip-item {
-    color: #93c5fd !important;
-}
-
-:root[data-theme="dark"] .recharts-cartesian-axis-tick-value {
-    fill: #cbd5e1;
-}
-
-:root[data-theme="dark"] .recharts-cartesian-grid line {
-    stroke: #334155;
-}
-
-:root[data-theme="dark"] .recharts-tooltip-cursor {
-    fill: #334155;
-    fill-opacity: 0.5;
-}
-
-:root[data-theme="dark"] :is(input, textarea)::placeholder {
-    color: #94a3b8;
-    -webkit-text-fill-color: #94a3b8;
-    opacity: 1;
-}
-
-:root[data-theme="dark"],
-:root[data-theme="dark"] body,
-:root[data-theme="dark"] #root {
-    background: #0f172a !important;
-    color: #e5e7eb !important;
-}
-
-:root[data-theme="dark"] :is(
-    .dashboard,
-    .analytics-page,
-    .responses-page,
-    .survey-list-page,
-    .survey-builder-page,
-    .survey-preview-page,
-    .survey-details-page,
-    .create-survey-page,
-    .settings-page,
-    .take-survey-page,
-    .login-container
-) {
-    background: #0f172a !important;
-    color: #e5e7eb !important;
-}
-
-:root[data-theme="dark"] :is(
-    .navbar,
-    .login-card,
-    .stat-card,
-    .survey-table,
-    .survey-table-wrapper,
-    .survey-directory-card,
-    .survey-list-empty,
-    .survey-preview-header,
-    .survey-preview-list > p,
-    .survey-preview-question,
-    .survey-details-card,
-    .settings-card,
-    .response-search-panel,
-    .response-search-control,
-    .response-survey-card,
-    .response-summary-card,
-    .submission-card,
-    .submission-header,
-    .responses-state-card,
-    .responses-empty,
-    .responses-loading,
-    .analytics-card,
-    .analytics-summary-card,
-    .analytics-question-card,
-    .analytics-overview-card,
-    .analytics-empty,
-    .analytics-state-card,
-    .analytics-loading,
-    .analytics-export-card,
-    .analytics-chart-card,
-    .question-form,
-    .question-item,
-    .question-empty,
-    .create-survey-card,
-    .create-survey-form,
-    .take-survey-card,
-    .take-question-card,
-    .take-survey-success,
-    .no-data
-) {
-    background: #111827 !important;
-    border-color: #334155 !important;
-    color: #e5e7eb !important;
-    box-shadow: none !important;
-}
-
-:root[data-theme="dark"] :is(
-    input,
-    textarea,
-    select,
-    .survey-search,
-    .survey-response-actions select,
-    .question-form-group input,
-    .question-form-group select,
-    .survey-preview-question input[type="text"],
-    .survey-preview-question textarea,
-    .survey-preview-question select,
-    .survey-preview-question input:disabled,
-    .survey-preview-question textarea:disabled,
-    .survey-preview-question select:disabled
-) {
-    background: #0f172a !important;
-    border-color: #475569 !important;
-    color: #f8fafc !important;
-    -webkit-text-fill-color: #f8fafc !important;
-}
-
-:root[data-theme="dark"] :is(
-    .survey-table thead,
-    .response-id-prefix,
-    .survey-directory-count,
-    .response-number-badge,
-    .answer-count,
-    .submission-meta,
-    .answer-number,
-    .answer-type,
-    .answer-value,
-    .responses-empty-icon,
-    .question-count,
-    .question-number,
-    .question-meta span,
-    .preview-question-index,
-    .preview-rating button,
-    .preview-rating button:disabled,
-    .survey-preview-question > p,
-    .survey-filter-tabs button span
-) {
-    background: #1e293b !important;
-    border-color: #334155 !important;
-    color: #dbeafe !important;
-    -webkit-text-fill-color: currentColor !important;
-}
-
-:root[data-theme="dark"] :is(
-    h1,
-    h2,
-    h3,
-    h4,
-    label,
-    .navbar h2,
-    .profile,
-    .survey-card-content h2,
-    .survey-list-empty h3,
-    .survey-details-heading h1,
-    .survey-preview-header h1,
-    .survey-preview-question h3,
-    .preview-question-title h3,
-    .response-survey-card h3,
-    .response-summary-card strong,
-    .submission-primary h3,
-    .answer-question h4,
-    .analytics-title,
-    .analytics-header h1,
-    .analytics-card h3,
-    .question-builder-header h2,
-    .question-form h3,
-    .question-info h3,
-    .question-empty h3
-) {
-    color: #f8fafc !important;
-}
-
-:root[data-theme="dark"] :is(
-    p,
-    small,
-    .subtitle,
-    .survey-card-content p,
-    .survey-list-header p,
-    .survey-table th,
-    .survey-details-heading p,
-    .survey-preview-header p,
-    .preview-question-type,
-    .response-survey-id,
-    .response-survey-card p,
-    .response-survey-open,
-    .response-summary-card > span,
-    .submission-primary p,
-    .submission-chevron,
-    .submission-meta span,
-    .submission-meta code,
-    .analytics-description,
-    .analytics-header p,
-    .analytics-card p,
-    .analytics-card ul,
-    .question-builder-header p,
-    .question-empty p
-) {
-    color: #cbd5e1 !important;
-}
-
-:root[data-theme="dark"] :is(
-    .survey-table th,
-    .survey-table td,
-    .submission-content,
-    .submission-answer,
-    .survey-details-actions,
-    .profile-list div,
-    .question-builder
-) {
-    border-color: #334155 !important;
-}
-
-:root[data-theme="dark"] :is(
-    button,
-    .survey-actions button,
-    .survey-card-actions button,
-    .question-item-actions button,
-    .nav-icon-btn,
-    .profile,
-    .theme-option,
-    .settings-back,
-    .dashboard-back-btn-response-page,
-    .responses-back-btn,
-    .dashboard-back-btn-analytics-page,
-    .survey-details-actions a,
-    .survey-preview-actions button,
-    .survey-builder-actions button
-) {
-    border-color: #475569;
-}
-
-:root[data-theme="dark"] :is(
-    button,
-    a,
-    [role="button"]
-):hover {
-    border-color: #6366f1 !important;
-}
-
-:root[data-theme="dark"] :is(
-    button,
-    .survey-card-actions button,
-    .question-item-actions button,
-    .nav-icon-btn,
-    .profile,
-    .theme-option,
-    .settings-back,
-    .dashboard-back-btn-response-page,
-    .responses-back-btn,
-    .dashboard-back-btn-analytics-page,
-    .survey-details-actions a,
-    .survey-preview-actions button,
-    .survey-builder-actions button
-):hover:not(:disabled) {
-    background: #334155 !important;
-    border-color: #6366f1 !important;
-    color: #ffffff !important;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), 0 0 10px rgba(99, 102, 241, 0.25) !important;
-}
-
-
-:root[data-theme="dark"] :is(
-    .status-badge.draft,
-    .survey-status.draft,
-    .response-status.draft,
-    .survey-details-status.draft
-) {
-    background: #334155 !important;
-    color: #cbd5e1 !important;
-}
-
-:root[data-theme="dark"] :is(
-    .status-badge.published,
-    .survey-status.published,
-    .response-status.published,
-    .survey-details-status.published,
-    .role-pill
-) {
-    background: #064e3b !important;
-    color: #bbf7d0 !important;
-}
-
-:root[data-theme="dark"] .question-builder-notice {
-    background: #451a03 !important;
-    border-color: #92400e !important;
-    color: #fde68a !important;
-}
-
-:root[data-theme="dark"] .question-builder-success {
-    background: #052e16 !important;
-    border-color: #166534 !important;
-    color: #bbf7d0 !important;
-}
-
-:root[data-theme="dark"] .question-builder-error,
-:root[data-theme="dark"] .responses-error {
-    background: #450a0a !important;
-    border-color: #991b1b !important;
-    color: #fecaca !important;
-}
-
-/* Shared card hover: use the survey card treatment, including button-based cards. */
-:root[data-theme="dark"] {
-    --card-hover-background: #1e293b;
-    --card-hover-border: #6366f1;
-    --card-hover-text: #f8fafc;
-}
-
-:root[data-theme="dark"] :is(
-    .survey-directory-card,
-    .response-survey-card,
-    .analytics-survey-card,
-    .stat-card,
-    .response-summary-card,
-    .submission-card,
-    .analytics-card,
-    .analytics-summary-card,
-    .analytics-page .summary-card,
-    .analytics-question-card,
-    .analytics-overview-card,
-    .analytics-export-card,
-    .analytics-chart-card,
-    .feedback-card,
-    .survey-preview-question,
-    .survey-details-card,
-    .settings-card,
-    .access-card,
-    .question-item,
-    .create-survey-card,
-    .take-survey-card,
-    .take-question-card,
-    .survey-state-card,
-    .responses-state-card,
-    .analytics-state-card,
-    .login-card
-) {
-    transition:
-        background-color 0.2s ease,
-        border-color 0.2s ease,
-        color 0.2s ease,
-        transform 0.15s ease;
-}
-
-:root[data-theme="dark"] :is(
-    .survey-directory-card,
-    .response-survey-card,
-    .analytics-survey-card,
-    .stat-card,
-    .response-summary-card,
-    .submission-card,
-    .analytics-card,
-    .analytics-summary-card,
-    .analytics-page .summary-card,
-    .analytics-question-card,
-    .analytics-overview-card,
-    .analytics-export-card,
-    .analytics-chart-card,
-    .feedback-card,
-    .survey-preview-question,
-    .survey-details-card,
-    .settings-card,
-    .access-card,
-    .question-item,
-    .create-survey-card,
-    .take-survey-card,
-    .take-question-card,
-    .survey-state-card,
-    .responses-state-card,
-    .analytics-state-card,
-    .login-card
-):is(:hover, :focus-visible):not(:disabled):not([aria-disabled="true"]) {
-    background: var(--card-hover-background) !important;
-    border-color: var(--card-hover-border) !important;
-    color: var(--card-hover-text) !important;
-    box-shadow: none !important;
-    filter: none !important;
-    transform: translateY(-1px);
-}
-
-/* The accordion header is part of its card, not a separate blue action button. */
-:root[data-theme="dark"] .submission-card:is(:hover, :focus-within) > .submission-header {
-    background: var(--card-hover-background) !important;
-    color: var(--card-hover-text) !important;
-    box-shadow: none !important;
-    filter: none !important;
-    transform: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    :root[data-theme="dark"] :is(
-    .survey-directory-card,
-    .response-survey-card,
-    .analytics-survey-card,
-    .stat-card,
-    .response-summary-card,
-    .submission-card,
-    .analytics-card,
-    .analytics-summary-card,
-    .analytics-page .summary-card,
-    .analytics-question-card,
-    .analytics-overview-card,
-    .analytics-export-card,
-    .analytics-chart-card,
-    .feedback-card,
-    .survey-preview-question,
-    .survey-details-card,
-    .settings-card,
-    .access-card,
-    .question-item,
-    .create-survey-card,
-    .take-survey-card,
-    .take-question-card,
-    .survey-state-card,
-    .responses-state-card,
-    .analytics-state-card,
-    .login-card
-    ) {
-        transition: none !important;
-        transform: none !important;
-    }
-}
+/* Final dark-theme layer. Keep this imported after page styles. */
+
+
+
+/* Page surfaces that also appear in directory, detail and public survey views. */
+
+:root[data-theme="dark"] :is(
+
+    .analytics-search-panel,
+
+    .analytics-search-control,
+
+    .analytics-survey-card,
+
+    .analytics-page .summary-card,
+
+    .analytics-page .privacy-note,
+
+    .take-survey-header,
+
+    .survey-submit-area,
+
+    .survey-empty-state,
+
+    .survey-state-card,
+
+    .swal2-popup
+
+) {
+
+    background: #111827 !important;
+
+    border-color: #334155 !important;
+
+    color: #e5e7eb !important;
+
+    box-shadow: none !important;
+
+}
+
+
+
+:root[data-theme="dark"] .take-survey-state {
+
+    background: #0f172a;
+
+    color: #e5e7eb;
+
+}
+
+
+
+:root[data-theme="dark"] :is(
+
+    .analytics-search-control > span,
+
+    .analytics-survey-count,
+
+    .analytics-question-number,
+
+    .question-type-badge,
+
+    .rating-summary,
+
+    .feedback-card,
+
+    .survey-option,
+
+    .options-unavailable,
+
+    .question-index,
+
+    .survey-header-badge,
+
+    .card-icon,
+
+    .settings-theme-status
+
+) {
+
+    background: #1e293b !important;
+
+    border-color: #334155 !important;
+
+    color: #dbeafe !important;
+
+}
+
+
+
+/* Neutral controls need a dark resting state as well as a dark hover state. */
+
+:root[data-theme="dark"] :is(
+
+    .dashboard-back-btn-analytics-page,
+
+    .dashboard-back-btn-createsurvey-page,
+
+    .dashboard-back-btn-response-page,
+
+    .responses-back-btn,
+
+    .settings-back,
+
+    .theme-option,
+
+
+    .survey-card-actions button,
+
+    .question-item-actions button,
+
+    .survey-builder-actions button,
+
+    .survey-preview-actions button,
+
+    .survey-details-actions a,
+
+    .create-survey-page .secondary-btn,
+
+    .rating-button,
+
+    .sidebar-mobile-trigger
+
+) {
+
+    background: #1e293b !important;
+
+    border-color: #475569 !important;
+
+    color: #e5e7eb !important;
+
+}
+
+
+
+:root[data-theme="dark"] :is(
+
+    .survey-option,
+
+    .survey-table tbody tr
+
+):hover {
+
+    background: #1e293b !important;
+
+}
+
+
+
+:root[data-theme="dark"] :is(
+
+    .theme-option.active,
+
+    .rating-button.selected,
+
+    .survey-filter-tabs button.active,
+
+    .survey-option:has(input:checked)
+
+) {
+
+    background: rgba(99, 102, 241, 0.22) !important;
+
+    border-color: #818cf8 !important;
+
+    color: #ffffff !important;
+
+}
+
+
+
+:root[data-theme="dark"] :is(
+
+    .summary-status.published,
+
+    .analytics-survey-status.published,
+
+    .survey-success-icon
+
+) {
+
+    background: #064e3b !important;
+
+    color: #bbf7d0 !important;
+
+}
+
+
+
+:root[data-theme="dark"] :is(
+
+    .summary-status.draft,
+
+    .analytics-survey-status.draft,
+
+    .choice-progress-track
+
+) {
+
+    background: #334155 !important;
+
+    color: #cbd5e1 !important;
+
+}
+
+
+
+:root[data-theme="dark"] :is(
+
+    .analytics-error,
+
+    .create-survey-error,
+
+    .survey-form-error,
+
+    .survey-state-icon:not(.survey-success-icon)
+
+) {
+
+    background: #450a0a !important;
+
+    border-color: #991b1b !important;
+
+    color: #fecaca !important;
+
+}
+
+
+
+:root[data-theme="dark"] :is(
+
+    .analytics-page .summary-value,
+
+    .rating-value,
+
+    .choice-label
+
+) {
+
+    color: #f8fafc !important;
+
+}
+
+
+
+:root[data-theme="dark"] :is(
+
+    .analytics-page .summary-label,
+
+    .analytics-survey-id,
+
+    .analytics-survey-open,
+
+    .analytics-question-meta,
+
+    .rating-label,
+
+    .rating-max,
+
+    .choice-result-count,
+
+    .feedback-number,
+
+    .no-responses,
+
+    .swal2-html-container
+
+) {
+
+    color: #cbd5e1 !important;
+
+}
+
+
+
+:root[data-theme="dark"] .analytics-question-header {
+
+    border-color: #334155;
+
+}
+
+
+
+/* Match the mobile search rule's specificity, including its !important. */
+
+:root[data-theme="dark"] :is(
+
+    .response-search-control input,
+
+    .analytics-search-control input
+
+) {
+
+    background: #0f172a !important;
+
+    border-color: #475569 !important;
+
+    color: #f8fafc !important;
+
+}
+
+
+
+:root[data-theme="dark"] .sidebar-toggle-btn {
+
+    color: #cbd5e1;
+
+}
+
+
+
+/* Recharts supplies light SVG defaults and inline tooltip backgrounds. */
+
+:root[data-theme="dark"] .recharts-default-tooltip {
+
+    background: #1e293b !important;
+
+    border-color: #475569 !important;
+
+    color: #f8fafc !important;
+
+}
+
+
+
+:root[data-theme="dark"] .recharts-tooltip-item {
+
+    color: #93c5fd !important;
+
+}
+
+
+
+:root[data-theme="dark"] .recharts-cartesian-axis-tick-value {
+
+    fill: #cbd5e1;
+
+}
+
+
+
+:root[data-theme="dark"] .recharts-cartesian-grid line {
+
+    stroke: #334155;
+
+}
+
+
+
+:root[data-theme="dark"] .recharts-tooltip-cursor {
+
+    fill: #334155;
+
+    fill-opacity: 0.5;
+
+}
+
+
+
+:root[data-theme="dark"] :is(input, textarea)::placeholder {
+
+    color: #94a3b8;
+
+    -webkit-text-fill-color: #94a3b8;
+
+    opacity: 1;
+
+}
+
+
+
+:root[data-theme="dark"],
+
+:root[data-theme="dark"] body,
+
+:root[data-theme="dark"] #root {
+
+    background: #0f172a !important;
+
+    color: #e5e7eb !important;
+
+}
+
+
+
+:root[data-theme="dark"] :is(
+
+    .dashboard,
+
+    .analytics-page,
+
+    .responses-page,
+
+    .survey-list-page,
+
+    .survey-builder-page,
+
+    .survey-preview-page,
+
+    .survey-details-page,
+
+    .create-survey-page,
+
+    .settings-page,
+
+    .take-survey-page,
+
+    .login-container
+
+) {
+
+    background: #0f172a !important;
+
+    color: #e5e7eb !important;
+
+}
+
+
+
+:root[data-theme="dark"] :is(
+
+    .navbar,
+
+    .login-card,
+
+    .stat-card,
+
+    .survey-table,
+
+    .survey-table-wrapper,
+
+    .survey-directory-card,
+
+    .survey-list-empty,
+
+    .survey-preview-header,
+
+    .survey-preview-list > p,
+
+    .survey-preview-question,
+
+    .survey-details-card,
+
+    .settings-card,
+
+    .response-search-panel,
+
+    .response-search-control,
+
+    .response-survey-card,
+
+    .response-summary-card,
+
+    .submission-card,
+
+    .submission-header,
+
+    .responses-state-card,
+
+    .responses-empty,
+
+    .responses-loading,
+
+    .analytics-card,
+
+    .analytics-summary-card,
+
+    .analytics-question-card,
+
+    .analytics-overview-card,
+
+    .analytics-empty,
+
+    .analytics-state-card,
+
+    .analytics-loading,
+
+    .analytics-export-card,
+
+    .analytics-chart-card,
+
+    .question-form,
+
+    .question-item,
+
+    .question-empty,
+
+    .create-survey-card,
+
+    .create-survey-form,
+
+    .take-survey-card,
+
+    .take-question-card,
+
+    .take-survey-success,
+
+    .no-data
+
+) {
+
+    background: #111827 !important;
+
+    border-color: #334155 !important;
+
+    color: #e5e7eb !important;
+
+    box-shadow: none !important;
+
+}
+
+
+
+:root[data-theme="dark"] :is(
+
+    input,
+
+    textarea,
+
+    select,
+
+    .survey-search,
+
+    .survey-response-actions select,
+
+    .question-form-group input,
+
+    .question-form-group select,
+
+    .survey-preview-question input[type="text"],
+
+    .survey-preview-question textarea,
+
+    .survey-preview-question select,
+
+    .survey-preview-question input:disabled,
+
+    .survey-preview-question textarea:disabled,
+
+    .survey-preview-question select:disabled
+
+) {
+
+    background: #0f172a !important;
+
+    border-color: #475569 !important;
+
+    color: #f8fafc !important;
+
+    -webkit-text-fill-color: #f8fafc !important;
+
+}
+
+
+
+:root[data-theme="dark"] :is(
+
+    .survey-table thead,
+
+    .response-id-prefix,
+
+    .survey-directory-count,
+
+    .response-number-badge,
+
+    .answer-count,
+
+    .submission-meta,
+
+    .answer-number,
+
+    .answer-type,
+
+    .answer-value,
+
+    .responses-empty-icon,
+
+    .question-count,
+
+    .question-number,
+
+    .question-meta span,
+
+    .preview-question-index,
+
+    .preview-rating button,
+
+    .preview-rating button:disabled,
+
+    .survey-preview-question > p,
+
+    .survey-filter-tabs button span
+
+) {
+
+    background: #1e293b !important;
+
+    border-color: #334155 !important;
+
+    color: #dbeafe !important;
+
+    -webkit-text-fill-color: currentColor !important;
+
+}
+
+
+
+:root[data-theme="dark"] :is(
+
+    h1,
+
+    h2,
+
+    h3,
+
+    h4,
+
+    label,
+
+    .navbar h2,
+
+    .profile,
+
+    .survey-card-content h2,
+
+    .survey-list-empty h3,
+
+    .survey-details-heading h1,
+
+    .survey-preview-header h1,
+
+    .survey-preview-question h3,
+
+    .preview-question-title h3,
+
+    .response-survey-card h3,
+
+    .response-summary-card strong,
+
+    .submission-primary h3,
+
+    .answer-question h4,
+
+    .analytics-title,
+
+    .analytics-header h1,
+
+    .analytics-card h3,
+
+    .question-builder-header h2,
+
+    .question-form h3,
+
+    .question-info h3,
+
+    .question-empty h3
+
+) {
+
+    color: #f8fafc !important;
+
+}
+
+
+
+:root[data-theme="dark"] :is(
+
+    p,
+
+    small,
+
+    .subtitle,
+
+    .survey-card-content p,
+
+    .survey-list-header p,
+
+    .survey-table th,
+
+    .survey-details-heading p,
+
+    .survey-preview-header p,
+
+    .preview-question-type,
+
+    .response-survey-id,
+
+    .response-survey-card p,
+
+    .response-survey-open,
+
+    .response-summary-card > span,
+
+    .submission-primary p,
+
+    .submission-chevron,
+
+    .submission-meta span,
+
+    .submission-meta code,
+
+    .analytics-description,
+
+    .analytics-header p,
+
+    .analytics-card p,
+
+    .analytics-card ul,
+
+    .question-builder-header p,
+
+    .question-empty p
+
+) {
+
+    color: #cbd5e1 !important;
+
+}
+
+
+
+:root[data-theme="dark"] :is(
+
+    .survey-table th,
+
+    .survey-table td,
+
+    .submission-content,
+
+    .submission-answer,
+
+    .survey-details-actions,
+
+    .profile-list div,
+
+    .question-builder
+
+) {
+
+    border-color: #334155 !important;
+
+}
+
+
+
+:root[data-theme="dark"] :is(
+
+    button,
+
+
+    .survey-card-actions button,
+
+    .question-item-actions button,
+
+    .nav-icon-btn,
+
+    .profile,
+
+    .theme-option,
+
+    .settings-back,
+
+    .dashboard-back-btn-response-page,
+
+    .responses-back-btn,
+
+    .dashboard-back-btn-analytics-page,
+
+    .survey-details-actions a,
+
+    .survey-preview-actions button,
+
+    .survey-builder-actions button
+
+) {
+
+    border-color: #475569;
+
+}
+
+
+
+:root[data-theme="dark"] :is(
+
+    button,
+
+    a,
+
+    [role="button"]
+
+):hover {
+
+    border-color: #6366f1 !important;
+
+}
+
+
+
+:root[data-theme="dark"] :is(
+
+    button,
+
+    .survey-card-actions button,
+
+    .question-item-actions button,
+
+    .nav-icon-btn,
+
+    .profile,
+
+    .theme-option,
+
+    .settings-back,
+
+    .dashboard-back-btn-response-page,
+
+    .responses-back-btn,
+
+    .dashboard-back-btn-analytics-page,
+
+    .survey-details-actions a,
+
+    .survey-preview-actions button,
+
+    .survey-builder-actions button
+
+):hover:not(:disabled) {
+
+    background: #334155 !important;
+
+    border-color: #6366f1 !important;
+
+    color: #ffffff !important;
+
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), 0 0 10px rgba(99, 102, 241, 0.25) !important;
+
+}
+
+
+
+
+
+:root[data-theme="dark"] :is(
+
+    .status-badge.draft,
+
+    .survey-status.draft,
+
+    .response-status.draft,
+
+    .survey-details-status.draft
+
+) {
+
+    background: #334155 !important;
+
+    color: #cbd5e1 !important;
+
+}
+
+
+
+:root[data-theme="dark"] :is(
+
+    .status-badge.published,
+
+    .survey-status.published,
+
+    .response-status.published,
+
+    .survey-details-status.published,
+
+    .role-pill
+
+) {
+
+    background: #064e3b !important;
+
+    color: #bbf7d0 !important;
+
+}
+
+
+
+:root[data-theme="dark"] .question-builder-notice {
+
+    background: #451a03 !important;
+
+    border-color: #92400e !important;
+
+    color: #fde68a !important;
+
+}
+
+
+
+:root[data-theme="dark"] .question-builder-success {
+
+    background: #052e16 !important;
+
+    border-color: #166534 !important;
+
+    color: #bbf7d0 !important;
+
+}
+
+
+
+:root[data-theme="dark"] .question-builder-error,
+
+:root[data-theme="dark"] .responses-error {
+
+    background: #450a0a !important;
+
+    border-color: #991b1b !important;
+
+    color: #fecaca !important;
+
+}
+
+
+
+/* Shared card hover: use the survey card treatment, including button-based cards. */
+
+:root[data-theme="dark"] {
+
+    --card-hover-background: #1e293b;
+
+    --card-hover-border: #6366f1;
+
+    --card-hover-text: #f8fafc;
+
+}
+
+
+
+:root[data-theme="dark"] :is(
+
+    .survey-directory-card,
+
+    .response-survey-card,
+
+    .analytics-survey-card,
+
+    .stat-card,
+
+    .response-summary-card,
+
+    .submission-card,
+
+    .analytics-card,
+
+    .analytics-summary-card,
+
+    .analytics-page .summary-card,
+
+    .analytics-question-card,
+
+    .analytics-overview-card,
+
+    .analytics-export-card,
+
+    .analytics-chart-card,
+
+    .feedback-card,
+
+    .survey-preview-question,
+
+    .survey-details-card,
+
+    .settings-card,
+
+    .access-card,
+
+    .question-item,
+
+    .create-survey-card,
+
+    .take-survey-card,
+
+    .take-question-card,
+
+    .survey-state-card,
+
+    .responses-state-card,
+
+    .analytics-state-card,
+
+    .login-card
+
+) {
+
+    transition:
+
+        background-color 0.2s ease,
+
+        border-color 0.2s ease,
+
+        color 0.2s ease,
+
+        transform 0.15s ease;
+
+}
+
+
+
+:root[data-theme="dark"] :is(
+
+    .survey-directory-card,
+
+    .response-survey-card,
+
+    .analytics-survey-card,
+
+    .stat-card,
+
+    .response-summary-card,
+
+    .submission-card,
+
+    .analytics-card,
+
+    .analytics-summary-card,
+
+    .analytics-page .summary-card,
+
+    .analytics-question-card,
+
+    .analytics-overview-card,
+
+    .analytics-export-card,
+
+    .analytics-chart-card,
+
+    .feedback-card,
+
+    .survey-preview-question,
+
+    .survey-details-card,
+
+    .settings-card,
+
+    .access-card,
+
+    .question-item,
+
+    .create-survey-card,
+
+    .take-survey-card,
+
+    .take-question-card,
+
+    .survey-state-card,
+
+    .responses-state-card,
+
+    .analytics-state-card,
+
+    .login-card
+
+):is(:hover, :focus-visible):not(:disabled):not([aria-disabled="true"]) {
+
+    background: var(--card-hover-background) !important;
+
+    border-color: var(--card-hover-border) !important;
+
+    color: var(--card-hover-text) !important;
+
+    box-shadow: none !important;
+
+    filter: none !important;
+
+    transform: translateY(-1px);
+
+}
+
+
+
+/* The accordion header is part of its card, not a separate blue action button. */
+
+:root[data-theme="dark"] .submission-card:is(:hover, :focus-within) > .submission-header {
+
+    background: var(--card-hover-background) !important;
+
+    color: var(--card-hover-text) !important;
+
+    box-shadow: none !important;
+
+    filter: none !important;
+
+    transform: none;
+
+}
+
+
+
+@media (prefers-reduced-motion: reduce) {
+
+    :root[data-theme="dark"] :is(
+
+    .survey-directory-card,
+
+    .response-survey-card,
+
+    .analytics-survey-card,
+
+    .stat-card,
+
+    .response-summary-card,
+
+    .submission-card,
+
+    .analytics-card,
+
+    .analytics-summary-card,
+
+    .analytics-page .summary-card,
+
+    .analytics-question-card,
+
+    .analytics-overview-card,
+
+    .analytics-export-card,
+
+    .analytics-chart-card,
+
+    .feedback-card,
+
+    .survey-preview-question,
+
+    .survey-details-card,
+
+    .settings-card,
+
+    .access-card,
+
+    .question-item,
+
+    .create-survey-card,
+
+    .take-survey-card,
+
+    .take-question-card,
+
+    .survey-state-card,
+
+    .responses-state-card,
+
+    .analytics-state-card,
+
+    .login-card
+
+    ) {
+
+        transition: none !important;
+
+        transform: none !important;
+
+    }
+
+}
+
