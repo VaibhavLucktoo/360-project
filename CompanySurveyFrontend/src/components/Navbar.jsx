@@ -1,5 +1,5 @@
 import "../styles/Navbar.css";
-import { FaBell, FaUserCircle, FaSun, FaMoon } from "react-icons/fa";
+import { FaBell, FaSun, FaMoon } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../context/useTheme";
 
@@ -12,6 +12,16 @@ function Navbar({ title = "Dashboard", userName = "User" }) {
         setTheme(resolvedTheme === "dark" ? "light" : "dark");
     }
 
+    const initials = userName
+        ? userName
+              .trim()
+              .split(" ")
+              .map((n) => n[0])
+              .join("")
+              .substring(0, 2)
+              .toUpperCase()
+        : "U";
+
     return (
         <header className="navbar">
             <div className="navbar-left">
@@ -20,7 +30,7 @@ function Navbar({ title = "Dashboard", userName = "User" }) {
 
             {/* Right Side Controls */}
             <div className="navbar-right">
-                {/* Sun / Moon Theme Toggle */}
+                {/* Sun / Moon Theme Toggle Button */}
                 <button
                     type="button"
                     className="nav-icon-btn nav-theme-btn"
@@ -35,15 +45,15 @@ function Navbar({ title = "Dashboard", userName = "User" }) {
                     )}
                 </button>
 
-                {/* Notifications */}
+                {/* Notifications Bell */}
                 <button
                     type="button"
-                    className="nav-icon-btn"
+                    className="nav-icon-btn nav-bell-btn"
                     aria-label="View response notifications"
                     title="Responses"
                     onClick={() => navigate("/responses")}
                 >
-                    <FaBell className="nav-icon" />
+                    <FaBell className="nav-icon bell-icon" />
                 </button>
 
                 {/* Profile Pill */}
@@ -54,7 +64,10 @@ function Navbar({ title = "Dashboard", userName = "User" }) {
                     title="Profile settings"
                     onClick={() => navigate("/settings")}
                 >
-                    <FaUserCircle className="profile-icon" />
+                    <div className="profile-avatar-initials">
+                        {initials}
+                        <span className="profile-online-dot" />
+                    </div>
                     <span className="profile-name">{userName}</span>
                 </button>
             </div>
