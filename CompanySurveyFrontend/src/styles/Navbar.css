@@ -1,110 +1,157 @@
-/*NavBar*/
+/* ==========================================================================
+   Modern Navbar Styles
+   ========================================================================== */
 
-.navbar{
-
+.navbar {
     display: flex;
-
     justify-content: space-between;
-
     align-items: center;
-
     background-color: #ffffff;
+    padding: 16px clamp(20px, 3vw, 36px);
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+    margin-bottom: 28px;
+    box-sizing: border-box;
+    transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
 
-    padding: 18px 30px;
-
-    border-radius:  8px;
-
-    box-shadow: 0 5px 15px rgba(0,0,0,.08);
-
-    margin: 30px;
+.navbar-left h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.02em;
 }
 
 /* Right Section */
-
-.navbar-right{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:20px;
-
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-/* Notification */
-
-.nav-icon{
-
-    font-size:20px;
-
-    color:#374151;
-
+/* General Nav Icon Button */
+.nav-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    background: #f8fafc;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.nav-icon-btn{
-
-    display:inline-flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    width:40px;
-
-    height:40px;
-
-    padding:0;
-
-    border:1px solid transparent;
-
-    border-radius:8px;
-
-    background:transparent;
-
+.nav-icon-btn:hover {
+    background: #eef2ff;
+    border-color: #c7d2fe;
+    transform: translateY(-1px);
 }
 
-.nav-icon-btn:hover{
-
-    background:#eff6ff;
-
-    border-color:#bfdbfe;
-
+.nav-icon {
+    font-size: 16px;
+    color: #475569;
+    transition: transform 0.2s ease, color 0.2s ease;
 }
 
-/* Profile */
-
-.profile{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:10px;
-
-    padding:6px 8px;
-
-    border:1px solid transparent;
-
-    border-radius:8px;
-
-    background:transparent;
-
-    color:#111827;
-
+.nav-icon-btn:hover .nav-icon {
+    color: #4f46e5;
 }
 
-.profile:hover{
-
-    background:#eff6ff;
-
-    border-color:#bfdbfe;
-
+/* Theme Toggle Button */
+.nav-theme-btn .theme-sun {
+    color: #f59e0b;
 }
 
-.profile-icon{
+.nav-theme-btn .theme-moon {
+    color: #6366f1;
+}
 
-    font-size:34px;
+.nav-theme-btn:hover .theme-sun {
+    transform: rotate(30deg) scale(1.15);
+}
 
-    color:#2563eb;
+.nav-theme-btn:hover .theme-moon {
+    transform: rotate(-20deg) scale(1.15);
+}
 
+/* User Profile Pill */
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 14px 6px 8px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background: #f8fafc;
+    color: #0f172a;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.profile:hover {
+    background: #eef2ff;
+    border-color: #c7d2fe;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.12);
+}
+
+.profile-icon {
+    font-size: 26px;
+    color: #4f46e5;
+}
+
+.profile-name {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ==========================================================================
+   Dark Theme Overrides
+   ========================================================================== */
+:root[data-theme="dark"] .navbar {
+    background-color: #0f172a !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+:root[data-theme="dark"] .navbar-left h2 {
+    color: #f8fafc !important;
+}
+
+:root[data-theme="dark"] .nav-icon-btn {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+}
+
+:root[data-theme="dark"] .nav-icon-btn:hover {
+    background: #334155 !important;
+    border-color: #6366f1 !important;
+}
+
+:root[data-theme="dark"] .nav-icon {
+    color: #cbd5e1 !important;
+}
+
+:root[data-theme="dark"] .profile {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+}
+
+:root[data-theme="dark"] .profile:hover {
+    background: #334155 !important;
+    border-color: #6366f1 !important;
+}
+
+:root[data-theme="dark"] .profile-icon {
+    color: #818cf8 !important;
 }

@@ -1,134 +1,124 @@
-/* ===========================================
-   Stat Card
-=========================================== */
+/* ==========================================================================
+   Modern Stat Card Component Styles
+   ========================================================================== */
 
 .stat-card {
+    position: relative;
     background: #ffffff;
-
-    border: 1px solid #e5e7eb;
-    border-radius: 14px;
-
-    padding: 22px;
-
-    box-shadow:
-        0 2px 8px rgba(15, 23, 42, 0.05);
-
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 24px 22px;
+    box-sizing: border-box;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
+.stat-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #4f46e5 0%, #06b6d4 100%);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
 
-/* Slight hover lift */
 .stat-card:hover {
-    transform: translateY(-2px);
-
-    box-shadow:
-        0 8px 20px rgba(15, 23, 42, 0.08);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px -4px rgba(15, 23, 42, 0.08), 0 4px 8px -2px rgba(15, 23, 42, 0.04);
+    border-color: #cbd5e1;
 }
 
+.stat-card:hover::before {
+    opacity: 1;
+}
 
-/* ===========================================
-   Card Header
-=========================================== */
-
+/* Card Header */
 .card-header {
     display: flex;
-
     align-items: center;
-
     gap: 12px;
-
-    margin-bottom: 18px;
+    margin-bottom: 16px;
 }
 
-
-/* ===========================================
-   Card Icon
-=========================================== */
-
+/* Card Icon Well */
 .card-icon {
-    width: 44px;
-
-    height: 44px;
-
     display: flex;
-
     align-items: center;
-
     justify-content: center;
-
-    flex-shrink: 0;
-
-    border-radius: 10px;
-
-    background: #eff6ff;
-
-    color: #2563eb;
-
-    font-size: 20px;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+    color: #4f46e5;
+    font-size: 18px;
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.12);
+    transition: transform 0.2s ease;
 }
 
+.stat-card:hover .card-icon {
+    transform: scale(1.08);
+}
 
-/* ===========================================
-   Card Title
-=========================================== */
-
+/* Card Title */
 .card-header h3 {
     margin: 0;
-
-    color: #667085;
-
-    font-size: 14px;
-
-    font-weight: 600;
-}
-
-
-/* ===========================================
-   Card Value
-=========================================== */
-
-.stat-card h1 {
-    margin: 0;
-
-    color: #111827;
-
-    font-size: 32px;
-
-    font-weight: 700;
-
-    line-height: 1.2;
-}
-
-
-/* ===========================================
-   Card Subtitle
-=========================================== */
-
-.stat-card p {
-    margin: 8px 0 0;
-
-    color: #98a2b3;
-
     font-size: 13px;
-
-    line-height: 1.4;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
 
+/* Card Number Value */
+.stat-card h1 {
+    margin: 0 0 6px;
+    font-size: 32px;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
 
-/* ===========================================
-   Responsive
-=========================================== */
+/* Card Subtitle */
+.stat-card p {
+    margin: 0;
+    font-size: 13px;
+    color: #94a3b8;
+    font-weight: 500;
+}
 
-@media (max-width: 768px) {
+/* ==========================================================================
+   Dark Theme Overrides
+   ========================================================================== */
+:root[data-theme="dark"] .stat-card {
+    background: #0f172a !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+}
 
-    .stat-card {
-        padding: 18px;
-    }
+:root[data-theme="dark"] .stat-card:hover {
+    border-color: rgba(99, 102, 241, 0.35) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(99, 102, 241, 0.12) !important;
+}
 
-    .stat-card h1 {
-        font-size: 28px;
-    }
+:root[data-theme="dark"] .card-icon {
+    background: rgba(99, 102, 241, 0.18) !important;
+    color: #818cf8 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
 
+:root[data-theme="dark"] .card-header h3 {
+    color: #94a3b8 !important;
+}
+
+:root[data-theme="dark"] .stat-card h1 {
+    color: #f8fafc !important;
+}
+
+:root[data-theme="dark"] .stat-card p {
+    color: #64748b !important;
 }
