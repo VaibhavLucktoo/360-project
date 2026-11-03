@@ -346,6 +346,12 @@ function QuestionBuilder({ surveyId, onQuestionCountChange }) {
                 baseQuestionPayload.options = prepareOptions();
             }
 
+            const maxOrder = questions.reduce(
+                (max, q) => Math.max(max, q.display_order || 0),
+                0
+            );
+            const nextDisplayOrder = maxOrder + 1;
+
             if (editingQuestionId) {
                 /* Inline Update */
                 const existingQuestion = questions.find(
@@ -355,8 +361,7 @@ function QuestionBuilder({ surveyId, onQuestionCountChange }) {
                 const payload = await updateQuestion(editingQuestionId, {
                     ...baseQuestionPayload,
                     display_order:
-                        existingQuestion?.display_order ||
-                        questions.length + 1,
+                        existingQuestion?.display_order || nextDisplayOrder,
                 });
 
                 setQuestions((currentQuestions) =>
@@ -374,7 +379,7 @@ function QuestionBuilder({ surveyId, onQuestionCountChange }) {
                 /* Create Question from top form */
                 const payload = await createQuestion({
                     ...baseQuestionPayload,
-                    display_order: questions.length + 1,
+                    display_order: nextDisplayOrder,
                 });
 
                 setQuestions((currentQuestions) =>

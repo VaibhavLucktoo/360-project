@@ -140,15 +140,24 @@ def validate_survey_for_publish(survey: Survey):
             )
 
 
-def publish_survey(db:Session, survey_id:int):
-    survey  = db.query(Survey).filter(Survey.id == survey_id).first()
+def publish_survey(db: Session, survey_id: int):
+    survey = db.query(Survey).filter(Survey.id == survey_id).first()
     if survey is None:
         return None
 
+    # Resequence questions cleanly if duplicate display orders exist
+    if survey.questions:
+        question_orders = [q.display_order for q in survey.questions]
+        if len(question_orders) != len(set(question_orders)):
+            sorted_questions = sorted(survey.questions, key=lambda q: (q.display_order or 0, q.id))
+            for idx, q in enumerate(sorted_questions, start=1):
+                q.display_order = idx
+            db.flush()
+
     validate_survey_for_publish(survey)
-    
+
     survey.is_published = True
-    db.commit() 
+    db.commit()
     db.refresh(survey)
 
     return survey
