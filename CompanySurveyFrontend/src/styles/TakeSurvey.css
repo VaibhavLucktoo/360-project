@@ -435,8 +435,26 @@
 
 .survey-rating {
     display: flex;
+    justify-content: center;
+    align-items: center;
     gap: 12px;
     flex-wrap: wrap;
+    width: 100%;
+}
+
+.survey-numeric-rating-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    width: 100%;
+    margin: 10px 0;
+}
+
+.survey-numeric-rating-wrapper .rating-selection-feedback {
+    align-self: center;
+    margin: 0 auto;
 }
 
 .rating-chip-button {
@@ -512,19 +530,30 @@
 .survey-stars-rating-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    width: 100%;
+    margin: 10px 0;
 }
 
 .stars-cluster-bar {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 16px;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px 24px;
     background: #f8fafc;
     border: 1.5px solid #cbd5e1;
-    border-radius: 16px;
+    border-radius: 20px;
     width: fit-content;
+    margin: 0 auto;
     transition: all 0.2s ease;
+}
+
+.survey-stars-rating-wrapper .rating-selection-feedback {
+    align-self: center;
+    margin: 0 auto;
 }
 
 .stars-cluster-bar:hover {
@@ -572,13 +601,26 @@
 .survey-emojis-rating-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    width: 100%;
+    margin: 10px 0;
 }
 
 .emojis-cluster-bar {
     display: flex;
+    justify-content: center;
+    align-items: center;
     gap: 12px;
     flex-wrap: wrap;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.survey-emojis-rating-wrapper .rating-selection-feedback {
+    align-self: center;
+    margin: 0 auto;
 }
 
 .emoji-rate-btn {
