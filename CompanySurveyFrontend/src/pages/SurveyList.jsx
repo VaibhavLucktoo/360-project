@@ -2,9 +2,7 @@ import { removeLeadingWhitespace } from "../utils/inputWhitespace";
 import PermissionGate from "../components/PermissionGate";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import Swal from "sweetalert2";
-
 import Sidebar from "../components/Sidebar";
 
 import {
@@ -14,6 +12,12 @@ import {
     FaLink,
     FaPaperPlane,
     FaPauseCircle,
+    FaPlus,
+    FaSearch,
+    FaTimes,
+    FaShieldAlt,
+    FaCalendarAlt,
+    FaClipboardList,
 } from "react-icons/fa";
 
 import {
@@ -24,110 +28,74 @@ import {
 
 import "../styles/SurveyList.css";
 
-
 function SurveyList() {
-
     const navigate = useNavigate();
 
     const [surveys, setSurveys] = useState([]);
     const [loading, setLoading] = useState(true);
-
     const [search, setSearch] = useState("");
     const [filter, setFilter] = useState("all");
 
-
     // Load surveys
     useEffect(() => {
+        let isMounted = true;
 
         async function loadSurveys() {
-
             try {
-
+                setLoading(true);
                 const data = await getSurveys();
 
-                setSurveys(
-                    Array.isArray(data)
-                        ? data
-                        : []
-                );
-
+                if (isMounted) {
+                    setSurveys(Array.isArray(data) ? data : []);
+                }
             } catch (error) {
-
-                console.error(
-                    "Failed to load surveys:",
-                    error
-                );
-
+                console.error("Failed to load surveys:", error);
             } finally {
-
-                setLoading(false);
-
+                if (isMounted) {
+                    setLoading(false);
+                }
             }
-
         }
 
         loadSurveys();
 
+        return () => {
+            isMounted = false;
+        };
     }, []);
-
 
     // Search and status filters
     const filteredSurveys = useMemo(() => {
+        const query = search.trim().toLowerCase();
 
         return surveys.filter((survey) => {
-
             const matchesSearch =
-                survey.title
-                    ?.toLowerCase()
-                    .includes(
-                        search.toLowerCase()
-                    ) ||
-                survey.description
-                    ?.toLowerCase()
-                    .includes(
-                        search.toLowerCase()
-                    );
+                !query ||
+                survey.title?.toLowerCase().includes(query) ||
+                survey.description?.toLowerCase().includes(query);
 
             const matchesFilter =
                 filter === "all" ||
-                (
-                    filter === "published" &&
-                    survey.is_published
-                ) ||
-                (
-                    filter === "draft" &&
-                    !survey.is_published
-                );
+                (filter === "published" && survey.is_published) ||
+                (filter === "draft" && !survey.is_published);
 
-            return (
-                matchesSearch &&
-                matchesFilter
-            );
-
+            return matchesSearch && matchesFilter;
         });
-
     }, [surveys, search, filter]);
 
-
-    const publishedCount =
-        surveys.filter(
-            (survey) => survey.is_published
-        ).length;
-
-    const draftCount =
-        surveys.length - publishedCount;
-
+    const publishedCount = surveys.filter((s) => s.is_published).length;
+    const draftCount = surveys.length - publishedCount;
 
     // Publish survey
     async function handlePublish(survey) {
-
         const result = await Swal.fire({
             icon: "question",
             title: "Publish Survey?",
-            text:
-                "The public survey link will become active.",
+            text: "The anonymous suggestion box link will become active for employee responses.",
             showCancelButton: true,
-            confirmButtonText: "Publish",
+            confirmButtonText: "Publish Now",
+            cancelButtonText: "Cancel",
+            confirmButtonColor: "#10b981",
         });
 
         if (!result.isConfirmed) {
@@ -135,56 +103,42 @@ function SurveyList() {
         }
 
         try {
-
-            await publishSurvey(
-                survey.id
-            );
+            await publishSurvey(survey.id);
 
             setSurveys((current) =>
                 current.map((item) =>
                     item.id === survey.id
-                        ? {
-                            ...item,
-                            is_published: true,
-                        }
+                        ? { ...item, is_published: true }
                         : item
                 )
             );
 
             await Swal.fire({
                 icon: "success",
-                title: "Published",
-                text:
-                    "The survey is now live.",
-                timer: 1400,
+                title: "Survey Published",
+                text: "The survey is now live and accepting confidential responses.",
+                timer: 1600,
                 showConfirmButton: false,
             });
-
         } catch (error) {
-
             await Swal.fire({
                 icon: "error",
                 title: "Publish Failed",
-                text:
-                    error.message ||
-                    "Unable to publish survey.",
+                text: error.message || "Unable to publish survey.",
             });
-
         }
-
     }
-
 
     // Unpublish survey
     async function handleUnpublish(survey) {
-
         const result = await Swal.fire({
             icon: "warning",
             title: "Unpublish Survey?",
-            text:
-                "Employees will no longer be able to access the public survey.",
+            text: "Employees will no longer be able to submit responses to this survey.",
             showCancelButton: true,
             confirmButtonText: "Unpublish",
+            cancelButtonText: "Keep Live",
+            confirmButtonColor: "#f59e0b",
         });
 
         if (!result.isConfirmed) {
@@ -192,382 +146,381 @@ function SurveyList() {
         }
 
         try {
-
-            await unpublishSurvey(
-                survey.id
-            );
+            await unpublishSurvey(survey.id);
 
             setSurveys((current) =>
                 current.map((item) =>
                     item.id === survey.id
-                        ? {
-                            ...item,
-                            is_published: false,
-                        }
+                        ? { ...item, is_published: false }
                         : item
                 )
             );
 
             await Swal.fire({
                 icon: "success",
-                title: "Unpublished",
-                text:
-                    "Public access has been disabled.",
-                timer: 1400,
+                title: "Survey Unpublished",
+                text: "Public access has been paused.",
+                timer: 1600,
                 showConfirmButton: false,
             });
-
         } catch (error) {
-
             await Swal.fire({
                 icon: "error",
                 title: "Unpublish Failed",
-                text:
-                    error.message ||
-                    "Unable to unpublish survey.",
+                text: error.message || "Unable to unpublish survey.",
             });
-
         }
-
     }
-
 
     // Copy respondent link
     async function handleCopyLink(surveyId) {
-
-        const url =
-            `${window.location.origin}/surveys/${surveyId}/take`;
+        const url = `${window.location.origin}/surveys/${surveyId}/take`;
 
         try {
-
-            await navigator.clipboard.writeText(
-                url
-            );
+            await navigator.clipboard.writeText(url);
 
             await Swal.fire({
                 icon: "success",
-                title: "Link Copied",
-                timer: 1200,
+                title: "Link Copied!",
+                text: "Confidential survey link copied to clipboard.",
+                timer: 1400,
                 showConfirmButton: false,
             });
-
         } catch {
-
             Swal.fire({
                 icon: "error",
                 title: "Copy Failed",
-                text:
-                    "Could not copy the survey link.",
+                text: "Could not copy the survey link.",
             });
-
         }
-
     }
 
+    // Format creation date
+    function formatDate(dateString) {
+        if (!dateString) return "Recently created";
+        try {
+            const date = new Date(dateString);
+            return date.toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+            });
+        } catch {
+            return "Recently created";
+        }
+    }
 
     return (
-
         <>
-
             <Sidebar />
 
-
             <main className="survey-list-page">
-
                 <div className="survey-list-container">
-
-
                     {/* Header */}
-
                     <header className="survey-list-header">
+                        <div className="survey-header-info">
+                            <div className="survey-header-badge">
+                                <FaShieldAlt className="header-badge-icon" />
+                                <span>Confidential Feedback Directory</span>
+                            </div>
 
-                        <div>
-
-                            <span className="survey-list-label">
-                                Survey Management
-                            </span>
-
-                            <h1>
-                                Surveys
-                            </h1>
+                            <h1>Surveys</h1>
 
                             <p>
-                                Create, manage and monitor
-                                your employee surveys.
+                                Create, launch, and monitor company-wide sentiment pulses with guaranteed anonymity.
                             </p>
-
                         </div>
 
                         <div className="survey-create-button-d">
-
-                    
-                            <PermissionGate permission="survey.create"><button className="survey-create-button"
-                                onClick={() =>
-                                    navigate(
-                                        "/surveys/create"
-                                    )
-                                }
-                            >
-                            + Create Survey
-                            </button></PermissionGate>
+                            <PermissionGate permission="survey.create">
+                                <button
+                                    className="survey-create-button"
+                                    onClick={() => navigate("/surveys/create")}
+                                >
+                                    <FaPlus className="create-btn-icon" />
+                                    <span>Create Survey</span>
+                                </button>
+                            </PermissionGate>
                         </div>
-
                     </header>
 
-
-                    {/* Toolbar */}
-
+                    {/* Toolbar: Filters & Search */}
                     <div className="survey-list-toolbar">
-
                         <div className="survey-filter-tabs">
-
                             <button
-                                className={
-                                    filter === "all"
-                                        ? "active"
-                                        : ""
-                                }
-                                onClick={() =>
-                                    setFilter("all")
-                                }
+                                className={`filter-tab-btn ${
+                                    filter === "all" ? "active" : ""
+                                }`}
+                                onClick={() => setFilter("all")}
                             >
-                                All
-                                <span>
+                                <span>All Surveys</span>
+                                <span className="tab-counter-pill all">
                                     {surveys.length}
                                 </span>
                             </button>
 
                             <button
-                                className={
-                                    filter === "published"
-                                        ? "active"
-                                        : ""
-                                }
-                                onClick={() =>
-                                    setFilter(
-                                        "published"
-                                    )
-                                }
+                                className={`filter-tab-btn ${
+                                    filter === "published" ? "active" : ""
+                                }`}
+                                onClick={() => setFilter("published")}
                             >
-                                Published
-                                <span>
+                                <span className="tab-dot published-dot"></span>
+                                <span>Published</span>
+                                <span className="tab-counter-pill published">
                                     {publishedCount}
                                 </span>
                             </button>
 
                             <button
-                                className={
-                                    filter === "draft"
-                                        ? "active"
-                                        : ""
-                                }
-                                onClick={() =>
-                                    setFilter("draft")
-                                }
+                                className={`filter-tab-btn ${
+                                    filter === "draft" ? "active" : ""
+                                }`}
+                                onClick={() => setFilter("draft")}
                             >
-                                Draft
-                                <span>
+                                <span className="tab-dot draft-dot"></span>
+                                <span>Drafts</span>
+                                <span className="tab-counter-pill draft">
                                     {draftCount}
                                 </span>
                             </button>
-
                         </div>
 
-
-                        <input
-                            className="survey-search"
-                            type="search"
-                            placeholder="Search surveys..."
-                            value={search}
-                            onChange={(event) =>
-                                setSearch(
-                                    removeLeadingWhitespace(event.target.value)
-                                )
-                            }
-                        />
-
+                        <div className="survey-search-box">
+                            <FaSearch className="search-lens-icon" />
+                            <input
+                                className="survey-search"
+                                type="search"
+                                placeholder="Search by title or description..."
+                                value={search}
+                                onChange={(event) =>
+                                    setSearch(
+                                        removeLeadingWhitespace(event.target.value)
+                                    )
+                                }
+                            />
+                            {search && (
+                                <button
+                                    type="button"
+                                    className="search-clear-btn"
+                                    onClick={() => setSearch("")}
+                                    title="Clear search"
+                                >
+                                    <FaTimes />
+                                </button>
+                            )}
+                        </div>
                     </div>
 
-
                     {/* Survey list */}
-
                     {loading ? (
-
-                        <div className="survey-list-empty">
-                            Loading surveys...
+                        <div className="survey-list-loading-grid">
+                            {[1, 2, 3].map((skeleton) => (
+                                <div
+                                    key={skeleton}
+                                    className="survey-skeleton-card"
+                                >
+                                    <div className="skeleton-line pill"></div>
+                                    <div className="skeleton-line title"></div>
+                                    <div className="skeleton-line desc"></div>
+                                    <div className="skeleton-line desc short"></div>
+                                    <div className="skeleton-actions-row">
+                                        <div className="skeleton-btn"></div>
+                                        <div className="skeleton-btn"></div>
+                                        <div className="skeleton-btn"></div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
-
                     ) : filteredSurveys.length === 0 ? (
-
                         <div className="survey-list-empty">
-
-                            <h3>
-                                No surveys found
-                            </h3>
-
+                            <div className="empty-icon-well">
+                                <FaClipboardList />
+                            </div>
+                            <h3>No Surveys Found</h3>
                             <p>
-                                Try another search or
-                                create a new survey.
+                                {search || filter !== "all"
+                                    ? "No surveys match your current search and filter criteria."
+                                    : "You haven't created any employee surveys yet. Get started with your first pulse!"}
                             </p>
-
-                        </div>
-
-                    ) : (
-
-                        <div className="survey-directory">
-
-                            {filteredSurveys.map(
-                                (survey) => (
-
-                                    <article
-                                        key={survey.id}
-                                        className="survey-directory-card"
+                            {search || filter !== "all" ? (
+                                <button
+                                    type="button"
+                                    className="empty-reset-btn"
+                                    onClick={() => {
+                                        setSearch("");
+                                        setFilter("all");
+                                    }}
+                                >
+                                    Reset Filters
+                                </button>
+                            ) : (
+                                <PermissionGate permission="survey.create">
+                                    <button
+                                        type="button"
+                                        className="empty-create-btn"
+                                        onClick={() => navigate("/surveys/create")}
                                     >
+                                        <FaPlus /> Create Your First Survey
+                                    </button>
+                                </PermissionGate>
+                            )}
+                        </div>
+                    ) : (
+                        <div className="survey-directory">
+                            {filteredSurveys.map((survey) => (
+                                <article
+                                    key={survey.id}
+                                    className={`survey-directory-card ${
+                                        survey.is_published
+                                            ? "card-published"
+                                            : "card-draft"
+                                    }`}
+                                >
+                                    <div className="survey-card-header-row">
+                                        <span
+                                            className={
+                                                survey.is_published
+                                                    ? "survey-status published"
+                                                    : "survey-status draft"
+                                            }
+                                        >
+                                            {survey.is_published && (
+                                                <span className="active-glow-dot"></span>
+                                            )}
+                                            {survey.is_published
+                                                ? "Published"
+                                                : "Draft"}
+                                        </span>
 
-                                        <div className="survey-card-content">
+                                        <span className="survey-id-badge">
+                                            #SURV-{survey.id}
+                                        </span>
+                                    </div>
 
-                                            <div className="survey-card-top">
+                                    <div className="survey-card-content">
+                                        <h2 title={survey.title}>
+                                            {survey.title}
+                                        </h2>
 
-                                                <span
-                                                    className={
-                                                        survey.is_published
-                                                            ? "survey-status published"
-                                                            : "survey-status draft"
-                                                    }
-                                                >
-                                                    {survey.is_published
-                                                        ? "Published"
-                                                        : "Draft"}
-                                                </span>
+                                        <p
+                                            title={
+                                                survey.description ||
+                                                "No description provided."
+                                            }
+                                        >
+                                            {survey.description ||
+                                                "No description provided."}
+                                        </p>
+                                    </div>
 
-                                            </div>
+                                    {/* Metadata row */}
+                                    <div className="survey-card-meta-row">
+                                        <span className="survey-meta-item">
+                                            <FaCalendarAlt className="meta-icon" />
+                                            <span>
+                                                {formatDate(survey.created_at)}
+                                            </span>
+                                        </span>
 
+                                        {survey.is_published && (
+                                            <span className="survey-live-badge">
+                                                Active Link
+                                            </span>
+                                        )}
+                                    </div>
 
-                                            <h2>
-                                                {survey.title}
-                                            </h2>
+                                    {/* Actions Toolbar */}
+                                    <div className="survey-card-actions">
+                                        <button
+                                            className="action-btn view-btn"
+                                            title="View Details"
+                                            onClick={() =>
+                                                navigate(`/surveys/${survey.id}`)
+                                            }
+                                        >
+                                            <FaEye className="btn-icon" />
+                                            <span>View</span>
+                                        </button>
 
-                                            <p>
-                                                {survey.description ||
-                                                    "No description provided."}
-                                            </p>
-
-                                        </div>
-
-
-                                        {/* Actions */}
-
-                                        <div className="survey-card-actions">
-
+                                        <PermissionGate permission="survey.edit">
                                             <button
-                                                title="View"
-                                                onClick={() =>
-                                                    navigate(
-                                                        `/surveys/${survey.id}`
-                                                    )
-                                                }
-                                            >
-                                                <FaEye />
-                                                <span>View</span>
-                                            </button>
-
-
-                                            <PermissionGate permission="survey.edit"><button
-                                                title="Build / Edit"
+                                                className="action-btn edit-btn"
+                                                title="Open Survey Builder"
                                                 onClick={() =>
                                                     navigate(
                                                         `/surveys/${survey.id}/builder`
                                                     )
                                                 }
                                             >
-                                                <FaEdit />
-                                                <span>Edit</span>
-                                            </button></PermissionGate>
+                                                <FaEdit className="btn-icon" />
+                                                <span>Builder</span>
+                                            </button>
+                                        </PermissionGate>
 
-
-                                            <PermissionGate permission="analytics.view"><button
-                                                title="Analytics"
+                                        <PermissionGate permission="analytics.view">
+                                            <button
+                                                className="action-btn analytics-btn"
+                                                title="View Analytics & Insights"
                                                 onClick={() =>
                                                     navigate(
                                                         `/surveys/${survey.id}/analytics`
                                                     )
                                                 }
                                             >
-                                                <FaChartBar />
+                                                <FaChartBar className="btn-icon" />
                                                 <span>Analytics</span>
-                                            </button></PermissionGate>
+                                            </button>
+                                        </PermissionGate>
 
-
-                                            {survey.is_published ? (
-
-                                                <>
-
-                                                    <button
-                                                        title="Copy Link"
-                                                        onClick={() =>
-                                                            handleCopyLink(
-                                                                survey.id
-                                                            )
-                                                        }
-                                                    >
-                                                        <FaLink />
-                                                        <span>
-                                                            Copy Link
-                                                        </span>
-                                                    </button>
-
-
-                                                    <PermissionGate permission="survey.publish"><button
-                                                        title="Unpublish"
-                                                        onClick={() =>
-                                                            handleUnpublish(
-                                                                survey
-                                                            )
-                                                        }
-                                                    >
-                                                        <FaPauseCircle />
-                                                        <span>
-                                                            Unpublish
-                                                        </span>
-                                                    </button></PermissionGate>
-
-                                                </>
-
-                                            ) : (
-
-                                                <PermissionGate permission="survey.publish"><button
-                                                    title="Publish"
+                                        {survey.is_published ? (
+                                            <>
+                                                <button
+                                                    className="action-btn copy-btn"
+                                                    title="Copy Public Survey Link"
                                                     onClick={() =>
-                                                        handlePublish(
-                                                            survey
-                                                        )
+                                                        handleCopyLink(survey.id)
                                                     }
                                                 >
-                                                    <FaPaperPlane />
-                                                    <span>
-                                                        Publish
-                                                    </span>
-                                                </button></PermissionGate>
+                                                    <FaLink className="btn-icon" />
+                                                    <span>Copy Link</span>
+                                                </button>
 
-                                            )}
-
-                                        </div>
-
-                                    </article>
-
-                                )
-                            )}
-
+                                                <PermissionGate permission="survey.publish">
+                                                    <button
+                                                        className="action-btn unpublish-btn"
+                                                        title="Unpublish (Pause Survey)"
+                                                        onClick={() =>
+                                                            handleUnpublish(survey)
+                                                        }
+                                                    >
+                                                        <FaPauseCircle className="btn-icon" />
+                                                        <span>Unpublish</span>
+                                                    </button>
+                                                </PermissionGate>
+                                            </>
+                                        ) : (
+                                            <PermissionGate permission="survey.publish">
+                                                <button
+                                                    className="action-btn publish-btn"
+                                                    title="Publish Survey"
+                                                    onClick={() =>
+                                                        handlePublish(survey)
+                                                    }
+                                                >
+                                                    <FaPaperPlane className="btn-icon" />
+                                                    <span>Publish</span>
+                                                </button>
+                                            </PermissionGate>
+                                        )}
+                                    </div>
+                                </article>
+                            ))}
                         </div>
-
                     )}
-
                 </div>
-
             </main>
-
         </>
-
     );
 }
 
