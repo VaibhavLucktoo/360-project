@@ -1,199 +1,641 @@
+/* ==========================================================================
+   Survey Details Page (/surveys/:id)
+   Confidential Suggestion Box SaaS Styling - Light & Dark Modes
+   ========================================================================== */
+
 .survey-details-page {
-    width: auto;
     min-height: 100vh;
     margin-left: var(--sidebar-width, 220px);
-    padding: 42px clamp(16px, 4vw, 52px) 60px;
-    background: #f8fafc;
-    transition: margin-left 0.2s ease;
+    padding: 36px clamp(16px, 4vw, 48px) 60px;
+    box-sizing: border-box;
+    transition: margin-left 0.25s ease;
+    background: #f1f5f9;
 }
 
-.survey-details-card {
-    width: min(100%, 900px);
+.survey-details-container {
+    width: min(100%, 940px);
     margin: 0 auto;
-    padding: 30px;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
 }
 
-.survey-details-back {
+/* --------------------------------------------------------------------------
+   1. Top Navigation Row
+   -------------------------------------------------------------------------- */
+.details-top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.survey-details-back-btn {
     display: inline-flex;
     align-items: center;
-    width: max-content;
-    min-height: 40px;
-    margin-bottom: 24px;
-    padding: 0 12px;
-    border: 1px solid #d0d5dd;
-    border-radius: 9px;
-    color: #344054;
+    gap: 8px;
+    height: 38px;
+    padding: 0 14px;
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 10px;
+    color: #475569;
+    font-family: inherit;
     font-size: 13px;
-    font-weight: 600;
-    text-decoration: none;
-}
-
-.survey-details-back:hover {
-    color: #2563eb;
-    background: #eff6ff;
-    border-color: #bfdbfe;
-}
-
-.survey-details-label {
-    display: block;
-    margin-bottom: 10px;
-    color: #2563eb;
-    font-size: 12px;
     font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.18s ease;
 }
 
-.survey-details-heading {
+.survey-details-back-btn:hover {
+    background: #f8fafc;
+    border-color: #94a3b8;
+    color: #0f172a;
+    transform: translateX(-2px);
+}
+
+.details-confidential-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 12px;
+    background: #eef2ff;
+    border: 1.5px solid #c7d2fe;
+    border-radius: 9999px;
+    color: #4338ca;
+    font-size: 11.5px;
+    font-weight: 700;
+}
+
+.details-confidential-badge .shield-icon {
+    font-size: 12px;
+    color: #4f46e5;
+}
+
+/* --------------------------------------------------------------------------
+   2. Main Overview Card
+   -------------------------------------------------------------------------- */
+.survey-details-card {
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    border-top: 4px solid #4f46e5;
+    border-radius: 20px;
+    padding: clamp(24px, 4vw, 36px);
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+}
+
+.details-card-header {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 24px;
+    gap: 20px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
 }
 
-.survey-details-heading h1 {
+.survey-details-ref {
+    display: inline-block;
+    padding: 3px 8px;
+    background: #eef2ff;
+    border: 1px solid #c7d2fe;
+    border-radius: 6px;
+    color: #4338ca;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    margin-bottom: 8px;
+}
+
+.details-card-header h1 {
     margin: 0 0 10px;
     color: #0f172a;
-    font-size: clamp(28px, 4vw, 38px);
-    line-height: 1.2;
+    font-size: clamp(24px, 3.6vw, 32px);
+    font-weight: 850;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
 }
 
-.survey-details-heading p {
-    max-width: 700px;
+.details-card-header p {
     margin: 0;
-    color: #64748b;
-    font-size: 15px;
-    line-height: 1.65;
+    color: #475569;
+    font-size: 14.5px;
+    line-height: 1.6;
+    max-width: 680px;
 }
 
 .survey-details-status {
-    flex: 0 0 auto;
-    padding: 6px 10px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 9999px;
+    font-size: 11.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
 }
 
 .survey-details-status.published {
     background: #dcfce7;
     color: #15803d;
+    border: 1px solid #bbf7d0;
 }
 
 .survey-details-status.draft {
     background: #f1f5f9;
     color: #64748b;
+    border: 1px solid #e2e8f0;
 }
 
-.survey-details-actions {
+/* --------------------------------------------------------------------------
+   3. KPI Stats Grid
+   -------------------------------------------------------------------------- */
+.details-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.details-kpi-card {
     display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 28px;
-    padding-top: 24px;
-    border-top: 1px solid #e2e8f0;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 14px;
+    transition: all 0.2s ease;
 }
 
-.survey-details-actions a,
-.survey-details-actions button {
-    display: inline-flex;
+.details-kpi-card:hover {
+    border-color: #cbd5e1;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+}
+
+.kpi-icon-well {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 42px;
-    padding: 0 16px;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    background: #ffffff;
-    color: #334155;
-    font-size: 14px;
-    font-weight: 600;
-    text-decoration: none;
+    font-size: 18px;
+    flex-shrink: 0;
 }
 
-.survey-details-actions a:hover,
-.survey-details-actions button:hover {
-    color: #2563eb;
+.kpi-icon-well.blue {
     background: #eff6ff;
-    border-color: #bfdbfe;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
 }
 
-@media (max-width: 600px) {
-    .survey-details-page {
-        margin-left: 0;
-        padding: 24px 14px 40px;
-    }
-
-    .survey-details-card {
-        padding: 22px 16px;
-    }
-
-    .survey-details-heading {
-        flex-direction: column;
-        gap: 16px;
-    }
-
-    .survey-details-actions {
-        flex-direction: column;
-    }
-
-    .survey-details-actions a,
-.survey-details-actions button {
-        width: 100%;
-    }
+.kpi-icon-well.purple {
+    background: #faf5ff;
+    color: #7c3aed;
+    border: 1px solid #ddd6fe;
 }
 
-
-/* =========================================
-   Dark Theme
-========================================= */
-
-:root[data-theme="dark"] .survey-details-page {
-    background: #0f172a;
-    color: #e5e7eb;
+.kpi-icon-well.emerald {
+    background: #ecfdf5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
 }
 
-:root[data-theme="dark"] .survey-details-card,
-:root[data-theme="dark"] .survey-details-back,
-:root[data-theme="dark"] .survey-details-actions a,
-.survey-details-actions button {
-    background: #111827;
-    border-color: #334155;
-    color: #e5e7eb;
-    box-shadow: none;
+.kpi-label {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 2px;
 }
 
-:root[data-theme="dark"] .survey-details-heading h1 {
-    color: #f8fafc;
+.kpi-value {
+    font-size: 20px;
+    font-weight: 850;
+    color: #0f172a;
+    line-height: 1.2;
 }
 
-:root[data-theme="dark"] .survey-details-heading p,
-:root[data-theme="dark"] .survey-details-status.draft {
-    color: #cbd5e1;
+.kpi-value.text-sm {
+    font-size: 14.5px;
+    font-weight: 750;
 }
 
-:root[data-theme="dark"] .survey-details-actions {
-    border-color: #334155;
+/* --------------------------------------------------------------------------
+   4. Public Link Box
+   -------------------------------------------------------------------------- */
+.details-public-link-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 20px;
+    background: #f0fdf4;
+    border: 1.5px solid #bbf7d0;
+    border-radius: 14px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
 }
 
-:root[data-theme="dark"] .survey-details-back:hover,
-:root[data-theme="dark"] .survey-details-actions a:hover,
-.survey-details-actions button:hover {
-    background: #1d4ed8;
-    border-color: #2563eb;
+.link-box-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 240px;
+    flex: 1;
+}
+
+.link-pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+    animation: surveyDotPulse 2s infinite;
+    flex-shrink: 0;
+}
+
+.link-box-title {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 800;
+    color: #047857;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 2px;
+}
+
+.link-box-url {
+    font-family: monospace;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #1e293b;
+    word-break: break-all;
+}
+
+.link-box-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-copy-url,
+.btn-visit-url {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 36px;
+    padding: 0 14px;
+    border-radius: 9px;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.18s ease;
+}
+
+.btn-copy-url {
+    background: #ffffff;
+    border: 1.5px solid #a7f3d0;
+    color: #047857;
+}
+
+.btn-copy-url:hover {
+    background: #dcfce7;
+    border-color: #10b981;
+    color: #065f46;
+}
+
+.btn-visit-url {
+    background: #10b981;
+    border: 1.5px solid #059669;
     color: #ffffff;
 }
 
+.btn-visit-url:hover {
+    background: #059669;
+}
+
+/* Error Banner */
+.details-error-alert {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #fef2f2;
+    border: 1.5px solid #fecaca;
+    border-radius: 12px;
+    color: #b91c1c;
+    font-size: 13.5px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* --------------------------------------------------------------------------
+   5. Action Hub
+   -------------------------------------------------------------------------- */
+.survey-details-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    padding-top: 22px;
+    border-top: 1.5px solid #e2e8f0;
+}
+
+.details-hub-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+}
+
+.details-hub-btn .hub-icon {
+    font-size: 15px;
+}
+
+.details-hub-btn.builder-btn {
+    background: #eef2ff;
+    border: 1.5px solid #c7d2fe;
+    color: #4338ca;
+}
+
+.details-hub-btn.builder-btn:hover {
+    background: #4f46e5;
+    border-color: #4338ca;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(79, 70, 229, 0.3);
+}
+
+.details-hub-btn.preview-btn {
+    background: #f8fafc;
+    border: 1.5px solid #cbd5e1;
+    color: #334155;
+}
+
+.details-hub-btn.preview-btn:hover {
+    background: #ffffff;
+    border-color: #94a3b8;
+    color: #0f172a;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+}
+
+.details-hub-btn.analytics-btn {
+    background: #faf5ff;
+    border: 1.5px solid #ddd6fe;
+    color: #6d28d9;
+}
+
+.details-hub-btn.analytics-btn:hover {
+    background: #7c3aed;
+    border-color: #6d28d9;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(124, 58, 237, 0.3);
+}
+
+.details-hub-btn.responses-btn {
+    background: #f0fdf4;
+    border: 1.5px solid #bbf7d0;
+    color: #047857;
+}
+
+.details-hub-btn.responses-btn:hover {
+    background: #059669;
+    border-color: #047857;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(5, 150, 105, 0.3);
+}
+
+.details-hub-btn.export-btn {
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    color: #475569;
+}
+
+.details-hub-btn.export-btn:hover:not(:disabled) {
+    background: #f8fafc;
+    border-color: #64748b;
+    color: #0f172a;
+    transform: translateY(-2px);
+}
+
+.details-hub-btn:disabled {
+    opacity: 0.55;
+    cursor: wait;
+    transform: none;
+    box-shadow: none;
+}
+
+/* --------------------------------------------------------------------------
+   6. Loading & Error States
+   -------------------------------------------------------------------------- */
+.details-loading-card {
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 20px;
+    padding: 60px 24px;
+    text-align: center;
+}
+
+.details-loader-spin {
+    width: 44px;
+    height: 44px;
+    border: 3.5px solid #e2e8f0;
+    border-top-color: #4f46e5;
+    border-radius: 50%;
+    margin: 0 auto 18px;
+    animation: detailsSpin 0.9s linear infinite;
+}
+
+@keyframes detailsSpin {
+    to { transform: rotate(360deg); }
+}
+
+.details-not-found {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.not-found-icon {
+    font-size: 38px;
+    color: #ef4444;
+    margin-bottom: 12px;
+}
+
+/* --------------------------------------------------------------------------
+   7. Dark Theme Overrides
+   -------------------------------------------------------------------------- */
+:root[data-theme="dark"] .survey-details-page {
+    background: #090d16 !important;
+    color: #e2e8f0 !important;
+}
+
+:root[data-theme="dark"] .survey-details-back-btn {
+    background: #111827 !important;
+    border-color: #334155 !important;
+    color: #cbd5e1 !important;
+}
+
+:root[data-theme="dark"] .survey-details-back-btn:hover {
+    background: #1e293b !important;
+    border-color: #818cf8 !important;
+    color: #f8fafc !important;
+}
+
+:root[data-theme="dark"] .details-confidential-badge {
+    background: rgba(99, 102, 241, 0.15) !important;
+    border-color: rgba(99, 102, 241, 0.35) !important;
+    color: #a5b4fc !important;
+}
+
+:root[data-theme="dark"] .survey-details-card,
+:root[data-theme="dark"] .details-loading-card {
+    background: #111827 !important;
+    border-color: #334155 !important;
+    border-top-color: #6366f1 !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4) !important;
+}
+
+:root[data-theme="dark"] .survey-details-ref {
+    background: rgba(99, 102, 241, 0.15) !important;
+    border-color: rgba(99, 102, 241, 0.35) !important;
+    color: #a5b4fc !important;
+}
+
+:root[data-theme="dark"] .details-card-header h1 {
+    color: #f8fafc !important;
+}
+
+:root[data-theme="dark"] .details-card-header p {
+    color: #94a3b8 !important;
+}
+
 :root[data-theme="dark"] .survey-details-status.draft {
-    background: #334155;
+    background: #1e293b !important;
+    border-color: #334155 !important;
+    color: #cbd5e1 !important;
 }
 
 :root[data-theme="dark"] .survey-details-status.published {
-    background: #064e3b;
-    color: #bbf7d0;
+    background: rgba(16, 185, 129, 0.18) !important;
+    border-color: rgba(16, 185, 129, 0.35) !important;
+    color: #6ee7b7 !important;
 }
 
-.survey-details-actions button { cursor: pointer; font-family: inherit; }
-.survey-details-actions button:disabled { opacity: .6; cursor: wait; }
+:root[data-theme="dark"] .details-kpi-card {
+    background: #0f172a !important;
+    border-color: #334155 !important;
+}
+
+:root[data-theme="dark"] .details-kpi-card:hover {
+    border-color: #818cf8 !important;
+}
+
+:root[data-theme="dark"] .kpi-label {
+    color: #94a3b8 !important;
+}
+
+:root[data-theme="dark"] .kpi-value {
+    color: #f8fafc !important;
+}
+
+:root[data-theme="dark"] .details-public-link-box {
+    background: #0f172a !important;
+    border-color: rgba(16, 185, 129, 0.35) !important;
+}
+
+:root[data-theme="dark"] .link-box-title {
+    color: #6ee7b7 !important;
+}
+
+:root[data-theme="dark"] .link-box-url {
+    color: #e2e8f0 !important;
+}
+
+:root[data-theme="dark"] .btn-copy-url {
+    background: #1e293b !important;
+    border-color: rgba(16, 185, 129, 0.4) !important;
+    color: #6ee7b7 !important;
+}
+
+:root[data-theme="dark"] .btn-copy-url:hover {
+    background: rgba(16, 185, 129, 0.25) !important;
+    color: #a7f3d0 !important;
+}
+
+:root[data-theme="dark"] .survey-details-actions {
+    border-top-color: #1e293b !important;
+}
+
+:root[data-theme="dark"] .details-hub-btn.builder-btn {
+    background: rgba(99, 102, 241, 0.12) !important;
+    border-color: rgba(99, 102, 241, 0.35) !important;
+    color: #a5b4fc !important;
+}
+
+:root[data-theme="dark"] .details-hub-btn.builder-btn:hover {
+    background: #4f46e5 !important;
+    color: #ffffff !important;
+}
+
+:root[data-theme="dark"] .details-hub-btn.preview-btn {
+    background: #0f172a !important;
+    border-color: #334155 !important;
+    color: #cbd5e1 !important;
+}
+
+:root[data-theme="dark"] .details-hub-btn.preview-btn:hover {
+    background: #1e293b !important;
+    border-color: #818cf8 !important;
+    color: #f8fafc !important;
+}
+
+:root[data-theme="dark"] .details-hub-btn.analytics-btn {
+    background: rgba(139, 92, 246, 0.12) !important;
+    border-color: rgba(139, 92, 246, 0.35) !important;
+    color: #c4b5fd !important;
+}
+
+:root[data-theme="dark"] .details-hub-btn.analytics-btn:hover {
+    background: #7c3aed !important;
+    color: #ffffff !important;
+}
+
+:root[data-theme="dark"] .details-hub-btn.responses-btn {
+    background: rgba(16, 185, 129, 0.12) !important;
+    border-color: rgba(16, 185, 129, 0.35) !important;
+    color: #6ee7b7 !important;
+}
+
+:root[data-theme="dark"] .details-hub-btn.responses-btn:hover {
+    background: #059669 !important;
+    color: #ffffff !important;
+}
+
+:root[data-theme="dark"] .details-hub-btn.export-btn {
+    background: #0f172a !important;
+    border-color: #334155 !important;
+    color: #cbd5e1 !important;
+}
+
+:root[data-theme="dark"] .details-hub-btn.export-btn:hover:not(:disabled) {
+    background: #1e293b !important;
+    border-color: #818cf8 !important;
+    color: #f8fafc !important;
+}
