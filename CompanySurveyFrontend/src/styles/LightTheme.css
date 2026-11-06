@@ -60,23 +60,68 @@
     color: var(--light-accent);
 }
 
-/* Keep the existing pale-blue sidebar, with a clear selected item. */
+/* Modern Clean White Sidebar in light theme */
 :root:not([data-theme="dark"]) .sidebar {
-    border-right-color: #bfdbfe;
+    background: #ffffff;
+    border-right-color: #e2e8f0;
 }
 
-:root:not([data-theme="dark"]) :is(.sidebar-nav-item, .sidebar-toggle-btn):hover {
-    background: #eaf5ff;
-    color: #1d4ed8;
+:root:not([data-theme="dark"]) .sidebar-logo {
+    color: #0f172a;
+}
+
+:root:not([data-theme="dark"]) .sidebar-toggle-btn {
+    color: #64748b;
+}
+
+:root:not([data-theme="dark"]) .sidebar-toggle-btn:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+:root:not([data-theme="dark"]) .sidebar-nav-item {
+    color: #475569;
+}
+
+:root:not([data-theme="dark"]) .sidebar-nav-icon {
+    color: #64748b;
+}
+
+:root:not([data-theme="dark"]) .sidebar-nav-item:hover {
+    background: #f8fafc;
+    color: #0f172a;
+}
+
+:root:not([data-theme="dark"]) .sidebar-nav-item:hover .sidebar-nav-icon {
+    color: #0f172a;
 }
 
 :root:not([data-theme="dark"]) .sidebar-nav-item.active {
-    background: #bfdbfe;
-    color: #1e40af;
+    background: #eef2ff;
+    color: #4f46e5;
+    border: 1px solid #c7d2fe;
+}
+
+:root:not([data-theme="dark"]) .sidebar-nav-item.active .sidebar-nav-icon {
+    color: #4f46e5;
+}
+
+:root:not([data-theme="dark"]) .sidebar-nav-item.active:hover {
+    background: #e0e7ff;
+    color: #4338ca;
 }
 
 :root:not([data-theme="dark"]) .sidebar-footer {
-    border-top-color: #bfdbfe;
+    border-top-color: #f1f5f9;
+}
+
+:root:not([data-theme="dark"]) .logout-btn {
+    color: #64748b;
+}
+
+:root:not([data-theme="dark"]) .logout-btn:hover {
+    background: #fef2f2;
+    color: #dc2626;
 }
 
 /* Secondary actions stay neutral, with the same blue hover as survey actions. */

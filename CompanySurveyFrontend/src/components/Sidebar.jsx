@@ -569,7 +569,7 @@ function Sidebar() {
 
 
                         {can("role.manage") && (
-                            <li><button type="button" title="Roles"
+                            <li><button type="button" title={isCollapsed ? "Roles" : undefined}
                                 className={isActive("/roles") ? "sidebar-nav-item active" : "sidebar-nav-item"}
                                 onClick={() => handleNavigate("/roles")}>
                                 <span className="sidebar-nav-icon"><FaUserShield /></span>
@@ -577,7 +577,7 @@ function Sidebar() {
                             </button></li>
                         )}
                         {can("user.manage") && (
-                            <li><button type="button" title="Users"
+                            <li><button type="button" title={isCollapsed ? "Users" : undefined}
                                 className={isActive("/users") ? "sidebar-nav-item active" : "sidebar-nav-item"}
                                 onClick={() => handleNavigate("/users")}>
                                 <span className="sidebar-nav-icon"><FaUsers /></span>
