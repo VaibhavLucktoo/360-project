@@ -1,110 +1,201 @@
-/*NavBar*/
+/* ==========================================================================
+   Modern Navbar Styles
+   ========================================================================== */
 
-.navbar{
-
+.navbar {
     display: flex;
-
     justify-content: space-between;
-
     align-items: center;
-
     background-color: #ffffff;
+    padding: 14px clamp(18px, 3vw, 32px);
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    margin-bottom: 24px;
+    box-sizing: border-box;
+    transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
 
-    padding: 18px 30px;
-
-    border-radius:  8px;
-
-    box-shadow: 0 5px 15px rgba(0,0,0,.08);
-
-    margin: 30px;
+.navbar-left h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 750;
+    color: #0f172a;
+    letter-spacing: -0.02em;
 }
 
 /* Right Section */
-
-.navbar-right{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:20px;
-
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-/* Notification */
-
-.nav-icon{
-
-    font-size:20px;
-
-    color:#374151;
-
+/* General Nav Icon Button */
+.nav-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 11px;
+    background: #f8fafc;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.nav-icon-btn{
-
-    display:inline-flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    width:40px;
-
-    height:40px;
-
-    padding:0;
-
-    border:1px solid transparent;
-
-    border-radius:8px;
-
-    background:transparent;
-
+.nav-icon-btn:hover {
+    background: #eef2ff;
+    border-color: #c7d2fe;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.12);
 }
 
-.nav-icon-btn:hover{
-
-    background:#eff6ff;
-
-    border-color:#bfdbfe;
-
+.nav-icon {
+    font-size: 16px;
+    color: #475569;
+    transition: transform 0.2s ease, color 0.2s ease;
 }
 
-/* Profile */
-
-.profile{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:10px;
-
-    padding:6px 8px;
-
-    border:1px solid transparent;
-
-    border-radius:8px;
-
-    background:transparent;
-
-    color:#111827;
-
+.nav-icon-btn:hover .nav-icon {
+    color: #4f46e5;
 }
 
-.profile:hover{
-
-    background:#eff6ff;
-
-    border-color:#bfdbfe;
-
+/* Bell Wiggle Micro-Animation */
+.nav-bell-btn:hover .bell-icon {
+    animation: bellWiggle 0.6s ease-in-out;
 }
 
-.profile-icon{
+@keyframes bellWiggle {
+    0%, 100% { transform: rotate(0deg); }
+    20% { transform: rotate(15deg); }
+    40% { transform: rotate(-15deg); }
+    60% { transform: rotate(8deg); }
+    80% { transform: rotate(-8deg); }
+}
 
-    font-size:34px;
+/* Theme Toggle Button */
+.nav-theme-btn .theme-sun {
+    color: #f59e0b;
+}
 
-    color:#2563eb;
+.nav-theme-btn .theme-moon {
+    color: #6366f1;
+}
 
+.nav-theme-btn:hover .theme-sun {
+    transform: rotate(35deg) scale(1.15);
+}
+
+.nav-theme-btn:hover .theme-moon {
+    transform: rotate(-25deg) scale(1.15);
+}
+
+/* User Profile Pill */
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 14px 5px 6px;
+    border: 1px solid #e2e8f0;
+    border-radius: 9999px;
+    background: #f8fafc;
+    color: #0f172a;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.profile:hover {
+    background: #eef2ff;
+    border-color: #c7d2fe;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.14);
+}
+
+/* Initials Avatar Badge */
+.profile-avatar-initials {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+}
+
+.profile-online-dot {
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #10b981;
+    border: 2px solid #ffffff;
+}
+
+.profile-name {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ==========================================================================
+   Dark Theme Overrides (Zero Baby Blue - Signature Indigo Glow)
+   ========================================================================== */
+:root[data-theme="dark"] .navbar {
+    background-color: #0f172a !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35) !important;
+}
+
+:root[data-theme="dark"] .navbar-left h2 {
+    color: #f8fafc !important;
+}
+
+:root[data-theme="dark"] .nav-icon-btn {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+}
+
+:root[data-theme="dark"] .nav-icon-btn:hover {
+    background: rgba(99, 102, 241, 0.2) !important;
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 14px rgba(99, 102, 241, 0.35) !important;
+}
+
+:root[data-theme="dark"] .nav-icon {
+    color: #cbd5e1 !important;
+}
+
+:root[data-theme="dark"] .nav-icon-btn:hover .nav-icon {
+    color: #818cf8 !important;
+}
+
+:root[data-theme="dark"] .profile {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+}
+
+:root[data-theme="dark"] .profile:hover {
+    background: rgba(99, 102, 241, 0.2) !important;
+    border-color: #6366f1 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 14px rgba(99, 102, 241, 0.35) !important;
+}
+
+:root[data-theme="dark"] .profile-online-dot {
+    border-color: #0f172a !important;
 }

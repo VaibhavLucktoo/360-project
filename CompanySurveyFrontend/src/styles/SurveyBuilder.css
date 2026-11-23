@@ -1,303 +1,255 @@
-/* =========================================
-   Survey Builder Page
-========================================= */
+/* ==========================================================================
+   Modern Survey Builder Styles - Suggestion Box Architect
+   ========================================================================== */
 
+/* --------------------------------------------------------------------------
+   1. Page Container
+   -------------------------------------------------------------------------- */
 .survey-builder-page {
     width: auto;
     min-height: 100vh;
     margin-left: var(--sidebar-width, 220px);
     box-sizing: border-box;
-
-    padding: 32px clamp(16px, 3vw, 48px) 60px;
-
-    background: #f8fafc;
-    transition: margin-left 0.2s ease;
+    padding: 32px clamp(20px, 3.5vw, 48px) 60px;
+    background: #f1f5f9;
+    color: #0f172a;
+    transition: margin-left 0.22s ease, background-color 0.25s ease, color 0.25s ease;
 }
 
-
-/* =========================================
-   Builder Header
-========================================= */
-
+/* --------------------------------------------------------------------------
+   2. Header Card
+   -------------------------------------------------------------------------- */
 .survey-builder-header {
-    width: min(100%, 1100px);
-    margin: 0 auto 28px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: clamp(22px, 3vw, 30px) clamp(22px, 3.5vw, 36px);
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    border-top: 4px solid #4f46e5;
+    border-radius: 20px;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+    margin-bottom: 28px;
+    box-sizing: border-box;
+    flex-wrap: wrap;
+    transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
 
-    text-align: center;
+.builder-header-left {
+    min-width: 260px;
+    flex: 1;
+}
+
+.builder-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    background: #eef2ff;
+    border: 1.5px solid #c7d2fe;
+    color: #4338ca;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    margin-bottom: 12px;
+}
+
+.builder-badge-icon {
+    font-size: 12px;
+    color: #4f46e5;
 }
 
 .survey-builder-header h1 {
-    margin: 0 0 8px;
-
-    font-size: clamp(26px, 3vw, 36px);
+    margin: 0 0 6px;
+    font-size: clamp(24px, 3vw, 30px);
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.02em;
     line-height: 1.2;
-    font-weight: 700;
-
-    color: #111827;
 }
 
 .survey-builder-header p {
     margin: 0;
-
-    font-size: clamp(14px, 1.5vw, 16px);
-    line-height: 1.6;
-
-    color: #64748b;
-}
-
-
-/* =========================================
-   Question Builder Container
-========================================= */
-
-.survey-builder-page .question-builder {
-    width: min(100%, 1200px);
-    margin: 0 auto;
-}
-
-
-/* =========================================
-   Question Count Summary
-========================================= */
-
-.survey-builder-page > p {
-    width: min(100%, 1200px);
-
-    margin: 18px auto 0;
-
     font-size: 14px;
-    color: #64748b;
+    color: #475569;
+    font-weight: 500;
 }
 
+.builder-counter-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 18px;
+    background: #eef2ff;
+    border: 1.5px solid #a5b4fc;
+    border-radius: 12px;
+    color: #4338ca;
+    font-size: 13px;
+    font-weight: 800;
+    white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(79, 70, 229, 0.1);
+}
 
-/* =========================================
-   Bottom Actions
-========================================= */
-
+/* --------------------------------------------------------------------------
+   3. Bottom Action Bar
+   -------------------------------------------------------------------------- */
 .survey-builder-actions {
-    width: min(100%, 1200px);
-
-    margin: 30px auto 0;
-    padding-top: 24px;
-
-    border-top: 1px solid #dbe3ef;
-
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    gap: 14px;
+    margin-top: 36px;
+    padding-top: 24px;
+    border-top: 1.5px solid #cbd5e1;
     flex-wrap: wrap;
-
-    gap: 12px;
 }
-
-
-/* Base button */
 
 .survey-builder-actions button {
-    min-width: 125px;
-
-    padding: 11px 20px;
-
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-
-    background: #ffffff;
-    color: #334155;
-
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 22px;
+    border-radius: 12px;
     font-size: 14px;
-    font-weight: 600;
-
+    font-weight: 700;
     cursor: pointer;
-
-    transition:
-        background 0.2s ease,
-        border-color 0.2s ease,
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
 }
-
-
-/* Hover */
-
-.survey-builder-actions button:hover:not(:disabled) {
-    background: #f8fafc;
-    border-color: #94a3b8;
-
-    transform: translateY(-1px);
-
-    box-shadow:
-        0 4px 10px
-        rgba(15, 23, 42, 0.08);
-}
-
-
-/* Publish button */
-
-.survey-builder-actions button:last-child {
-    background: #2563eb;
-    border-color: #2563eb;
-
-    color: #ffffff;
-}
-
-.survey-builder-actions button:last-child:hover:not(:disabled) {
-    background: #1d4ed8;
-    border-color: #1d4ed8;
-}
-
-
-/* Disabled buttons */
 
 .survey-builder-actions button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-
-    transform: none;
-    box-shadow: none;
+    transform: none !important;
+    box-shadow: none !important;
 }
 
-
-/* =========================================
-   Large Screens
-========================================= */
-
-@media (min-width: 1400px) {
-
-    .survey-builder-page {
-        padding-left: 64px;
-        padding-right: 64px;
-    }
-
-    .survey-builder-page .question-builder,
-    .survey-builder-actions,
-    .survey-builder-page > p {
-        max-width: 1250px;
-    }
-
+.survey-builder-actions button .btn-icon {
+    font-size: 13px;
 }
 
-
-/* =========================================
-   Tablets
-========================================= */
-
-@media (max-width: 900px) {
-
-    .survey-builder-page {
-        padding-top: 26px;
-        padding-bottom: 50px;
-    }
-
-    .survey-builder-header {
-        margin-bottom: 24px;
-    }
-
-    .survey-builder-actions {
-        justify-content: center;
-    }
-
+/* Exit Button */
+.builder-btn-exit {
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    color: #334155;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
 }
 
-
-/* =========================================
-   Mobile
-========================================= */
-
-@media (max-width: 600px) {
-
-    .survey-builder-page {
-        margin-left: 0;
-        padding:
-            22px
-            14px
-            40px;
-    }
-
-    .survey-builder-header {
-        margin-bottom: 20px;
-    }
-
-    .survey-builder-header h1 {
-        font-size: 26px;
-    }
-
-    .survey-builder-header p {
-        font-size: 14px;
-    }
-
-    .survey-builder-actions {
-        margin-top: 24px;
-        padding-top: 20px;
-
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .survey-builder-actions button {
-        width: 100%;
-        min-width: 0;
-
-        padding: 12px 16px;
-    }
-
+.builder-btn-exit:hover:not(:disabled) {
+    background: #f8fafc;
+    border-color: #94a3b8;
+    color: #0f172a;
+    transform: translateY(-1.5px);
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
 }
 
-
-/* =========================================
-   Very Small Mobile
-========================================= */
-
-@media (max-width: 380px) {
-
-    .survey-builder-page {
-        padding-left: 10px;
-        padding-right: 10px;
-    }
-
-    .survey-builder-header h1 {
-        font-size: 23px;
-    }
-
+/* Preview Button */
+.builder-btn-preview {
+    background: #f0f9ff;
+    border: 1.5px solid #7dd3fc;
+    color: #0284c7;
+    box-shadow: 0 2px 6px rgba(14, 165, 233, 0.08);
 }
 
+.builder-btn-preview:hover:not(:disabled) {
+    background: #e0f2fe;
+    border-color: #38bdf8;
+    color: #0369a1;
+    transform: translateY(-1.5px);
+    box-shadow: 0 6px 16px rgba(14, 165, 233, 0.18);
+}
 
-/* =========================================
-   Dark Theme
-========================================= */
+/* Publish CTA Button */
+.builder-btn-publish {
+    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+    border: none;
+    color: #ffffff;
+    box-shadow: 0 4px 16px rgba(79, 70, 229, 0.35);
+}
 
+.builder-btn-publish:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(79, 70, 229, 0.45);
+}
+
+/* --------------------------------------------------------------------------
+   4. Invalid State
+   -------------------------------------------------------------------------- */
+.survey-builder-invalid {
+    padding: 60px 20px;
+    text-align: center;
+    color: #dc2626;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   5. Dark Theme Overrides
+   ========================================================================== */
 :root[data-theme="dark"] .survey-builder-page {
-    background: #0f172a;
-    color: #e5e7eb;
+    background-color: #090d16 !important;
+    color: #f8fafc !important;
+}
+
+:root[data-theme="dark"] .survey-builder-header {
+    background-color: #0f172a !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    border-top: 4px solid #818cf8 !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35) !important;
 }
 
 :root[data-theme="dark"] .survey-builder-header h1 {
-    color: #f8fafc;
+    color: #f8fafc !important;
 }
 
-:root[data-theme="dark"] .survey-builder-header p,
-:root[data-theme="dark"] .survey-builder-page > p {
-    color: #cbd5e1;
+:root[data-theme="dark"] .survey-builder-header p {
+    color: #94a3b8 !important;
+}
+
+:root[data-theme="dark"] .builder-badge {
+    background-color: rgba(99, 102, 241, 0.15) !important;
+    border-color: rgba(99, 102, 241, 0.35) !important;
+    color: #a5b4fc !important;
+}
+
+:root[data-theme="dark"] .builder-badge-icon {
+    color: #a5b4fc !important;
+}
+
+:root[data-theme="dark"] .builder-counter-pill {
+    background-color: rgba(99, 102, 241, 0.15) !important;
+    border-color: rgba(99, 102, 241, 0.35) !important;
+    color: #c7d2fe !important;
 }
 
 :root[data-theme="dark"] .survey-builder-actions {
-    border-color: #334155;
+    border-top-color: #334155 !important;
 }
 
-:root[data-theme="dark"] .survey-builder-actions button {
-    background: #111827;
-    border-color: #475569;
-    color: #e5e7eb;
+:root[data-theme="dark"] .builder-btn-exit {
+    background: #0f172a !important;
+    border-color: #334155 !important;
+    color: #cbd5e1 !important;
 }
 
-:root[data-theme="dark"] .survey-builder-actions button:hover:not(:disabled) {
-    background: #1e293b;
-    border-color: #3b82f6;
-    color: #ffffff;
-    box-shadow: 0 8px 22px rgba(37, 99, 235, 0.18);
+:root[data-theme="dark"] .builder-btn-exit:hover:not(:disabled) {
+    background: #1e293b !important;
+    border-color: #475569 !important;
+    color: #ffffff !important;
 }
 
-:root[data-theme="dark"] .survey-builder-actions button:last-child {
-    background: #2563eb;
-    border-color: #2563eb;
-    color: #ffffff;
+:root[data-theme="dark"] .builder-btn-preview {
+    background: rgba(14, 165, 233, 0.15) !important;
+    border-color: rgba(14, 165, 233, 0.35) !important;
+    color: #7dd3fc !important;
+}
+
+:root[data-theme="dark"] .builder-btn-preview:hover:not(:disabled) {
+    background: rgba(14, 165, 233, 0.25) !important;
+    border-color: #38bdf8 !important;
+    color: #bae6fd !important;
 }

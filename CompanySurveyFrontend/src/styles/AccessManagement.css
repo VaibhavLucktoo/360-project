@@ -1,83 +1,1407 @@
+/* ==========================================================================
+   Access Governance & RBAC Styling (/roles & /users)
+   Confidential Suggestion Box SaaS Styling - Light & Dark Modes
+   ========================================================================== */
+
 .access-page {
-    --access-border: #e2e8f0;
-    --access-muted: #64748b;
-    --access-bg: #fff;
-    margin-left: var(--sidebar-width, 220px);
     min-height: 100vh;
-    padding: 32px clamp(16px, 3vw, 40px);
-    color: #172033;
+    margin-left: var(--sidebar-width, 220px);
+    padding: 36px clamp(16px, 4vw, 48px) 60px;
+    box-sizing: border-box;
+    transition: margin-left 0.25s ease;
+    background: #f1f5f9;
+}
+
+.access-page-container {
+    width: min(100%, 1160px);
+    margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   1. Header Block & Navigation Tabs
+   -------------------------------------------------------------------------- */
+.access-header-block {
+    margin-bottom: 28px;
+}
+
+.access-header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.access-header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 12px;
+    background: #eef2ff;
+    border: 1.5px solid #c7d2fe;
+    border-radius: 9999px;
+    color: #4338ca;
+    font-size: 11.5px;
+    font-weight: 700;
+}
+
+.badge-shield {
+    font-size: 12px;
+    color: #4f46e5;
+}
+
+.access-nav-tabs {
+    display: inline-flex;
+    align-items: center;
+    background: #e2e8f0;
+    border-radius: 12px;
+    padding: 4px;
+    gap: 4px;
+}
+
+.access-nav-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 16px;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.access-nav-tab:hover {
+    color: #0f172a;
+}
+
+.access-nav-tab.active {
+    background: #ffffff;
+    color: #4f46e5;
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
+}
+
+.access-hero-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.access-hero-copy {
+    max-width: 680px;
+}
+
+.access-hero-copy h1 {
+    margin: 0 0 8px;
+    color: #0f172a;
+    font-size: clamp(28px, 4vw, 36px);
+    font-weight: 850;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+.access-hero-copy p {
+    margin: 0;
+    color: #475569;
+    font-size: 14.5px;
+    line-height: 1.55;
+}
+
+.btn-hero-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   2. KPI Summary Strip
+   -------------------------------------------------------------------------- */
+.access-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.access-kpi-card {
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 16px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.04);
+}
+
+.access-kpi-card .kpi-icon-well {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    font-size: 19px;
+    flex-shrink: 0;
+}
+
+.kpi-icon-well.purple {
+    background: #f5f3ff;
+    color: #7c3aed;
+    border: 1.5px solid #ddd6fe;
+}
+
+.kpi-icon-well.blue {
+    background: #eff6ff;
+    color: #2563eb;
+    border: 1.5px solid #bfdbfe;
+}
+
+.kpi-icon-well.emerald {
+    background: #ecfdf5;
+    color: #059669;
+    border: 1.5px solid #a7f3d0;
+}
+
+.kpi-icon-well.amber {
+    background: #fffbeb;
+    color: #d97706;
+    border: 1.5px solid #fde68a;
+}
+
+.access-kpi-card .kpi-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.access-kpi-card .kpi-label {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 2px;
+}
+
+.access-kpi-card .kpi-value {
+    font-size: 24px;
+    font-weight: 850;
+    color: #0f172a;
+    line-height: 1.15;
+}
+
+.access-kpi-card .kpi-value.text-sm {
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.access-kpi-card .kpi-hint {
+    font-size: 11.5px;
+    color: #94a3b8;
+    margin-top: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   3. Banners & Notifications
+   -------------------------------------------------------------------------- */
+.access-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 18px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 650;
+    margin-bottom: 22px;
+    animation: bannerFade 0.2s ease-out;
+}
+
+@keyframes bannerFade {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.access-banner.error {
+    background: #fef2f2;
+    border: 1.5px solid #fecaca;
+    color: #991b1b;
+}
+
+.access-banner.success {
+    background: #f0fdf4;
+    border: 1.5px solid #bbf7d0;
+    color: #166534;
+}
+
+.banner-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.access-retry-btn {
+    margin-left: auto;
+    padding: 4px 12px;
+    background: #ffffff;
+    border: 1px solid #fca5a5;
+    border-radius: 6px;
+    color: #991b1b;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* --------------------------------------------------------------------------
+   4. Editor Section & Form Controls
+   -------------------------------------------------------------------------- */
+.access-card {
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 16px;
+    padding: 26px;
+    margin-bottom: 28px;
+    box-shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.04);
+}
+
+.access-editor-card {
+    border-color: #6366f1;
+    box-shadow: 0 4px 20px -2px rgba(99, 102, 241, 0.1);
+    animation: editorDrop 0.25s ease-out;
+}
+
+@keyframes editorDrop {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.editor-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 22px;
+    padding-bottom: 16px;
+    border-bottom: 1.5px solid #f1f5f9;
+}
+
+.editor-header-text h2 {
+    margin: 0 0 4px;
+    font-size: 19px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.editor-header-text p {
+    margin: 0;
+    font-size: 13.5px;
+    color: #64748b;
+}
+
+.btn-editor-close {
+    background: transparent;
+    border: none;
+    font-size: 16px;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    transition: all 0.15s ease;
+}
+
+.btn-editor-close:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+.editor-fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+}
+
+.form-group-block {
+    margin-bottom: 20px;
+}
+
+.access-name-field {
+    display: flex;
+    flex-direction: column;
+    max-width: 480px;
+}
+
+.label-text {
+    font-size: 13px;
+    font-weight: 750;
+    color: #334155;
+    margin-bottom: 7px;
+}
+
+.required-star {
+    color: #e11d48;
+}
+
+.access-name-field input,
+.user-field-label input,
+.user-field-label select {
+    width: 100%;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #0f172a;
+    outline: none;
+    transition: all 0.18s ease;
+    box-sizing: border-box;
+}
+
+.access-name-field input:focus,
+.user-field-label input:focus,
+.user-field-label select:focus {
+    background: #ffffff;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.access-name-field input[aria-invalid="true"],
+.user-field-label input[aria-invalid="true"],
+.user-field-label select[aria-invalid="true"] {
+    border-color: #f43f5e;
+    background: #fff1f2;
+}
+
+.access-field-error {
+    display: block;
+    margin-top: 6px;
+    color: #e11d48;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* User Form Grid */
+.user-fields-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.user-field-label {
+    display: flex;
+    flex-direction: column;
+}
+
+.active-toggle-container {
+    background: #f8fafc;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 22px;
+}
+
+.access-checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+}
+
+.access-checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    cursor: pointer;
+    accent-color: #4f46e5;
+}
+
+.checkbox-text-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.checkbox-text-group strong {
+    font-size: 13.5px;
+    color: #0f172a;
+    font-weight: 750;
+}
+
+.checkbox-text-group small {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 2px;
+    line-height: 1.45;
+}
+
+/* --------------------------------------------------------------------------
+   5. Permissions Selector Cards (Roles Page)
+   -------------------------------------------------------------------------- */
+.permissions-group {
+    margin-top: 24px;
+}
+
+.permissions-group-header h3 {
+    margin: 0 0 4px;
+    font-size: 16px;
+    font-weight: 800;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.access-muted-pill {
+    font-size: 11.5px;
+    font-weight: 700;
+    background: #e2e8f0;
+    color: #475569;
+    padding: 2px 9px;
+    border-radius: 9999px;
+}
+
+.access-help-copy {
+    margin: 0 0 16px;
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+.access-warning-callout {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: #fffbeb;
+    border: 1.5px solid #fde68a;
+    border-radius: 10px;
+    color: #b45309;
+    font-size: 12.5px;
+    font-weight: 650;
+    margin-bottom: 16px;
+}
+
+.permission-category-group {
+    margin-bottom: 20px;
+}
+
+.permission-category-title {
+    margin: 0 0 10px;
+    font-size: 12.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #475569;
+}
+
+.permission-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+}
+
+.permission-option-card {
+    background: #f8fafc;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 12px 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    transition: all 0.18s ease;
+}
+
+.permission-option-card:hover {
+    border-color: #94a3b8;
+    background: #ffffff;
+}
+
+.permission-option-card.selected {
+    background: #eef2ff;
+    border-color: #6366f1;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.12);
+}
+
+.permission-option-card input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+    margin-top: 2px;
+    accent-color: #4f46e5;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.permission-card-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.permission-header-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.permission-key-tag {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11.5px;
+    font-weight: 750;
+    color: #1e293b;
+}
+
+.permission-option-card.selected .permission-key-tag {
+    color: #4338ca;
+}
+
+.permission-active-check {
+    font-size: 11px;
+    color: #4f46e5;
+}
+
+.permission-desc-text {
+    display: block;
+    font-size: 11.5px;
+    line-height: 1.45;
+    color: #64748b;
+}
+
+/* --------------------------------------------------------------------------
+   6. Form Action Buttons
+   -------------------------------------------------------------------------- */
+.access-form-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1.5px solid #f1f5f9;
+}
+
+.access-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 9px 18px;
+    border-radius: 9px;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    border: 1.5px solid #cbd5e1;
+    background: #ffffff;
+    color: #334155;
+}
+
+.access-button:hover:not(:disabled) {
+    background: #f8fafc;
+    border-color: #94a3b8;
+    color: #0f172a;
+}
+
+.access-button.primary {
+    background: #4f46e5;
+    border-color: #4f46e5;
+    color: #ffffff;
+}
+
+.access-button.primary:hover:not(:disabled) {
+    background: #4338ca;
+    border-color: #4338ca;
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+    transform: translateY(-1px);
+}
+
+.access-button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* --------------------------------------------------------------------------
+   7. Directory Table & Toolbar
+   -------------------------------------------------------------------------- */
+.access-toolbar {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.toolbar-title-block h2 {
+    margin: 0 0 4px;
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.toolbar-title-block p {
+    margin: 0;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.toolbar-controls-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.toolbar-search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f8fafc;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 6px 12px;
+    width: 260px;
+    transition: all 0.18s ease;
+}
+
+.toolbar-search-box:focus-within {
+    background: #ffffff;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+.search-icon {
+    font-size: 13px;
+    color: #94a3b8;
+    flex-shrink: 0;
+}
+
+.toolbar-search-box input {
+    border: none;
+    background: transparent;
+    font-size: 13px;
+    font-weight: 600;
+    color: #0f172a;
+    outline: none;
+    width: 100%;
+}
+
+.search-clear-btn {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    font-size: 11px;
+    padding: 2px;
+    display: grid;
+    place-items: center;
+}
+
+.search-clear-btn:hover {
+    color: #0f172a;
+}
+
+.status-filter-pills {
+    display: inline-flex;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    padding: 3px;
+    gap: 2px;
+}
+
+.filter-pill-btn {
+    border: none;
+    background: transparent;
+    padding: 5px 12px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.filter-pill-btn:hover {
+    color: #0f172a;
+}
+
+.filter-pill-btn.active {
+    background: #ffffff;
+    color: #4f46e5;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+.toolbar-dept-select {
+    padding: 6px 12px;
+    background: #f8fafc;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #334155;
+    outline: none;
+    cursor: pointer;
+}
+
+/* --------------------------------------------------------------------------
+   8. Data Table
+   -------------------------------------------------------------------------- */
+.access-table-scroll {
+    overflow-x: auto;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 12px;
+}
+
+.access-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    text-align: left;
+}
+
+.access-data-table th {
+    background: #f8fafc;
+    padding: 13px 16px;
+    font-size: 11.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #475569;
+    border-bottom: 1.5px solid #cbd5e1;
+}
+
+.access-data-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: middle;
+}
+
+.access-data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.access-data-table tbody tr:hover {
     background: #f8fafc;
 }
-.access-page .access-header { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 24px; }
-.access-page h1 { font-size: 28px; margin: 0 0 6px; }
-.access-page h2 { font-size: 17px; margin: 0 0 16px; }
-.access-page h3 { font-size: 14px; margin: 22px 0 8px; }
-.access-page .access-header p { margin: 0; color: var(--access-muted); font-size: 14px; }
-.access-card { background: var(--access-bg); border: 1px solid var(--access-border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
-.access-card fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
-.access-card label { display: grid; gap: 7px; font-size: 13px; font-weight: 500; }
-.access-card input:not([type=checkbox]), .access-card select {
-    width: 100%; min-height: 36px; padding: 8px 10px; border: 1px solid var(--access-border);
-    border-radius: 6px; background: transparent; color: inherit; box-sizing: border-box; font: inherit;
+
+/* Roles specific table elements */
+.role-profile-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
-.access-card input[aria-invalid=true], .access-card select[aria-invalid=true] { border-color: #dc2626; }
-.access-page :is(input, select, button, summary):focus-visible { outline: 2px solid #3b82f6; outline-offset: 3px; }
-.access-page .access-button, .access-page .access-icon-button {
-    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-    width: auto; min-width: 0; min-height: 32px; height: 32px; padding: 5px 10px;
-    border: 1px solid var(--access-border); border-radius: 6px; background: var(--access-bg);
-    color: inherit; font: inherit; font-size: 12px; font-weight: 500; line-height: 1;
-    box-shadow: none; cursor: pointer; flex: 0 0 auto; white-space: nowrap;
+
+.role-icon-bullet {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: #eef2ff;
+    color: #4f46e5;
+    display: grid;
+    place-items: center;
+    font-size: 14px;
+    flex-shrink: 0;
 }
-.access-page .access-icon-button { width: 32px; padding: 0; }
-.access-page :is(.access-button, .access-icon-button) svg { width: 12px; height: 12px; }
-.access-page .access-button.primary { background: #3157c6; color: #fff; border-color: #3157c6; }
-.access-page .access-icon-button.danger { color: #b42318; }
-.access-page :is(.access-button, .access-icon-button):hover:not(:disabled) { background: #eff4ff; border-color: #a5b8ee; }
-.access-page .access-button.primary:hover:not(:disabled) { background: #2448ad; }
-.access-page .access-icon-button.danger:hover:not(:disabled) { background: #fff1f0; border-color: #fda29b; }
-.access-page button:disabled, .access-page fieldset:disabled button { opacity: .5; cursor: not-allowed; }
-.access-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-.access-name-field { max-width: 420px; }
-.permission-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; margin: 16px 0; }
-.access-card .permission-option { display: flex; align-items: flex-start; gap: 9px; padding: 10px; border: 1px solid var(--access-border); border-radius: 7px; }
-.permission-option input { margin: 3px 0 0; flex-shrink: 0; }
-.permission-option strong { font-size: 12px; }
-.permission-option small { display: block; margin-top: 4px; color: var(--access-muted); line-height: 1.45; font-weight: 400; }
-.access-table-scroll { overflow-x: auto; }
-.access-card table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.access-card th, .access-card td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--access-border); vertical-align: middle; }
-.access-card th { color: var(--access-muted); font-size: 12px; font-weight: 600; }
-.access-card tbody tr:last-child td { border-bottom: 0; }
-.access-action-column { width: 84px; }
-.access-card .user-fields { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-.access-card .access-checkbox { display: flex; align-items: center; gap: 8px; margin-top: 18px; }
-.access-help, .access-muted { color: var(--access-muted); font-weight: 400; }
-.access-help { font-size: 12px; line-height: 1.6; margin: 10px 0 16px; }
-.access-block { display: block; margin-top: 4px; }
-.access-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
-.access-toolbar h2 { margin: 0; }
-.access-toolbar input { max-width: 260px; }
-.access-error, .access-success { padding: 12px; border-radius: 7px; font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; }
-.access-error { color: #b42318; background: #fee4e2; }
-.access-success { color: #05603a; background: #d1fadf; }
-.access-field-error { color: #b42318; font-size: 12px; line-height: 1.5; }
-.access-status { display: inline-block; border-radius: 20px; padding: 3px 8px; font-size: 11px; }
-.access-status.active { color: #067647; background: #ecfdf3; }
-.access-status.inactive { color: #475467; background: #f2f4f7; }
-.access-page summary { cursor: pointer; }
-.permission-summary { padding-left: 20px; margin: 8px 0; font-size: 12px; line-height: 1.8; }
-.access-card .access-empty { text-align: center; padding: 28px; color: var(--access-muted); }
-:root[data-theme="dark"] .access-page { --access-border: #334155; --access-muted: #a1aec0; --access-bg: #111827; color: #e2e8f0; background: #0b1120; }
-:root[data-theme="dark"] .access-card select option { background: #111827; }
-:root[data-theme="dark"] .access-field-error, :root[data-theme="dark"] .access-icon-button.danger { color: #fda29b; }
-:root[data-theme="dark"] .access-status.active { background: #064e3b; color: #bbf7d0; }
-:root[data-theme="dark"] .access-status.inactive { background: #334155; color: #cbd5e1; }
-@media(max-width: 640px) {
-    .access-page { margin-left: 0; padding: 64px 14px 20px; }
-    .access-card { padding: 14px; }
-    .access-toolbar { align-items: stretch; flex-direction: column; gap: 12px; }
-    .access-toolbar input { max-width: none; }
-    .access-page .access-header { align-items: flex-start; }
-    .access-page .access-icon-button { width: 36px; height: 36px; }
+
+.role-title-text {
+    font-size: 14px;
+    font-weight: 750;
+    color: #0f172a;
+    display: block;
+}
+
+.your-role-badge {
+    display: inline-block;
+    padding: 2px 7px;
+    background: #e0e7ff;
+    color: #4338ca;
+    border-radius: 9999px;
+    font-size: 10.5px;
+    font-weight: 750;
+    margin-top: 2px;
+}
+
+.role-permissions-dropdown {
+    position: relative;
+}
+
+.permissions-summary-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    user-select: none;
+}
+
+.permission-count-chip {
+    padding: 3px 9px;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 11.5px;
+    font-weight: 750;
+    color: #334155;
+}
+
+.view-link {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #4f46e5;
+}
+
+.permission-chips-drawer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 10px;
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 8px;
+}
+
+.permission-scope-badge {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11px;
+    padding: 2px 6px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    color: #334155;
+    font-weight: 650;
+}
+
+.respondent-access-chip {
+    display: inline-block;
+    padding: 3px 10px;
+    background: #f1f5f9;
+    color: #64748b;
+    border-radius: 9999px;
+    font-size: 11.5px;
+    font-weight: 700;
+}
+
+/* Users specific table elements */
+.user-profile-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-avatar-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #eef2ff;
+    color: #4338ca;
+    border: 1.5px solid #c7d2fe;
+    display: grid;
+    place-items: center;
+    font-size: 12.5px;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+
+.user-name-text {
+    font-size: 14px;
+    font-weight: 750;
+    color: #0f172a;
+    display: block;
+}
+
+.user-empid-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    margin-top: 2px;
+}
+
+.tag-icon {
+    font-size: 10px;
+    color: #94a3b8;
+}
+
+.email-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.email-icon {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+.dept-tag {
+    display: inline-block;
+    padding: 3px 9px;
+    background: #f1f5f9;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 650;
+    color: #475569;
+}
+
+.role-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    background: #eef2ff;
+    border: 1px solid #c7d2fe;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 750;
+    color: #4338ca;
+}
+
+.role-chip-icon {
+    font-size: 11px;
+}
+
+.access-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 9px;
+    border-radius: 9999px;
+    font-size: 11.5px;
+    font-weight: 750;
+}
+
+.access-status-pill.active {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.access-status-pill.inactive {
+    background: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
+.active-glow-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 6px #10b981;
+}
+
+/* Actions */
+.access-action-column {
+    width: 90px;
+    text-align: right;
+}
+
+.access-actions-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.access-icon-button {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    color: #475569;
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.access-icon-button:hover:not(:disabled) {
+    background: #f8fafc;
+    border-color: #94a3b8;
+    color: #0f172a;
+    transform: translateY(-1px);
+}
+
+.access-icon-button.danger {
+    color: #dc2626;
+}
+
+.access-icon-button.danger:hover:not(:disabled) {
+    background: #fef2f2;
+    border-color: #fca5a5;
+    color: #b91c1c;
+}
+
+.access-icon-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Empty & Loading */
+.access-loading-state,
+.access-empty-state {
+    padding: 48px 24px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.access-spinner {
+    width: 34px;
+    height: 34px;
+    border: 3.5px solid #e2e8f0;
+    border-top-color: #4f46e5;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 14px;
+}
+
+.access-loading-state p {
+    margin: 0;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.empty-state-icon {
+    font-size: 38px;
+    color: #94a3b8;
+    margin-bottom: 12px;
+}
+
+.access-empty-state p {
+    margin: 0;
+    font-size: 13.5px;
+    color: #64748b;
+}
+
+/* ==========================================================================
+   9. Dark Theme Parity (:root[data-theme="dark"])
+   ========================================================================== */
+:root[data-theme="dark"] .access-page {
+    background: #090d16;
+    color: #f1f5f9;
+}
+
+:root[data-theme="dark"] .access-header-badge {
+    background: rgba(99, 102, 241, 0.12);
+    border-color: rgba(99, 102, 241, 0.3);
+    color: #a5b4fc;
+}
+
+:root[data-theme="dark"] .badge-shield {
+    color: #818cf8;
+}
+
+:root[data-theme="dark"] .access-nav-tabs {
+    background: #1e293b;
+}
+
+:root[data-theme="dark"] .access-nav-tab {
+    color: #94a3b8;
+}
+
+:root[data-theme="dark"] .access-nav-tab:hover {
+    color: #f8fafc;
+}
+
+:root[data-theme="dark"] .access-nav-tab.active {
+    background: #0f172a;
+    color: #a5b4fc;
+}
+
+:root[data-theme="dark"] .access-hero-copy h1,
+:root[data-theme="dark"] .editor-header-text h2,
+:root[data-theme="dark"] .toolbar-title-block h2,
+:root[data-theme="dark"] .role-title-text,
+:root[data-theme="dark"] .user-name-text,
+:root[data-theme="dark"] .checkbox-text-group strong,
+:root[data-theme="dark"] .permissions-group-header h3,
+:root[data-theme="dark"] .permission-category-title,
+:root[data-theme="dark"] .access-kpi-card .kpi-value {
+    color: #f8fafc;
+}
+
+:root[data-theme="dark"] .access-hero-copy p,
+:root[data-theme="dark"] .editor-header-text p,
+:root[data-theme="dark"] .toolbar-title-block p,
+:root[data-theme="dark"] .access-help-copy,
+:root[data-theme="dark"] .access-empty-state p,
+:root[data-theme="dark"] .access-loading-state p {
+    color: #94a3b8;
+}
+
+:root[data-theme="dark"] .access-card,
+:root[data-theme="dark"] .access-kpi-card {
+    background: #0f172a;
+    border-color: #1e293b;
+    box-shadow: none;
+}
+
+:root[data-theme="dark"] .access-editor-card {
+    border-color: #6366f1;
+}
+
+:root[data-theme="dark"] .editor-card-header,
+:root[data-theme="dark"] .access-form-actions {
+    border-color: #1e293b;
+}
+
+:root[data-theme="dark"] .label-text {
+    color: #cbd5e1;
+}
+
+:root[data-theme="dark"] .access-name-field input,
+:root[data-theme="dark"] .user-field-label input,
+:root[data-theme="dark"] .user-field-label select {
+    background: #1e293b;
+    border-color: #334155;
+    color: #f8fafc;
+}
+
+:root[data-theme="dark"] .user-field-label select option {
+    background: #1e293b;
+    color: #f8fafc;
+}
+
+:root[data-theme="dark"] .access-name-field input:focus,
+:root[data-theme="dark"] .user-field-label input:focus,
+:root[data-theme="dark"] .user-field-label select:focus {
+    background: #0f172a;
+    border-color: #6366f1;
+}
+
+:root[data-theme="dark"] .active-toggle-container {
+    background: #131c31;
+    border-color: #1e293b;
+}
+
+:root[data-theme="dark"] .permission-option-card {
+    background: #131c31;
+    border-color: #1e293b;
+}
+
+:root[data-theme="dark"] .permission-option-card:hover {
+    background: #1e293b;
+    border-color: #475569;
+}
+
+:root[data-theme="dark"] .permission-option-card.selected {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: #6366f1;
+}
+
+:root[data-theme="dark"] .permission-key-tag {
+    color: #e2e8f0;
+}
+
+:root[data-theme="dark"] .permission-option-card.selected .permission-key-tag {
+    color: #a5b4fc;
+}
+
+:root[data-theme="dark"] .toolbar-search-box {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+:root[data-theme="dark"] .toolbar-search-box:focus-within {
+    background: #0f172a;
+    border-color: #6366f1;
+}
+
+:root[data-theme="dark"] .toolbar-search-box input {
+    color: #f8fafc;
+}
+
+:root[data-theme="dark"] .status-filter-pills {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+:root[data-theme="dark"] .filter-pill-btn {
+    color: #94a3b8;
+}
+
+:root[data-theme="dark"] .filter-pill-btn.active {
+    background: #0f172a;
+    color: #a5b4fc;
+}
+
+:root[data-theme="dark"] .toolbar-dept-select {
+    background: #1e293b;
+    border-color: #334155;
+    color: #f8fafc;
+}
+
+:root[data-theme="dark"] .access-table-scroll {
+    border-color: #1e293b;
+}
+
+:root[data-theme="dark"] .access-data-table th {
+    background: #131c31;
+    color: #94a3b8;
+    border-bottom-color: #1e293b;
+}
+
+:root[data-theme="dark"] .access-data-table td {
+    border-bottom-color: #1e293b;
+}
+
+:root[data-theme="dark"] .access-data-table tbody tr:hover {
+    background: #131c31;
+}
+
+:root[data-theme="dark"] .role-icon-bullet {
+    background: rgba(99, 102, 241, 0.15);
+    color: #818cf8;
+}
+
+:root[data-theme="dark"] .your-role-badge {
+    background: rgba(99, 102, 241, 0.2);
+    color: #a5b4fc;
+}
+
+:root[data-theme="dark"] .permission-count-chip {
+    background: #1e293b;
+    border-color: #334155;
+    color: #cbd5e1;
+}
+
+:root[data-theme="dark"] .permission-chips-drawer {
+    background: #131c31;
+    border-color: #334155;
+}
+
+:root[data-theme="dark"] .permission-scope-badge {
+    background: #0f172a;
+    border-color: #334155;
+    color: #e2e8f0;
+}
+
+:root[data-theme="dark"] .user-avatar-circle {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.35);
+    color: #a5b4fc;
+}
+
+:root[data-theme="dark"] .email-wrap {
+    color: #cbd5e1;
+}
+
+:root[data-theme="dark"] .dept-tag {
+    background: #1e293b;
+    color: #cbd5e1;
+}
+
+:root[data-theme="dark"] .role-chip {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: rgba(99, 102, 241, 0.3);
+    color: #a5b4fc;
+}
+
+:root[data-theme="dark"] .access-icon-button {
+    background: #111827;
+    border-color: #334155;
+    color: #cbd5e1;
+}
+
+:root[data-theme="dark"] .access-icon-button:hover:not(:disabled) {
+    background: #1e293b;
+    border-color: #475569;
+    color: #f8fafc;
+}
+
+:root[data-theme="dark"] .access-button {
+    background: #111827;
+    border-color: #334155;
+    color: #cbd5e1;
+}
+
+:root[data-theme="dark"] .access-button:hover:not(:disabled) {
+    background: #1e293b;
+    border-color: #475569;
+    color: #f8fafc;
+}
+
+:root[data-theme="dark"] .access-button.primary {
+    background: #4f46e5;
+    border-color: #4f46e5;
+    color: #ffffff;
+}
+
+:root[data-theme="dark"] .access-muted-pill {
+    background: #1e293b;
+    color: #94a3b8;
+}
+
+/* --------------------------------------------------------------------------
+   10. Responsive Design
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+    .access-page {
+        margin-left: 0;
+        padding: 24px 16px 40px;
+    }
+
+    .access-header-top {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .access-hero-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn-hero-action {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .toolbar-search-box {
+        width: 100%;
+    }
+
+    .toolbar-controls-row {
+        width: 100%;
+    }
 }

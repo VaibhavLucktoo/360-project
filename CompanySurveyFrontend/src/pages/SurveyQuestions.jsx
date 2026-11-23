@@ -175,7 +175,7 @@ function SurveyQuestions() {
 
                 const payload = await updateQuestion(editingQuestionId, {
                     ...baseQuestionPayload,
-                    display_order: existingQuestion?.display_order || questions.length + 1,
+                    display_order: existingQuestion?.display_order || (questions.reduce((max, q) => Math.max(max, q.display_order || 0), 0) + 1),
                 });
 
 
@@ -196,7 +196,7 @@ function SurveyQuestions() {
 
                 const payload = await createQuestion({
                     ...baseQuestionPayload,
-                    display_order: questions.length + 1,
+                    display_order: questions.reduce((max, q) => Math.max(max, q.display_order || 0), 0) + 1,
                 });
 
 
