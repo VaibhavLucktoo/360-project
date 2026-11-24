@@ -3,6 +3,7 @@
 Run interactively after migrations: python -m scripts.bootstrap_access
 The password is read without echo and is never logged.
 """
+import os
 from getpass import getpass
 
 from sqlalchemy import and_
@@ -24,7 +25,8 @@ def main():
         )
         lock_access_configuration(db)
         if db.query(User).filter(User.is_active.is_(True), User.assigned_role.has(capability)).first():
-            raise SystemExit("An active access administrator already exists. Use Roles and Users in the app.")
+            print("An active access administrator already exists. Use Roles and Users in the app.")
+            return
         permissions = db.query(Permission).all()
         if not {"role.manage", "user.manage"}.issubset({item.key for item in permissions}):
             raise SystemExit("Run the database migrations first.")
@@ -34,12 +36,21 @@ def main():
             db.add(role)
         role.permissions = permissions
         db.flush()
+
+        emp_id = os.getenv("ADMIN_EMP_ID") or input("Employee ID: ")
+        full_name = os.getenv("ADMIN_FULL_NAME") or input("Full name: ")
+        email = os.getenv("ADMIN_EMAIL") or input("Email: ")
+        dept = os.getenv("ADMIN_DEPT") or input("Department: ")
+        password = os.getenv("ADMIN_PASSWORD")
+        if not password:
+            password = getpass("Initial password (at least 8 characters, no spaces): ")
+
         data = UserCreate(
-            employee_id=input("Employee ID: "),
-            full_name=input("Full name: "),
-            email=input("Email: "),
-            department=input("Department: "),
-            password=getpass("Initial password (at least 8 characters, no spaces): "),
+            employee_id=emp_id,
+            full_name=full_name,
+            email=email,
+            department=dept,
+            password=password,
             role_id=role.id,
         )
         create_user(db, data)
