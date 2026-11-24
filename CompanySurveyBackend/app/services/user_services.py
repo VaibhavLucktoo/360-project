@@ -5,13 +5,10 @@ from fastapi import HTTPException
 from app.models.user import User
 from app.models.survey import Survey
 from app.schemas.user import PasswordUpdate, UserCreate, UserUpdate
-from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordRequestForm
-from app.auth.auth import verify_password, create_access_token
+from app.auth.auth import pwd_context, verify_password, create_access_token
 
 from app.services.role_services import get_role, lock_access_configuration, commit_access_change, protect_last_access_manager
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def ensure_unique_user(db, employee_id, email, exclude_id=None):

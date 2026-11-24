@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, UTC
 from jose import jwt, JWTError
-from passlib.context import CryptContext
+import bcrypt
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.database.database import get_db
@@ -10,10 +10,29 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-pwd_context = CryptContext(
-    schemes=["bcrypt"],
-    deprecated="auto"
-)
+
+
+class PasswordManager:
+    """Direct bcrypt password hashing compatible with standard bcrypt hashes and modern bcrypt >= 4.0."""
+
+    @staticmethod
+    def hash(password: str) -> str:
+        pwd_bytes = password.encode("utf-8")[:72]
+        salt = bcrypt.gensalt()
+        return bcrypt.hashpw(pwd_bytes, salt).decode("utf-8")
+
+    @staticmethod
+    def verify(plain_password: str, hashed_password: str) -> bool:
+        if not plain_password or not hashed_password:
+            return False
+        try:
+            pwd_bytes = plain_password.encode("utf-8")[:72]
+            return bcrypt.checkpw(pwd_bytes, hashed_password.encode("utf-8"))
+        except Exception:
+            return False
+
+
+pwd_context = PasswordManager()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
